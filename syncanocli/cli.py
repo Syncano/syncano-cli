@@ -13,7 +13,8 @@ from . import settings
 @click.option('--loglevel', '-l', default='NOTSET', type=click.Choice(settings.LOGLEVELS),
               callback=utils.set_loglevel, is_eager=True)
 @click.pass_context
-def cli(ctx):
+def cli(ctx, *args, **kwargs):
+    print 'main', args, kwargs
     click.echo('nana')
 
 
