@@ -34,7 +34,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'syncano = syncanocli.main:cli'
+            'syncano = syncanocli.cli:cli'
         ]
     }
 )
