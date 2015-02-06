@@ -26,9 +26,15 @@ setup(
     ],
     install_requires=[
         'six==1.9.0',
+        'click==3.3',
     ],
     tests_require=[
         'mock>=1.0.1',
         'coverage>=3.7.1',
     ],
+    entry_points={
+        'console_scripts': [
+            'syncano = syncanocli.cli:cli'
+        ]
+    }
 )
