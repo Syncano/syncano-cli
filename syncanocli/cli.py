@@ -14,8 +14,7 @@ from . import settings
               callback=utils.set_loglevel, is_eager=True)
 @click.pass_context
 def cli(ctx, *args, **kwargs):
-    print 'main', args, kwargs
-    click.echo('nana')
+    pass
 
 
 if __name__ == '__main__':
