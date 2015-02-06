@@ -1,0 +1,15 @@
+machine:
+  python:
+    version: 2.7.5
+
+test:
+  post:
+    - pip install coverage>=3.7.1
+    - pip install mock>=1.0.1
+    - rm -f .coverage
+    - coverage run -m unittest discover
+    - coverage html
+
+general:
+  artifacts:
+    - coverage
