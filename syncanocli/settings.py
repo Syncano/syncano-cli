@@ -1,5 +1,7 @@
 import os
 
+import click
+
 import syncanocli
 
 
@@ -20,8 +22,12 @@ COMMANDS_FOLDER = os.path.abspath(
 )
 
 CONFIG_FILENAME = '.syncano'
-CONFIG = {
+CONFIG_DIR_SETTINGS = {
     'app_name': syncanocli.__title__,
     'roaming': True,
     'force_posix': False
 }
+CONFIG_DEFAULT_PATH = os.path.join(
+    click.get_app_dir(**CONFIG_DIR_SETTINGS),
+    CONFIG_FILENAME
+)

@@ -29,22 +29,6 @@ def set_loglevel(ctx, param, value):
     return value
 
 
-def read_config(ctx=None, param=None, filename=None):
-    if filename is None:
-        filename = os.path.join(
-            click.get_app_dir(**settings.CONFIG),
-            settings.CONFIG_FILENAME
-        )
-
-    parser = ConfigParser.RawConfigParser()
-    parser.read([filename])
-    config = {}
-    for section in parser.sections():
-        for key, value in six.iteritems(section):
-            config.setdefault(section, {})[key] = value
-    return config
-
-
 class AutodiscoverMultiCommand(click.MultiCommand):
 
     def list_commands(self, ctx):
