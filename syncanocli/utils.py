@@ -1,10 +1,8 @@
 import os
 import sys
 import logging
-import ConfigParser
 
 import click
-import six
 
 from syncanocli import __version__
 from syncanocli import logger
