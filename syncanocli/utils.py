@@ -1,6 +1,7 @@
 import os
 import sys
 import logging
+from functools import update_wrapper
 
 import click
 
@@ -25,6 +26,24 @@ def set_loglevel(ctx, param, value):
 
     logger.setLevel(loglevel)
     return value
+
+
+def login_required(f):
+    '''Will check if current user is authenticated.
+    Should be used after @click.pass_obj decorator e.g:
+
+        @click.pass_obj
+        @login_required
+        def dummy(ctx):
+            pass
+    '''
+    def wrapper(ctx, *args, **kwargs):
+        if not ctx.is_authenticated():
+            ctx.echo.error('You are not authenticated.')
+            ctx.echo('Try to login via "syncano auth login" command.')
+            return
+        return f(ctx, *args, **kwargs)
+    return update_wrapper(wrapper, f)
 
 
 class AutodiscoverMultiCommand(click.MultiCommand):
