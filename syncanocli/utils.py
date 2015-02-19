@@ -114,16 +114,19 @@ def model_endpoint_fields(model):
     return decorator
 
 
-def model_fields_option(*args, **attrs):
+def model_fields_option(model, *args, **attrs):
 
     def decorator(f):
         def callback(ctx, param, value):
             fields = [f.strip() for f in value.split(',')]
-            return fields
+            for f in fields:
+                if f not in model._meta.field_names:
+                    raise click.BadParameter('Invalid choice: {0}.'.format(f))
+            return [f for f in model._meta.fields if f.name in fields]
 
         attrs.setdefault('callback', callback)
         attrs.setdefault('type', str)
-        attrs.setdefault('default', '')
+        attrs.setdefault('default', ','.join(model._meta.field_names))
         return click.option(*(args or ('--fields', )), **attrs)(f)
     return decorator
 

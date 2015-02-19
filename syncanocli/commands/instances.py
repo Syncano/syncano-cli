@@ -14,20 +14,17 @@ from syncanocli.utils import (
 
 
 @click.group('instances', invoke_without_command=True)
-@model_fields_option()
+@model_fields_option(Instance)
 @click.pass_context
 @login_required
-def cli(ctx, *args, **kwargs):
+def cli(ctx, fields):
     '''List and manage your instances.'''
     if ctx.invoked_subcommand:
         return
 
     ctx = ctx.obj
-    ctx.echo(args)
-    ctx.echo(kwargs)
     connection = ctx.get_connection()
     instances = connection.instances.all()
-    fields = Instance._meta.fields[:3]
     headres = [f.label for f in fields]
     table = Texttable()
     table.header(headres)
@@ -39,6 +36,8 @@ def cli(ctx, *args, **kwargs):
             table.reset()
             table.header(headres)
             click.confirm('More?', default=True, abort=True)
+
+    ctx.echo(table.draw())
 
 
 @cli.command()
@@ -59,9 +58,11 @@ def create(ctx, **kwargs):
 @cli.command()
 @click.pass_obj
 @login_required
+@model_fields_option(Instance)
 @model_endpoint_fields(Instance)
 def retrieve(ctx, **kwargs):
     '''Retrieve details about instance.'''
+    fields = kwargs.pop('fields', [])
     connection = ctx.get_connection()
     try:
         instance = connection.instances.get(**kwargs)
@@ -70,7 +71,6 @@ def retrieve(ctx, **kwargs):
     except SyncanoDoesNotExist as e:
         ctx.echo.error('Instance does not exist.')
     else:
-        fields = Instance._meta.fields
         rows = [(f.label, f.to_native(getattr(instance, f.name))) for f in fields]
         table = Texttable()
         table.header(['Field', 'Value'])
