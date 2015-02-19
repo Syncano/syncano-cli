@@ -27,7 +27,7 @@ def login(ctx, email, password):
     ctx.config.credentials.email = email
     ctx.config.credentials.api_key = api_key
     ctx.config.save()
-    ctx.echo.success('Done!')
+    ctx.echo.success('Authentication successful!')
 
 
 @cli.command()

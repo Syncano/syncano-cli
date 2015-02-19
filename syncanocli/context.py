@@ -4,6 +4,8 @@ import os
 import click
 import six
 
+from syncano import connect
+
 from . import settings
 
 
@@ -19,6 +21,9 @@ class Echo(object):
 
         if verbose and self.verbose < verbose:
             return
+
+        if not isinstance(message, six.string_types):
+            message = str(message)
 
         click.secho(message, **style)
 
@@ -136,3 +141,7 @@ class Context(object):
 
     def is_authenticated(self):
         return self.config.credentials.api_key is not None
+
+    def get_connection(self):
+        credentials = self.config.credentials
+        return connect(api_key=credentials.api_key)
