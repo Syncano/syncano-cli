@@ -3,7 +3,7 @@ import click
 from syncano.connection import Connection
 from syncano.exceptions import SyncanoRequestError
 
-from syncanocli.utils import login_required
+from syncanocli.decorators import login_required
 
 
 @click.group('auth')

@@ -45,90 +45,14 @@ def set_loglevel(ctx, param, value):
     return value
 
 
-def login_required(f):
-    '''Will check if current user is authenticated.
-    Should be used after @click.pass_obj or @click.pass_context
-    decorator e.g:
-
-        @click.pass_obj
-        @login_required
-        def dummy(ctx):
-            pass
-    '''
-
-    @wraps(f)
-    def wrapper(ctx, *args, **kwargs):
-        context = ctx
-        if hasattr(context, 'obj'):
-            context = context.obj
-
-        if not context.is_authenticated():
-            context.echo.error('You are not authenticated.')
-            context.echo('Try to login via "syncano auth login" command.')
-            return
-        return f(ctx, *args, **kwargs)
-    return wrapper
-
-
-def field_to_option(field):
-    name = '--{0}'.format(field.name)
+def field_to_option(name, field, **attrs):
     Type = OPTIONS_MAPPING[field.__class__.__name__]
     type_kwargs = {}
 
-    options = {
-        'prompt': True,
-        'required': field.required,
-        'type': Type(**type_kwargs)
-    }
-    return click.option(name, **options)
-
-
-def model_options(model, fields_func=None):
-    if not fields_func:
-        def fields_func(model):
-            fields = reversed(model._meta.fields)
-            return [f for f in fields if not f.read_only]
-
-    def decorator(f):
-
-        @wraps(f)
-        def inner(*args, **kwargs):
-            return f(*args, **kwargs)
-
-        for field in fields_func(model):
-            inner = field_to_option(field)(inner)
-
-        return inner
-    return decorator
-
-
-def model_endpoint_fields(model):
-
-    def field_func(model):
-        fields = reversed(model._meta.fields)
-        return [f for f in fields if f.name in model._meta.endpoint_fields]
-
-    def decorator(f):
-        return model_options(model, field_func)(f)
-
-    return decorator
-
-
-def model_fields_option(model, *args, **attrs):
-
-    def decorator(f):
-        def callback(ctx, param, value):
-            fields = [f.strip() for f in value.split(',')]
-            for f in fields:
-                if f not in model._meta.field_names:
-                    raise click.BadParameter('Invalid choice: {0}.'.format(f))
-            return [f for f in model._meta.fields if f.name in fields]
-
-        attrs.setdefault('callback', callback)
-        attrs.setdefault('type', str)
-        attrs.setdefault('default', ','.join(model._meta.field_names))
-        return click.option(*(args or ('--fields', )), **attrs)(f)
-    return decorator
+    attrs.setdefault('prompt', True)
+    attrs.setdefault('required', field.required)
+    attrs.setdefault('type', Type(**type_kwargs))
+    return click.option(name, **attrs)
 
 
 class AutodiscoverMultiCommand(click.MultiCommand):
