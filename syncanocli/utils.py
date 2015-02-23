@@ -1,7 +1,6 @@
 import os
 import sys
 import logging
-from functools import wraps
 
 import click
 from click import types
@@ -43,16 +42,6 @@ def set_loglevel(ctx, param, value):
 
     logger.setLevel(loglevel)
     return value
-
-
-def field_to_option(name, field, **attrs):
-    Type = OPTIONS_MAPPING[field.__class__.__name__]
-    type_kwargs = {}
-
-    attrs.setdefault('prompt', True)
-    attrs.setdefault('required', field.required)
-    attrs.setdefault('type', Type(**type_kwargs))
-    return click.option(name, **attrs)
 
 
 class AutodiscoverMultiCommand(click.MultiCommand):

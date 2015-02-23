@@ -1,31 +1,28 @@
 import click
+import six
 from texttable import Texttable
 
 from syncano.models.base import Instance
-from syncano.exceptions import (
-    SyncanoRequestError, SyncanoValidationError,
-    SyncanoDoesNotExist
-)
 
 from syncanocli.decorators import (
-    login_required, model_options, model_endpoint_options,
-    model_fields_option, model_update_options
+    login_required, model, model_fields_option,
+    model_options, model_arguments,
 )
 
 
 @click.group('instances', invoke_without_command=True)
-@model_fields_option(Instance)
 @click.option('--page-size', default=10, show_default=True)
 @click.pass_context
 @login_required
+@model(Instance)
+@model_fields_option(Instance)
 def cli(ctx, fields, page_size):
     '''List and manage your instances.'''
     if ctx.invoked_subcommand:
         return
 
     ctx = ctx.obj
-    connection = ctx.get_connection()
-    instances = connection.instances.page_size(page_size).all()
+    instances = ctx.list(page_size)
     headres = [f.label for f in fields]
     table = Texttable()
     table.header(headres)
@@ -44,61 +41,64 @@ def cli(ctx, fields, page_size):
 @cli.command()
 @click.pass_obj
 @login_required
+@model(Instance)
 @model_options(Instance)
 def create(ctx, **kwargs):
     '''Create a new instance.'''
-    connection = ctx.get_connection()
-    try:
-        instance = connection.instances.create(**kwargs)
-    except (SyncanoRequestError, SyncanoValidationError) as e:
-        ctx.echo.error(e)
-    else:
-        ctx.echo.success('Instance successfully created: {0}!'.format(instance.pk))
+    ctx.create(**kwargs)
 
 
 @cli.command()
 @click.pass_obj
 @login_required
+@model(Instance)
+@model_arguments(Instance)
 @model_fields_option(Instance)
-@model_endpoint_options(Instance)
-def retrieve(ctx, **kwargs):
-    '''Retrieve details about instance.'''
+def details(ctx, **kwargs):
+    '''Details about instance.'''
     fields = kwargs.pop('fields', [])
-    connection = ctx.get_connection()
-    try:
-        instance = connection.instances.get(**kwargs)
-    except (SyncanoRequestError, SyncanoValidationError) as e:
-        ctx.echo.error(e)
-    except SyncanoDoesNotExist as e:
-        ctx.echo.error('Instance does not exist.')
-    else:
-        rows = [(f.label, f.to_native(getattr(instance, f.name))) for f in fields]
-        table = Texttable()
-        table.header(['Field', 'Value'])
-        table.add_rows(rows, header=False)
-        ctx.echo(table.draw())
+    instance = ctx.details(**kwargs)
+    rows = [(f.label, f.to_native(getattr(instance, f.name))) for f in fields]
+    table = Texttable()
+    table.header(['Field', 'Value'])
+    table.add_rows(rows, header=False)
+    ctx.echo(table.draw())
 
 
 @cli.command()
 @click.pass_obj
 @login_required
-@model_endpoint_options(Instance)
-@model_update_options(Instance)
+@model(Instance)
+@model_arguments(Instance)
+@model_options(Instance, prompt=False, required=False)
 def update(ctx, **kwargs):
-    pass
+    model = ctx.model
+    query = {k: v for k, v in six.iteritems(kwargs) if k in model._meta.endpoint_fields}
+    data = {k: v for k, v in six.iteritems(kwargs) if k not in query}
+    instance = ctx.details(**query)
+
+    for k, v in six.iteritems(data):
+        if v:
+            continue
+
+        default = getattr(instance, k, None)
+        data[k] = click.prompt('Set {0}'.format(k), default=default)
+
+    diff = {k: v for k, v in six.iteritems(data) if getattr(instance, k, None) != v}
+    if not diff:
+        ctx.echo.info('Nothing to update, Bye!')
+        return
+
+    query['data'] = diff
+    ctx.update(**query)
 
 
 @cli.command()
 @click.pass_obj
+@click.confirmation_option(prompt='Are you sure you want to remove this instance?')
 @login_required
-@click.confirmation_option(prompt='Are you sure you want to destroy this instance?')
-@model_endpoint_options(Instance)
-def destroy(ctx, **kwargs):
-    '''Destroy selected instance.'''
-    connection = ctx.get_connection()
-    try:
-        connection.instances.delete(**kwargs)
-    except (SyncanoRequestError, SyncanoValidationError) as e:
-        ctx.echo.error(e)
-    else:
-        ctx.echo.success('Instance successfully destroyed!')
+@model(Instance)
+@model_arguments(Instance)
+def remove(ctx, **kwargs):
+    '''Remove selected instance.'''
+    ctx.remove(**kwargs)
