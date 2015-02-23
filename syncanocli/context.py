@@ -4,6 +4,12 @@ import os
 import click
 import six
 
+from syncano import connect
+from syncano.exceptions import (
+    SyncanoRequestError, SyncanoValidationError,
+    SyncanoDoesNotExist
+)
+
 from . import settings
 
 
@@ -19,6 +25,9 @@ class Echo(object):
 
         if verbose and self.verbose < verbose:
             return
+
+        if not isinstance(message, six.string_types):
+            message = str(message)
 
         click.secho(message, **style)
 
@@ -133,6 +142,55 @@ class Context(object):
 
         self.config = Config(config_filename)
         self.echo = Echo(verbose)
+        self.model = None
 
     def is_authenticated(self):
         return self.config.credentials.api_key is not None
+
+    def get_connection(self):
+        credentials = self.config.credentials
+        return connect(api_key=credentials.api_key)
+
+    def list(self, page_size):
+        self.get_connection()
+        return self.model.please.page_size(page_size).all()
+
+    def create(self, **kwargs):
+        self.get_connection()
+        try:
+            instance = self.model.please.create(**kwargs)
+        except (SyncanoRequestError, SyncanoValidationError) as e:
+            self.echo.error(e)
+        else:
+            self.echo.success('{0} successfully created: {1}!'.format(self.model._meta.name, instance.pk))
+
+    def details(self, **kwargs):
+        self.get_connection()
+        try:
+            instance = self.model.please.get(**kwargs)
+        except (SyncanoRequestError, SyncanoValidationError) as e:
+            self.echo.error(e)
+        except SyncanoDoesNotExist as e:
+            self.echo.error('{0} does not exist.'.format(self.model._meta.name))
+        else:
+            return instance
+
+    def update(self, **kwargs):
+        self.get_connection()
+        try:
+            instance = self.model.please.update(**kwargs)
+        except (SyncanoRequestError, SyncanoValidationError) as e:
+            self.echo.error(e)
+        except SyncanoDoesNotExist as e:
+            self.echo.error('{0} does not exist.'.format(self.model._meta.name))
+        else:
+            return instance
+
+    def remove(self, **kwargs):
+        self.get_connection()
+        try:
+            self.model.please.delete(**kwargs)
+        except (SyncanoRequestError, SyncanoValidationError) as e:
+            self.echo.error(e)
+        else:
+            self.echo.success('{0} successfully removed!'.format(self.model._meta.name))

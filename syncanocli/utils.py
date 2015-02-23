@@ -3,10 +3,27 @@ import sys
 import logging
 
 import click
+from click import types
 
 from syncanocli import __version__
 from syncanocli import logger
 from . import settings
+
+
+OPTIONS_MAPPING = {
+    'StringField': types.StringParamType,
+    'IntegerField': types.IntParamType,
+    'FloatField': types.FloatParamType,
+    'BooleanField': types.BoolParamType,
+    'SlugField': types.StringParamType,
+    'EmailField': types.StringParamType,
+    'ChoiceField': types.Choice,
+    'DateField': types.StringParamType,
+    'DateTimeField': types.StringParamType,
+    'Field': types.StringParamType,
+    'HyperlinkedField': types.StringParamType,
+    'ModelField': types.StringParamType,
+}
 
 
 def print_version(ctx, param, value):

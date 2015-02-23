@@ -3,6 +3,8 @@ import click
 from syncano.connection import Connection
 from syncano.exceptions import SyncanoRequestError
 
+from syncanocli.decorators import login_required
+
 
 @click.group('auth')
 def cli(*args, **kwargs):
@@ -25,7 +27,7 @@ def login(ctx, email, password):
     ctx.config.credentials.email = email
     ctx.config.credentials.api_key = api_key
     ctx.config.save()
-    ctx.echo.success('Done!')
+    ctx.echo.success('Authentication successful!')
 
 
 @cli.command()
@@ -39,21 +41,17 @@ def logout(ctx):
 
 @cli.command()
 @click.pass_obj
+@login_required
 def api_key(ctx):
     '''Display your current api key'''
-    if ctx.is_authenticated():
-        ctx.echo(ctx.config.credentials.api_key)
-    else:
-        ctx.echo.error('You are not authenticated.')
+    ctx.echo(ctx.config.credentials.api_key)
 
 
 @cli.command()
 @click.pass_obj
+@login_required
 def whoami(ctx):
     '''Display your Syncano email address'''
-    if ctx.is_authenticated():
-        message = 'You are logged in as {0} with API key: {1}'
-        credentials = ctx.config.credentials
-        ctx.echo(message.format(credentials.email, credentials.api_key))
-    else:
-        ctx.echo.error('You are not authenticated.')
+    message = 'You are logged in as {0} with API key: {1}'
+    credentials = ctx.config.credentials
+    ctx.echo(message.format(credentials.email, credentials.api_key))

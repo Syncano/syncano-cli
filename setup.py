@@ -27,6 +27,7 @@ setup(
     install_requires=[
         'six==1.9.0',
         'click==3.3',
+        'texttable==0.8.2',
     ],
     tests_require=[
         'mock>=1.0.1',
