@@ -31,3 +31,8 @@ CONFIG_DEFAULT_PATH = os.path.join(
     click.get_app_dir(**CONFIG_DIR_SETTINGS),
     CONFIG_FILENAME
 )
+
+ALIASES = {
+    'login': 'auth.login',
+    'logout': 'auth.logout',
+}

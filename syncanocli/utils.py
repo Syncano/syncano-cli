@@ -23,6 +23,8 @@ OPTIONS_MAPPING = {
     'Field': types.StringParamType,
     'HyperlinkedField': types.StringParamType,
     'ModelField': types.StringParamType,
+    'JSONField': types.StringParamType,
+    'SchemaField': types.StringParamType,
 }
 
 
@@ -51,17 +53,23 @@ class AutodiscoverMultiCommand(click.MultiCommand):
         for filename in os.listdir(settings.COMMANDS_FOLDER):
             if filename.endswith('.py') and not filename.startswith('_'):
                 rv.append(filename[:-3])
+
+        rv.extend(settings.ALIASES.keys())
         rv.sort()
         return rv
 
     def get_command(self, ctx, name):
+        command = 'cli'
+
+        if name in settings.ALIASES:
+            alias = settings.ALIASES[name]
+            name, command = alias.rsplit('.', 1)
+        
         try:
-            if sys.version_info[0] == 2:
-                name = name.encode('ascii', 'replace')
             module_name = 'syncanocli.commands.{0}'.format(name)
-            module = __import__(module_name, None, None, ['cli'])
+            module = __import__(module_name, None, None, [command])
         except ImportError:
             return
 
-        logger.debug('Command loaded: {0}'.format(name))
-        return module.cli
+        logger.debug('Command loaded: {0}'.format(module))
+        return getattr(module, command)

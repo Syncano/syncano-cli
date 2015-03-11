@@ -32,6 +32,7 @@ def login(ctx, email, password):
 
 @cli.command()
 @click.pass_obj
+@login_required
 def logout(ctx):
     '''Clear local authentication credentials'''
     del ctx.config.credentials
