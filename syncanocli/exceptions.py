@@ -40,4 +40,4 @@ class NotAuthenticatedError(SyncanoCliException):
     This typically aborts any further handling.
     """
     message = 'You are not authenticated.'
-    hint = 'Try to login via "syncano auth login" command.'
+    hint = 'Try to login via "syncano login" command.'
