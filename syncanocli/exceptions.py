@@ -5,8 +5,7 @@ from click.utils import echo
 
 class SyncanoCliException(ClickException):
     """
-    An internal exception that signals a authentication error.
-    This typically aborts any further handling.
+    An exception that Click can handle and show to the user.
 
     :param message: the error message to display.
     :param hint: the hint message to display.
@@ -34,7 +33,7 @@ class SyncanoCliException(ClickException):
 
 class NotAuthenticatedError(SyncanoCliException):
     """
-    An internal exception that signals a authentication error.
+    An internal exception that signals an authentication error.
     This typically aborts any further handling.
     """
     message = 'You are not authenticated.'
