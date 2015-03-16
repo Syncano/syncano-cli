@@ -4,6 +4,7 @@ from functools import wraps
 
 import click
 
+from .exceptions import NotAuthenticatedError
 from .utils import OPTIONS_MAPPING
 
 
@@ -137,9 +138,7 @@ def login_required(f):
             context = context.obj
 
         if not context.is_authenticated():
-            context.echo.error('You are not authenticated.')
-            context.echo('Try to login via "syncano auth login" command.')
-            return
+            raise NotAuthenticatedError()
         return f(ctx, *args, **kwargs)
     return wrapper
 
