@@ -19,6 +19,9 @@ class SyncanoCliException(ClickException):
         self.hint = hint or self.hint
         super(SyncanoCliException, self).__init__(self.message)
 
+    def format_message(self):
+        return style(self.message, fg='red', bold=True)
+
     def format_hint(self):
         return self.hint
 
@@ -26,7 +29,7 @@ class SyncanoCliException(ClickException):
         if file is None:
             file = get_text_stderr()
 
-        echo(style(self.format_message(), fg='red', bold=True), file=file)
+        echo(self.format_message(), file=file)
         if self.hint is not None:
             echo(self.format_hint(), file=file)
 
