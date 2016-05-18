@@ -1,41 +1,22 @@
-from setuptools import setup, find_packages
-from syncanocli import __version__
+import os
+from setuptools import find_packages, setup
 
-
-def readme():
-    with open('README.md') as f:
-        return f.read()
+README = open(os.path.join(os.path.dirname(__file__), 'README.md')).read()
 
 setup(
-    name='syncanocli',
-    version=__version__,
-    description='CLI for Syncano',
-    long_description=readme(),
-    author='Daniel Kopka',
-    author_email='daniel.kopka@syncano.com',
-    url='http://syncano.com',
+    name='syncano-cli',
+    version='0.3',
+    description='Syncano command line utilities',
+    long_description=README,
+    author='Marcin Swiderski',
+    author_email='marcin.swiderski@syncano.com',
+    url='https://github.com/Syncano/syncano-cli',
     packages=find_packages(),
+    license='MIT',
+    install_requires=['syncano>=5.0', 'PyYaml>=3.11'],
     test_suite='tests',
-    zip_safe=False,
-    classifiers=[
-        'Development Status :: 4 - Beta',
-        'License :: OSI Approved :: MIT License',
-        'Programming Language :: Python',
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3.3',
-    ],
-    install_requires=[
-        'six==1.9.0',
-        'click==3.3',
-        'texttable==0.8.2',
-    ],
-    tests_require=[
-        'mock>=1.0.1',
-        'coverage>=3.7.1',
-    ],
-    entry_points={
-        'console_scripts': [
-            'syncano = syncanocli.cli:cli'
-        ]
-    }
+    entry_points="""
+        [console_scripts]
+        syncano=syncano_cli.main:main
+    """
 )

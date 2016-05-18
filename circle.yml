@@ -1,0 +1,23 @@
+machine:
+  python:
+    version: 2.7.5
+
+dependencies:
+  pre:
+    - pip install -U setuptools
+    - pip install -U flake8
+    - pip install -U isort
+
+test:
+  override:
+    - python setup.py flake8
+    - isort --recursive --check-only .
+    - python setup.py test
+
+deployment:
+  production:
+    branch: master
+    commands:
+      - git config --global user.email "ci@circleci.com"
+      - git config --global user.name "CircleCI"
+      - ./release.sh
