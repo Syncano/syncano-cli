@@ -17,6 +17,7 @@ ALLOWED_RUNTIMES = {
     'nodejs_library_v1.0': '.js',
     'php': '.php',
     'python': '.py',
+    'python3': '.py',
     'python_library_v4.2': '.py',
     'python_library_v5.0': '.py',
     'ruby': '.rb',
