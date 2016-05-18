@@ -1,12 +1,11 @@
 import os
 from setuptools import find_packages, setup
 
-base_dir = os.path.abspath(os.path.dirname(__file__))
-README = open(os.path.join(base_dir, 'README.md')).read()
+README = open(os.path.join(os.path.dirname(__file__), 'README.md')).read()
 
 setup(
     name='syncano-cli',
-    version='0.1',
+    version='0.3',
     description='Syncano command line utilities',
     long_description=README,
     author='Marcin Swiderski',
