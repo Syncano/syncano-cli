@@ -3,18 +3,13 @@ from __future__ import print_function, unicode_literals
 
 import re
 
-from syncano.models.classes import Class
-
-from . import LOG, mute_log
+from . import LOG
 
 ALLOWED_TYPES = {"array", "boolean", "datetime", "file", "float", "geopoint",
                  "integer", "object", "reference", "relation", "string",
                  "text"}
 
 ALLOWED_PERMISIONS = ('none', 'read', 'create_objects')
-
-# FIXME: We don't require it on backend so, we should not require it in library
-Class._meta.get_field('schema').required = False
 
 
 def field_schema_to_str(schema):
@@ -120,8 +115,7 @@ def push_classes(instance, class_dict):
             schema.append(field)
         klass.schema = schema
 
-        with mute_log():
-            klass.save()
+        klass.save()
         LOG.debug('Class {0} pushed.'.format(name))
 
 
