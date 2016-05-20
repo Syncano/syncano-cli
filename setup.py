@@ -9,12 +9,12 @@ setup(
     version='0.3',
     description='Syncano command line utilities',
     long_description=README,
-    author='Marcin Swiderski',
-    author_email='marcin.swiderski@syncano.com',
+    author='Marcin Swiderski, Sebastian Opalczynski',
+    author_email='marcin.swiderski@syncano.com, sebastian.opalczynski@syncano.com',
     url='https://github.com/Syncano/syncano-cli',
     packages=find_packages(),
     license='MIT',
-    install_requires=['syncano>=5.0', 'PyYaml>=3.11'],
+    install_requires=['syncano>=5.1', 'PyYaml>=3.11'],
     test_suite='tests',
     entry_points="""
         [console_scripts]
