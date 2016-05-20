@@ -1,7 +1,7 @@
 import os
 from setuptools import find_packages, setup
 
-README = open(os.path.join(os.path.dirname(__file__), 'README.md')).read()
+README = open(os.path.join(os.path.dirname(__file__), 'README.rst')).read()
 
 setup(
     name='syncano-cli',
@@ -13,10 +13,10 @@ setup(
     url='https://github.com/Syncano/syncano-cli',
     packages=find_packages(),
     license='MIT',
-    install_requires=['syncano>=5.0', 'PyYaml>=3.11'],
+    install_requires=['syncano>=5.0', 'PyYaml>=3.11', 'six>=1.10.0'],
     test_suite='tests',
     entry_points="""
         [console_scripts]
-        syncano=syncano_cli.main:main
+        syncanocli=syncano_cli.main:main
     """
 )

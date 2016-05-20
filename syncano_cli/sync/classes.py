@@ -5,7 +5,7 @@ import re
 
 from syncano.models.classes import Class
 
-from . import LOG, mute_log
+from syncano_cli import LOG, mute_log
 
 ALLOWED_TYPES = {"array", "boolean", "datetime", "file", "float", "geopoint",
                  "integer", "object", "reference", "relation", "string",

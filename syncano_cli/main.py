@@ -2,50 +2,65 @@
 from __future__ import print_function, unicode_literals
 
 import argparse
-import logging
 import os
+import six
 import sys
-from ConfigParser import ConfigParser
+
+sys.path.append('/home/sopalczy/projects/syncano/syncano-cli/')
+
+from ConfigParser import ConfigParser, NoOptionError
+from collections import defaultdict
 from getpass import getpass
 
 import syncano
 from syncano.exceptions import SyncanoException
 
-from .project import Project
+from syncano_cli import LOG
+from syncano_cli.parse_to_syncano.config import config
+from syncano_cli.parse_to_syncano.migrations.transfer import SyncanoTransfer
+from syncano_cli.parse_to_syncano.moses import check_configuration, print_configuration, force_configuration_overwrite
+from syncano_cli.sync.project import Project
 
 ACCOUNT_KEY = ''
 
 ACCOUNT_CONFIG = ConfigParser()
 
-COMMANDS = {}
-
-LOG = logging.getLogger()
-CONSOLE_HANDLER = logging.StreamHandler(sys.stderr)
+COMMANDS = defaultdict(dict)
+HIGH_LVL_COMMANDS = {}
 
 
-def command(func):
-    COMMANDS[func.func_name] = func
-    return func
+class Command(object):
+
+    def __init__(self, namespace):
+        self.namespace = namespace
+
+    def __call__(self, func):
+        COMMANDS[self.namespace][func.func_name] = func
+        return func
 
 
-def argument(*args, **kwargs):
-    def wrapper(f):
-        if not hasattr(f, 'arguments'):
-            f.arguments = []
-        f.arguments.append((args, kwargs))
-        return f
-    return wrapper
+class HighLvlCommand(object):
+
+    def __call__(self, func):
+        HIGH_LVL_COMMANDS[func.func_name] = func
+        return func
 
 
-def setup_logging():
-    root = logging.getLogger()
-    root.addHandler(CONSOLE_HANDLER)
-    root.setLevel(logging.DEBUG)
-    # disable requests logging
-    logging.getLogger("requests").propagate = False
+class Argument(object):
+    def __init__(self, *args, **kwargs):
+        self.args = args
+        self.kwargs = kwargs
+
+    def __call__(self, func):
+        def wrapper(f):
+            if not hasattr(f, 'arguments'):
+                f.arguments = []
+            f.arguments.append((self.args, self.kwargs))
+            return f
+        return wrapper(func)
 
 
-@command
+@HighLvlCommand()
 def login(args):
     """
     Log in to syncano using email and password and store ACCOUNT_KEY
@@ -67,14 +82,14 @@ def login(args):
         print(error)
 
 
-@command
-@argument('-s', '--script', action='append', dest='scripts',
+@Command('sync')
+@Argument('-s', '--script', action='append', dest='scripts',
           help="Pull only this script from syncano")
-@argument('-c', '--class', action='append', dest='classes',
+@Argument('-c', '--class', action='append', dest='classes',
           help="Pull only this class from syncano")
-@argument('-a', '--all', action='store_true',
+@Argument('-a', '--all', action='store_true',
           help="Force push all configuration")
-@argument('instance', help="Destination instance name")
+@Argument('instance', help="Destination instance name")
 def push(context):
     """
     Push configuration changes to syncano.
@@ -85,21 +100,21 @@ def push(context):
                                      scripts=context.scripts, all=context.all)
 
 
-@argument('instance', help="Source instance name")
-@argument('script', help="script label or script name")
+@Argument('instance', help="Source instance name")
+@Argument('script', help="script label or script name")
 def run(args):
     """Execute script on syncano."""
     pass
 
 
-@command
-@argument('-s', '--script', action='append', dest='scripts',
+@Command('sync')
+@Argument('-s', '--script', action='append', dest='scripts',
           help="Pull only this script from syncano")
-@argument('-c', '--class', action='append', dest='classes',
+@Argument('-c', '--class', action='append', dest='classes',
           help="Pull only this class from syncano")
-@argument('-a', '--all', action='store_true',
+@Argument('-a', '--all', action='store_true',
           help="Pull all classes/scripts from syncano")
-@argument('instance', help="Source instance name")
+@Argument('instance', help="Source instance name")
 def pull(context):
     """
     Pull configuration from syncano and store it in current directory.
@@ -116,8 +131,44 @@ def pull(context):
     context.project.write(context.file)
 
 
+@Command('import')
+def parse(context):
+    """
+    Synchronize the parse data object with syncano data objects;
+    """
+    check_configuration(silent=True)
+    application_id = config.get('P2S', 'PARSE_APPLICATION_ID')
+    instance_name = config.get('P2S', 'SYNCANO_INSTANCE_NAME')
+    confirmation = raw_input('Are you sure you want to copy your data from PARSE application ({application_id})'
+                             'to the syncano isntance ({instance_name})? Y/N [Y]: '.format(
+                                 application_id=application_id,
+                                 instance_name=instance_name)
+                             ) or 'Y'
+
+    if confirmation not in ['Y', 'YES', 'y', 'yes']:
+        LOG.info('Transfer aborted.')
+        return
+
+    transfer = SyncanoTransfer()
+    transfer.through_the_red_sea()
+
+
+@Command('import')
+@Argument('-c', '--current', action='store_true', help="Show current configuration.")
+@Argument('-f', '--force', action='store_true', help="Froce to overwrite previous config.")
+def configure(context):
+    """
+    Configure the data needed for connection to the parse and syncano;
+    """
+    if context.current:
+        print_configuration()
+    elif context.force:
+        force_configuration_overwrite()
+    else:
+        check_configuration()
+
+
 def main():
-    setup_logging()
     ACCOUNT_CONFIG_PATH = os.path.join(os.path.expanduser('~'), '.syncano')
 
     parser = argparse.ArgumentParser(
@@ -131,22 +182,38 @@ def main():
                         help='override ACCOUNT_KEY used for authentication.')
 
     subparsers = parser.add_subparsers(
-        title='subcommands',
-        description='valid subcommands'
+        title='commands',
+        description='valid commands'
     )
 
-    for fname, func in COMMANDS.iteritems():
-        subparser = subparsers.add_parser(fname, description=func.__doc__)
-        for args, kwargs in getattr(func, 'arguments', []):
-            subparser.add_argument(*args, **kwargs)
-        subparser.set_defaults(func=func)
+    for command_name, command in six.iteritems(HIGH_LVL_COMMANDS):
+        high_lvl_subparser = subparsers.add_parser(command_name, description=command.__doc__)
+        for args, kwargs in getattr(command, 'arguments', []):
+            high_lvl_subparser.add_argument(*args, **kwargs)
+        high_lvl_subparser.set_defaults(func=command)
+
+    for sub_name, functions in six.iteritems(COMMANDS):
+        first_lvl_commands = subparsers.add_parser(sub_name)
+        first_lvl_commands_subparser = first_lvl_commands.add_subparsers(
+            title='subcommand',
+            description='valid subcommands'
+        )
+        for fname, func in six.iteritems(functions):
+            subparser = first_lvl_commands_subparser.add_parser(fname, description=func.__doc__)
+            for args, kwargs in getattr(func, 'arguments', []):
+                subparser.add_argument(*args, **kwargs)
+            subparser.set_defaults(func=func)
+
     namespace = parser.parse_args()
 
     namespace.project = Project.from_config(namespace.file)
 
     read = ACCOUNT_CONFIG.read(namespace.config)
     if read and not namespace.key:
-        namespace.key = ACCOUNT_CONFIG.get('DEFAULT', 'key')
+        try:
+            namespace.key = ACCOUNT_CONFIG.get('DEFAULT', 'key')
+        except NoOptionError:
+            LOG.error('Do a login first.')
 
     try:
         namespace.func(namespace)

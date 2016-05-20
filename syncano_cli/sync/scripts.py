@@ -8,7 +8,7 @@ from collections import defaultdict
 from syncano.models import fields
 from syncano.models.incentives import Script
 
-from . import LOG, mute_log
+from syncano_cli import LOG, mute_log
 
 ALLOWED_RUNTIMES = {
     'golang': '.go',
