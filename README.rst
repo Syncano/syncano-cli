@@ -15,7 +15,7 @@ First you need to login into your account
 
 ::
 
-    syncanocli login
+    syncano login
 
 It will ask you for your email and password and store account key in
 ${HOME}/.syncano file. You can also override account key with --key option.
@@ -27,7 +27,7 @@ In order to pull your instance configuration you can execute
 
 ::
 
-    syncanocli sync pull <instance_name>
+    syncano sync pull <instance_name>
 
 This will fetch all Classes and Scripts into current working directory, and
 store configuration in syncano.yml file. If you want to pull only selected
@@ -35,7 +35,7 @@ classes/scripts you can add -c/--class or -s/--script option eg.
 
 ::
 
-    syncanocli sync pull -c Class1 -c Class2 -s script_label_1 -s "script label 2" my_instance
+    syncano sync pull -c Class1 -c Class2 -s script_label_1 -s "script label 2" my_instance
 
 Scripts source code is stored in scripts subdirectory, and names are based on
 script labels. Keep in mind that script labels in syncano are not unique, and
@@ -54,7 +54,7 @@ can push the changes to syncano using
 
 ::
 
-    syncanocli sync push <instance_name>
+    syncano sync push <instance_name>
 
 It will push only changes newer then last synchronization time. This time is
 recorded using .sync file last modification time. If syncano.yml has changed
@@ -70,7 +70,6 @@ Syncano Parse migration tool
 
 This tool will help you to move your data from Parse to Syncano.
 
-
 Usage
 -----
 
@@ -84,17 +83,17 @@ Configuration
 
 ::
 
-    syncanocli import configure
+    syncano import configure
 
 Will run the configuration that will ask you for the following variables:
 
 * PARSE_MASTER_KEY: the master key of your PARSE account;
 * PARSE_APPLICATION_ID: the application ID of the application that you want to transfer;
-* SYNCANO_ADMIN_API_KEY: the Syncano admin API key;
+* SYNCANO_ADMIN_API_KEY: Syncano Account Key;
 * SYNCANO_INSTANCE_NAME: the Syncano instance name to which the transfer will be made;
 * SYNCANO_APIROOT: will not show as it has a default equal to: https://api.syncano.io/
 
-`syncanocli import configure` command will take following parameters:
+`syncano import configure` command will take following parameters:
 
 * -c (--current) which will display the current configuration;
 * -f (--force) which allow to override the previously set configuration; 
@@ -107,7 +106,7 @@ Run transfer
  
 ::
 
-    syncanocli import parse
+    syncano import parse
 
 This command will run the synchronization process between Parse and Syncano. Sit comfortably in your chair and read
 the output.
@@ -116,8 +115,8 @@ Tips & Troubleshooting
 ----------------------
 
 1. This tool currently does not support checking if some object is already present in the Syncano instance,
-   so if sync is run twice the end results is that data is doubled. To avoid such cases,
-   simply remove your instance in the Syncano dashboard;
+   so if sync is run twice the end results is that data is duplicated. To avoid such cases,
+   simply remove your instance in using Syncano dashboard;
 
 2. The process can be quite slow - it's because of the throttling on both sides: Parse and Syncano on free accounts 
    (which is the bottom boundary for scripts);

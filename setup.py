@@ -18,6 +18,6 @@ setup(
     test_suite='tests',
     entry_points="""
         [console_scripts]
-        syncanocli=syncano_cli.main:main
+        syncano=syncano_cli.main:main
     """
 )
