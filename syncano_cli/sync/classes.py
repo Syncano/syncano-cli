@@ -4,7 +4,6 @@ from __future__ import print_function, unicode_literals
 import re
 
 from syncano.models.classes import Class
-
 from syncano_cli import LOG, mute_log
 
 ALLOWED_TYPES = {"array", "boolean", "datetime", "file", "float", "geopoint",

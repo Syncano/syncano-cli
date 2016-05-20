@@ -3,22 +3,17 @@ from __future__ import print_function, unicode_literals
 
 import argparse
 import os
-import six
-import sys
-
-sys.path.append('/home/sopalczy/projects/syncano/syncano-cli/')
-
-from ConfigParser import ConfigParser, NoOptionError
 from collections import defaultdict
+from ConfigParser import ConfigParser, NoOptionError
 from getpass import getpass
 
+import six
 import syncano
 from syncano.exceptions import SyncanoException
-
 from syncano_cli import LOG
 from syncano_cli.parse_to_syncano.config import config
 from syncano_cli.parse_to_syncano.migrations.transfer import SyncanoTransfer
-from syncano_cli.parse_to_syncano.moses import check_configuration, print_configuration, force_configuration_overwrite
+from syncano_cli.parse_to_syncano.moses import check_configuration, force_configuration_overwrite, print_configuration
 from syncano_cli.sync.project import Project
 
 ACCOUNT_KEY = ''

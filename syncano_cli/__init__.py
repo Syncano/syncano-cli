@@ -11,8 +11,9 @@ handler.setFormatter(formatter)
 LOG.addHandler(handler)
 LOG.setLevel(logging.INFO)
 
+
 @contextmanager
-def mute_log(logger=None):  ## TODO: probably remove this;
+def mute_log(logger=None):  # TODO: probably remove this;
     logger = logger or SYNCANO_LOG
     level = logger.getEffectiveLevel()
     logger.setLevel(logging.INFO)
