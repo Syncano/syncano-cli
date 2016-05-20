@@ -34,7 +34,6 @@ class SyncanoConnectionMixin(object):
 
         syncano_connection = syncano.connect(
             api_key=config.get('P2S', 'SYNCANO_ADMIN_API_KEY'),
-            host=config.get('P2S', 'SYNCANO_APIROOT'),
             instance_name=config.get('P2S', 'SYNCANO_INSTANCE_NAME'),
         )
 

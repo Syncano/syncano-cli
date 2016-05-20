@@ -91,7 +91,6 @@ Will run the configuration that will ask you for the following variables:
 * PARSE_APPLICATION_ID: the application ID of the application that you want to transfer;
 * SYNCANO_ADMIN_API_KEY: Syncano Account Key;
 * SYNCANO_INSTANCE_NAME: the Syncano instance name to which the transfer will be made;
-* SYNCANO_APIROOT: will not show as it has a default equal to: https://api.syncano.io/
 
 `syncano import configure` command will take following parameters:
 

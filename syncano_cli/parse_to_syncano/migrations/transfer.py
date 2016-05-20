@@ -65,35 +65,25 @@ class SyncanoTransfer(ParseConnectionMixin, SyncanoConnectionMixin, PaginationMi
     def transfer_objects(self, instance):
         for class_to_process in self.data.sort_classes():
             limit, skip = self.get_limit_and_skip()
-
             processed = 0
+
             while True:
                 objects = self.parse.get_class_objects(class_to_process.parse_name, limit=limit, skip=skip)
                 if not objects['results']:
                     break
                 limit += PARSE_PAGINATION_LIMIT
                 skip += PARSE_PAGINATION_LIMIT
-                objects_to_add = []
-                parse_ids = []
+                objects_to_add, parse_ids = self._clear_data()
+
                 for data_object in objects['results']:
                     s_class = self.get_class(instance=instance, class_name=class_to_process.syncano_name)
                     syncano_object, files = ClassProcessor.process_object(data_object, self.data.reference_map)
-                    if files:
-                        self.file_descriptors[data_object['objectId']] = (files,
-                                                                          class_to_process.syncano_name,
-                                                                          class_to_process.parse_name)
-                    if len(objects_to_add) == 10:
-                        processed += 10
-                        created_objects = s_class.objects.batch(
-                            *objects_to_add
-                        )
-                        for parse_id, syncano_id in zip(parse_ids, [o.id for o in created_objects]):
-                            self.data.reference_map[class_to_process.parse_name][parse_id] = syncano_id
 
-                        objects_to_add = []
-                        parse_ids = []
-                        time.sleep(1)  # avoid throttling;
-                        LOG.info('Processed {} objects of class {}'.format(processed, class_to_process.syncano_name))
+                    self._handle_files(files, data_object, class_to_process)
+
+                    if len(objects_to_add) == 10:
+                        processed, objects_to_add, parse_ids = self._add_objects(processed, objects_to_add, parse_ids,
+                                                                                 s_class, class_to_process)
 
                     batched_syncano_object = s_class.objects.as_batch().create(**syncano_object)
                     objects_to_add.append(batched_syncano_object)
@@ -101,13 +91,7 @@ class SyncanoTransfer(ParseConnectionMixin, SyncanoConnectionMixin, PaginationMi
 
                 # if objects to add is less than < 10 elements
                 if objects_to_add:
-                    created_objects = s_class.objects.batch(
-                        *objects_to_add
-                    )
-                    for parse_id, syncano_id in zip(parse_ids, [o.id for o in created_objects]):
-                        self.data.reference_map[class_to_process.parse_name][parse_id] = syncano_id
-                    LOG.info('Processed {} objects of class: {}'.format(processed + len(objects_to_add),
-                                                                        class_to_process.syncano_name))
+                    self._add_last_objects(s_class, objects_to_add, parse_ids, class_to_process, processed)
 
     def transfer_files(self):
         for parse_id, (files, syncano_class_name, parse_class_name) in self.file_descriptors.iteritems():
@@ -132,3 +116,57 @@ class SyncanoTransfer(ParseConnectionMixin, SyncanoConnectionMixin, PaginationMi
         self.transfer_files()
         self.process_relations(instance)
         LOG.info('Transfer completed')
+
+    def _handle_files(self, files, data_object, class_to_process):
+        if files:
+            self.file_descriptors[data_object['objectId']] = (
+                files,
+                class_to_process.syncano_name,
+                class_to_process.parse_name
+            )
+
+    def _add_last_objects(self, s_class, objects_to_add, parse_ids, class_to_process, processed):
+        created_objects = s_class.objects.batch(
+            *objects_to_add
+        )
+
+        self._update_reference_map(
+            class_to_process=class_to_process,
+            parse_ids=parse_ids,
+            created_objects=created_objects
+        )
+        self._log_processing(processed + len(objects_to_add), class_to_process.syncano_name)
+
+    def _add_objects(self, processed, objects_to_add, parse_ids, s_class, class_to_process):
+        processed += 10
+        created_objects = s_class.objects.batch(
+            *objects_to_add
+        )
+
+        self._update_reference_map(
+            class_to_process=class_to_process,
+            parse_ids=parse_ids,
+            created_objects=created_objects
+        )
+
+        objects_to_add, parse_ids = self._clear_data_wait_and_log(processed, class_to_process)
+
+        return processed, objects_to_add, parse_ids
+
+    def _update_reference_map(self, class_to_process, parse_ids, created_objects):
+        for parse_id, syncano_id in zip(parse_ids, [o.id for o in created_objects]):
+            self.data.reference_map[class_to_process.parse_name][parse_id] = syncano_id
+
+    @classmethod
+    def _clear_data(cls):
+        return [], []
+
+    @classmethod
+    def _clear_data_wait_and_log(cls, processed, class_to_process):
+        time.sleep(1)
+        cls._log_processing(processed, class_to_process.syncano_name)
+        return cls._clear_data()
+
+    @classmethod
+    def _log_processing(cls, num, class_name):
+        LOG.info('Processed {} objects of class {}'.format(num, class_name))

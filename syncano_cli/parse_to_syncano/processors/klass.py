@@ -36,6 +36,8 @@ class ClassProcessor(object):
         'Relation': 'relation',
     }
 
+    original_datetime_label = 'original_{}'
+
     @classmethod
     def handle_value(cls, value):
         return value
@@ -46,13 +48,14 @@ class ClassProcessor(object):
 
     @classmethod
     def get_fields(cls, parse_fields):
-        FIELDS_TO_SKIP = ['updatedAt', 'createdAt', 'ACL', 'self']  # TODO: handle ACL later on
+        fields_to_skip = ['ACL', 'self']  # TODO: handle ACL later on
 
         fields = []
 
         for field in parse_fields:
-            if field in FIELDS_TO_SKIP:
+            if field in fields_to_skip:
                 continue
+
             fields.append(field.lower())
         return fields
 
@@ -105,7 +108,10 @@ class ClassProcessor(object):
     @classmethod
     def _process_other_fields(cls, key, value, processed_object, syncano_fields):
         if key.lower() in syncano_fields:
-            processed_object[key.lower()] = value
+            if key in ['createdAt', 'updatedAt']:
+                processed_object[cls.original_datetime_label.format(key.lower())] = value
+            else:
+                processed_object[key.lower()] = value
 
     @classmethod
     def create_schema(cls, parse_schema):
@@ -115,12 +121,12 @@ class ClassProcessor(object):
         :return: tha class name and the schema used in Syncano;
         """
 
-        FIELDS_TO_SKIP = ['updatedAt', 'createdAt', 'ACL']  # TODO: handle ACL later on
+        fields_to_skip = ['ACL']  # TODO: handle ACL later on
         class_name = cls.normalize_class_name(parse_schema['className'])
         schema = []
         relations = []
         for field, field_meta in parse_schema['fields'].iteritems():
-            if field not in FIELDS_TO_SKIP:
+            if field not in fields_to_skip:
                 type = field_meta['type']
                 new_type = ClassProcessor.map[type]
 
@@ -142,6 +148,15 @@ class ClassProcessor(object):
                         'name': field.lower(),
                         'type': new_type,
                         'filter_index': True
+                    })
+                    continue
+
+                if field in ['updatedAt', 'createdAt']:
+                    schema.append({
+                        'name': cls.original_datetime_label.format(field.lower()),
+                        'type': new_type,
+                        'filter_index': True,
+                        'order_index': True,
                     })
                     continue
 
