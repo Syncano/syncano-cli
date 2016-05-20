@@ -135,7 +135,7 @@ def parse(context):
     application_id = config.get('P2S', 'PARSE_APPLICATION_ID')
     instance_name = config.get('P2S', 'SYNCANO_INSTANCE_NAME')
     confirmation = raw_input('Are you sure you want to copy your data from PARSE application ({application_id})'
-                             'to the syncano isntance ({instance_name})? Y/N [Y]: '.format(
+                             ' to the syncano isntance ({instance_name})? Y/N [Y]: '.format(
                                  application_id=application_id,
                                  instance_name=instance_name)
                              ) or 'Y'

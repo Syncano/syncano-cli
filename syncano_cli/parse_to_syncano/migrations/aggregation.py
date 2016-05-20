@@ -29,7 +29,7 @@ class DataAggregated(object):
         for _class in self.classes:
             has_relation = False
             for field in _class.syncano_schema:
-                if field['type'] == 'reference':
+                if field['type'] == 'reference' or field['type'] == 'relation':
                     has_relation = True
                     break
             if not has_relation:
