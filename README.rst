@@ -14,6 +14,7 @@ Usage
 First you need to login into your account
 
 ::
+
     syncanocli login
 
 It will ask you for your email and password and store account key in
@@ -25,6 +26,7 @@ Pulling your instance classes and scripts
 In order to pull your instance configuration you can execute
 
 ::
+
     syncanocli sync pull <instance_name>
 
 This will fetch all Classes and Scripts into current working directory, and
@@ -51,6 +53,7 @@ When you have made some changes to syncano.yml or some script source code you
 can push the changes to syncano using
 
 ::
+
     syncanocli sync push <instance_name>
 
 It will push only changes newer then last synchronization time. This time is
