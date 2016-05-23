@@ -3,7 +3,7 @@ from __future__ import print_function, unicode_literals
 
 import re
 
-from . import LOG
+from syncano_cli import LOG
 
 ALLOWED_TYPES = {"array", "boolean", "datetime", "file", "float", "geopoint",
                  "integer", "object", "reference", "relation", "string",

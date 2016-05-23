@@ -6,7 +6,7 @@ import re
 from collections import defaultdict
 from syncano.exceptions import SyncanoRequestError
 
-from . import LOG
+from syncano_cli import LOG
 
 ALLOWED_RUNTIMES = {
     'golang': '.go',
