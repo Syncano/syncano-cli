@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 # a relation helper
-from parse_to_syncano.config import PARSE_PAGINATION_LIMIT
-from parse_to_syncano.migrations.aggregation import data_aggregate
-from parse_to_syncano.migrations.mixins import PaginationMixin, ParseConnectionMixin
-from parse_to_syncano.processors.klass import ClassProcessor
+from syncano_cli.parse_to_syncano.config import PARSE_PAGINATION_LIMIT
+from syncano_cli.parse_to_syncano.migrations.aggregation import data_aggregate
+from syncano_cli.parse_to_syncano.migrations.mixins import PaginationMixin, ParseConnectionMixin
+from syncano_cli.parse_to_syncano.processors.klass import ClassProcessor
 from syncano.models import Object
 from syncano_cli import LOG
 
