@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 import time
 
+from syncano.models import Object
+from syncano_cli import LOG
 from syncano_cli.parse_to_syncano.config import PARSE_PAGINATION_LIMIT, config
 from syncano_cli.parse_to_syncano.migrations.aggregation import data_aggregate
 from syncano_cli.parse_to_syncano.migrations.mixins import PaginationMixin, ParseConnectionMixin, SyncanoConnectionMixin
 from syncano_cli.parse_to_syncano.migrations.relation import RelationProcessor
 from syncano_cli.parse_to_syncano.processors.klass import ClassProcessor
-from syncano.models import Object
-from syncano_cli import LOG
 
 
 class SyncanoTransfer(ParseConnectionMixin, SyncanoConnectionMixin, PaginationMixin):
