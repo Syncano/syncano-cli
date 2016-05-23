@@ -4,8 +4,8 @@ from __future__ import print_function, unicode_literals
 import os
 import re
 from collections import defaultdict
-from syncano.exceptions import SyncanoRequestError
 
+from syncano.exceptions import SyncanoRequestError
 from syncano_cli import LOG
 
 ALLOWED_RUNTIMES = {
