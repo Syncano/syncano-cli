@@ -99,15 +99,15 @@ def pull_classes(instance, include, update_dict=None):
 
 
 def push_classes(instance, class_dict):
-    LOG.debug('Pushing classes.')
+    LOG.info('Pushing classes.')
     for name, config in class_dict.iteritems():
-        LOG.debug('Pushing class {0}'.format(name))
+        LOG.info('Pushing class {0}'.format(name))
         try:
             klass = instance.classes.get(name=name)
-            LOG.debug('Found class {0}'.format(name))
+            LOG.info('Found class {0}'.format(name))
         except instance.classes.model.DoesNotExist:
             klass = instance.clasess.model(name=name)
-            LOG.debug('Class {0} not found. Creating new one'.format(name))
+            LOG.info('Class {0} not found. Creating new one'.format(name))
         schema = []
         for name, field_config in config['fields'].iteritems():
             field = {'name': name}
@@ -116,7 +116,7 @@ def push_classes(instance, class_dict):
         klass.schema = schema
 
         klass.save()
-        LOG.debug('Class {0} pushed.'.format(name))
+        LOG.info('Class {0} pushed.'.format(name))
 
 
 def validate_class(class_dict):

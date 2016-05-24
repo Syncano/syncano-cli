@@ -1,13 +1,18 @@
 # -*- coding: utf-8 -*-
+import time
+
 import six
 import syncano
+from syncano_cli import LOG
 from syncano_cli.commands_base import CommandContainer, argument
+from watchdog.events import FileSystemEventHandler
+from watchdog.observers import Observer
 
-COMMAND_NAMESPACE = 'sync'
+SYNC_NAMESPACE = 'sync'
 
 
 class Push(six.with_metaclass(CommandContainer)):
-    namespace = COMMAND_NAMESPACE
+    namespace = SYNC_NAMESPACE
 
     @classmethod
     @argument('-s', '--script', action='append', dest='scripts',
@@ -28,7 +33,7 @@ class Push(six.with_metaclass(CommandContainer)):
 
 
 class Pull(six.with_metaclass(CommandContainer)):
-    namespace = COMMAND_NAMESPACE
+    namespace = SYNC_NAMESPACE
 
     @classmethod
     @argument('-s', '--script', action='append', dest='scripts',
@@ -52,3 +57,37 @@ class Pull(six.with_metaclass(CommandContainer)):
         context.project.update_from_instance(instance, context.all,
                                              context.classes, context.scripts)
         context.project.write(context.file)
+
+
+class Watch(FileSystemEventHandler, six.with_metaclass(CommandContainer)):
+    namespace = SYNC_NAMESPACE
+
+    @classmethod
+    @argument('instance', help="Source instance name")
+    def run(cls, context):
+        context.classes = None
+        context.scripts = None
+        context.all = True
+        context.project.timestamp = 0
+        Push.run(context)
+        LOG.info("Watching for file changes")
+        observer = Observer()
+        observer.schedule(cls(context), path='.', recursive=True)
+        observer.start()
+        try:
+            while True:
+                time.sleep(1)
+        except KeyboardInterrupt:
+            observer.stop()
+        observer.join()
+
+    def __init__(self, context):
+        con = syncano.connect(api_key=context.key)
+        self.instance = con.instances.get(name=context.instance)
+        self.project = context.project
+
+    def on_modified(self, event):
+        print event
+
+    def on_deleted(self, event):
+        print event
