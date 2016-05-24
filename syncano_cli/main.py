@@ -3,6 +3,7 @@ from __future__ import print_function, unicode_literals
 
 import argparse
 import os
+import sys
 from ConfigParser import ConfigParser, NoOptionError
 
 import six
@@ -24,7 +25,7 @@ def add_commands(subparsers, container):
         high_lvl_subparser.set_defaults(func=command)
 
 
-def main():
+def cli(args):
     ACCOUNT_CONFIG_PATH = os.path.join(os.path.expanduser('~'), '.syncano')
 
     parser = argparse.ArgumentParser(
@@ -34,7 +35,7 @@ def main():
                         help='Instance configuraion file.')
     parser.add_argument('--config', default=ACCOUNT_CONFIG_PATH,
                         help='Account configuration file.')
-    parser.add_argument('--key', default=os.environ.get('SYNCANO_API_KEY', ''),
+    parser.add_argument('--key', default=os.environ.get('SYNCANO_API_KEY', None),
                         help='override ACCOUNT_KEY used for authentication.')
 
     subparsers = parser.add_subparsers(
@@ -56,7 +57,7 @@ def main():
         )
         add_commands(subparsers=first_lvl_commands_subparsers, container=functions)
 
-    namespace = parser.parse_args()
+    namespace = parser.parse_args(args)
     namespace.project = Project.from_config(namespace.file)
 
     read = ACCOUNT_CONFIG.read(namespace.config)
@@ -70,6 +71,11 @@ def main():
         namespace.func(namespace)
     except ValueError as e:
         LOG.error(e.message)
+
+
+def main():
+    cli(sys.argv[1:])
+
 
 if __name__ == "__main__":
     main()
