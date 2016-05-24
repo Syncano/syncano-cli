@@ -35,7 +35,7 @@ def cli(args):
                         help='Instance configuraion file.')
     parser.add_argument('--config', default=ACCOUNT_CONFIG_PATH,
                         help='Account configuration file.')
-    parser.add_argument('--key', default=os.environ.get('SYNCANO_API_KEY', ''),
+    parser.add_argument('--key', default=os.environ.get('SYNCANO_API_KEY', None),
                         help='override ACCOUNT_KEY used for authentication.')
 
     subparsers = parser.add_subparsers(
