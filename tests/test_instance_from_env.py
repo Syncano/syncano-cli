@@ -1,7 +1,7 @@
 import os
-import mock
 import unittest
 
+import mock
 from syncano_cli import main  # noqa
 from syncano_cli.commands_base import parse_arguments
 
