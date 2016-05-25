@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
+from __future__ import print_function, unicode_literals
+
 import time
 
 import six
 import syncano
 from syncano_cli import LOG
 from syncano_cli.commands_base import CommandContainer, EnvDefault, argument
-from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
+
+from .watch import ProjectEventHandler
 
 SYNC_NAMESPACE = 'sync'
 
@@ -61,11 +64,12 @@ class Pull(six.with_metaclass(CommandContainer)):
         context.project.write(context.file)
 
 
-class Watch(FileSystemEventHandler, six.with_metaclass(CommandContainer)):
+class Watch(six.with_metaclass(CommandContainer)):
     namespace = SYNC_NAMESPACE
 
     @classmethod
-    @argument('instance', help="Source instance name")
+    @argument('instance', help="Source instance name", action=EnvDefault,
+              envvar='SYNCANO_INSTANCE')
     def run(cls, context):
         context.classes = None
         context.scripts = None
@@ -74,7 +78,7 @@ class Watch(FileSystemEventHandler, six.with_metaclass(CommandContainer)):
         Push.run(context)
         LOG.info("Watching for file changes")
         observer = Observer()
-        observer.schedule(cls(context), path='.', recursive=True)
+        observer.schedule(ProjectEventHandler(context), path='.', recursive=True)
         observer.start()
         try:
             while True:
@@ -82,14 +86,3 @@ class Watch(FileSystemEventHandler, six.with_metaclass(CommandContainer)):
         except KeyboardInterrupt:
             observer.stop()
         observer.join()
-
-    def __init__(self, context):
-        con = syncano.connect(api_key=context.key)
-        self.instance = con.instances.get(name=context.instance)
-        self.project = context.project
-
-    def on_modified(self, event):
-        print event
-
-    def on_deleted(self, event):
-        print event

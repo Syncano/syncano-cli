@@ -73,14 +73,15 @@ class Project(object):
             push_scripts(instance, scripts)
 
         sync_classes = self.classes
-        if classes and not all:
+        if classes is not None and not all:
             sync_classes = {c: self.classes[c] for c in classes}
 
-        if self.timestamp > last_sync:
+        if self.timestamp > last_sync and sync_classes:
             push_classes(instance, sync_classes)
         elif not scripts:
             LOG.info('Nothing to sync.')
         now = time.time()
+        self.timestamp = now
         os.utime('.sync', (now, now))
 
     def validate(self):
