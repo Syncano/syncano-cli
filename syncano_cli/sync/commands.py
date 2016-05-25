@@ -71,6 +71,10 @@ class Watch(six.with_metaclass(CommandContainer)):
     @argument('instance', help="Source instance name", action=EnvDefault,
               envvar='SYNCANO_INSTANCE')
     def run(cls, context):
+        """
+        Push configuration to syncano. After that  watch for changes in
+        syncano.yml file and scripts and push changed items to syncano.
+        """
         context.classes = None
         context.scripts = None
         context.all = True
