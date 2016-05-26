@@ -2,7 +2,7 @@
 
 ## Overview
 
-The provided tool uses both Syncano and Parse API. 
+The provided tool uses both Syncano and Parse API. How does it work?
 
 1. Parse schemas are fetched and transferred to Syncano as classes. All field types are supported.
 2. Data is transferred for each schema/class. This can be divided into following steps:
@@ -10,8 +10,9 @@ The provided tool uses both Syncano and Parse API.
    1. The call to the Parse API is made - to obtain 1000 objects of particular class;
    2. The conversion is made - the Object from Parse is transformed to the Syncano Data Object;
    3. The batch API call is made to the Syncano API - with 50 elements (API limitations);
+   4. All the object relations are restored. 
 
-3. All the object relations are restored. This is the most challenging task. During the first and second step, all the information about relations are saved. The map of references are built -- which binds Parse objects with Syncano Data Objects -- and based on that the relations are restored. It's a time consuming process due to Parse API limitations and Syncano throttling functionality. More information on that can be found in the [data transfer](#data-transfer) section below.
+Ad iv) This is the most challenging task. During the first and second step, all the information about relations are saved. The map of references are built -- which binds Parse objects with Syncano Data Objects -- and based on that the relations are restored. It's a time consuming process due to Parse API limitations and Syncano throttling functionality. More information on that can be found in the [data transfer](#data-transfer) section below.
 
 ### Schemas to classes transfer
 
@@ -19,16 +20,18 @@ The provided tool uses both Syncano and Parse API.
 
 For each Parse schema, the Syncano Class schema is created. The class name and name of all fields are normalized. 
 The normalization process usually just makes a lowercase name. So when you transfer schema from Parse, where class name name is `SomeOutstandingClass`, in Syncano it will be called: `someoutstandingclass`. 
-The same applies to the fields. Of course there are some exceptions. If Parse schema name starts from an underscore: `_<class_name>`, the name will be changed to `internal_<class_name>`. That's because Syncano does not support names which start with an 
-underscore.
+The same applies to the fields. 
+
+There are some exceptions. If Parse schema name starts from an underscore: `_<class_name>`, the name will be changed to `internal_<class_name>`. That's because Syncano does not support names which start with an underscore.
 
 **Created at and updated at**
 
-Syncano classes have fields `created_at` and `updated_at`, which are self explanatory: they store the dates indicating when object was created and last updated. The Parse has fields `createdAt` and `updatedAt` - which are created for the same purpose. 
+Syncano classes have two special fields `created_at` and `updated_at`, which store the dates indicating when object was created and last updated. The Parse has fields `createdAt` and `updatedAt` - which are used for the same purpose. 
+
 Syncano `created_at` and `updated_at` fields are read-only, so it's impossible to transfer there values from Parse.
 To resolve this, two additional fields are created on Syncano class: `original_createdat` and `original_updatedat` - 
 which have filter and order index added to them and can be used to find and sort data easily. 
-These fields store the original creation and update date from Parse (but update date will be **NOT** updated automatically next time). 
+These fields store the original creation and update date from Parse (but update date will **NOT** be updated automatically next time). 
 
 **objectId field**
 
@@ -69,6 +72,7 @@ Class by class is processed:
 * translate Parse objects to Syncano objects (and make a batch call with 10 Syncano Data Object, to avoid throttling); 
  
 During this process for each class the reference map is made. This reference map stores the class name and connects Parse Object ID with Syncano Object ID. 
+
 It is possible that this structure will use a lot of your local machine memory.
  
 Last step of data transfer is transferring the files. It's impossible to send files using batch in Syncano (and we do 
@@ -78,13 +82,16 @@ not want to make query for each object) - so the files are stored and the update
 
 For each Parse object that has a relation field a query is made -- to obtain the related objects. 
 Then those related objects are added to the Syncano Data Object. Relations are transformed as a whole. In Syncano, relation fields store IDs of the related objects like this: 
+
 ```json
 books=[1, 2, 3]
 ```
+
 which means that related books are those with ids: 1, 2 and 3. This is why the relations rebuilding process is the last one in the queue. 
-The information with Syncano IDs must be known - we can't make a relation knowing only Parse IDs. This process can be
-very time consuming. First, because there's a need to query each parse object with relations about their related objects and
-second, because the Syncano free Builder account will throttles all requests when 15 request per second limit is reached.
+
+Information about Syncano IDs must be known beforehand - we can't make a relation knowing only Parse IDs. 
+
+Whole process can be very time consuming. First, because there's a need to query each parse object with relations about their related objects and second, because the Syncano free Builder account will throttles all requests when 15 request per second limit is reached.
 
 ## Limitations
 
