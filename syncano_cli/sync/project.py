@@ -10,7 +10,7 @@ from syncano_cli import LOG
 
 from .classes import pull_classes, push_classes, validate_classes
 from .scripts import pull_scripts, push_scripts, validate_scripts
-from utils import compare_dicts
+from .utils import compare_dicts
 
 
 class Project(object):
@@ -59,7 +59,7 @@ class Project(object):
         self.scripts = pull_scripts(instance, scripts)
 
         state = ("Not changed", "Added", "Removed", "Updated")
-        if self.classes:
+        if self.classes and all:
             LOG.info("Stats for classes")
             for info, classes in zip(state, compare_dicts(self.classes, prev_classes)):
                 if classes:
