@@ -4,7 +4,7 @@ from __future__ import print_function, unicode_literals
 
 def compare_dicts(new, old):
     """
-    Compare two dicts returning added, removed, modified, same
+    Compare two dicts returning same, added, removed, modified elements as lists
     """
     new_keys = set(new.keys())
     if not old:
