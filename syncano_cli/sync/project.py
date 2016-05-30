@@ -10,6 +10,7 @@ from syncano_cli import LOG
 
 from .classes import pull_classes, push_classes, validate_classes
 from .scripts import pull_scripts, push_scripts, validate_scripts
+from utils import compare_dicts
 
 
 class Project(object):
@@ -57,26 +58,13 @@ class Project(object):
         self.classes = pull_classes(instance, classes)
         self.scripts = pull_scripts(instance, scripts)
 
-        def cmpDicts(d1, d2):
-            """
-            Compare two dicts returning added, removed, modified, same
-            """
-            d1_keys = set(d1.keys())
-            if not d2:
-                return None, d1, None, None
-            d2_keys = set(d2.keys())
-            intersect_keys = d1_keys.intersection(d2_keys)
-            added = d1_keys - d2_keys
-            removed = d2_keys - d1_keys
-            modified = {o: (d1[o], d2[o]) for o in intersect_keys if d1[o] != d2[o]}
-            same = set(o for o in intersect_keys if d1[o] == d2[o])
-            return same, added, removed, modified
         state = ("Not changed", "Added", "Removed", "Updated")
         if self.classes:
             LOG.info("Stats for classes")
-            for i, s in enumerate(cmpDicts(self.classes, prev_classes)):
-                if s:
-                    LOG.info('%s : %s', state[i], ','.join(s))
+            for info, classes in zip(state, compare_dicts(self.classes, prev_classes)):
+                if classes:
+                    LOG.info('%s : %s', info, ','.join(classes))
+
         LOG.info("Finished pulling instance data from syncano")
 
     def push_to_instance(self, instance, all=False, classes=None,
