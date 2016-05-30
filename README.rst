@@ -65,6 +65,21 @@ use -a/--all option.
 If you want to just push selected classes/scripts changes you can provide them
 with -c/--class or -s/--script options like in the pull example above.
 
+Synchronization of changes in realtime
+--------------------------------------
+
+There is also an option to synchronize your project live. When you change
+syncano.yml or some script source code pointed to by syncano.yml your changes
+will be automatically pushed to syncano.
+
+::
+    syncano sync watch
+
+This command will push all your project configuration to syncano and will
+wait for changes made to project files. When it detects file modification
+it will push those changes to syncano.
+
+
 Syncano Parse migration tool
 ============================
 
