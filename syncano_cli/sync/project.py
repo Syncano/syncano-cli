@@ -10,7 +10,7 @@ from syncano_cli import LOG
 
 from .classes import pull_classes, push_classes, validate_classes
 from .scripts import pull_scripts, push_scripts, validate_scripts
-from utils import compare_dicts
+from .utils import compare_dicts
 
 
 class Project(object):
