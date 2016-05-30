@@ -26,6 +26,7 @@ class Project(object):
             cfg['timestamp'] = os.path.getmtime(config)
         except IOError:
             cfg = {}
+        LOG.debug('Current config %s' % cfg)
         project = cls(**cfg)
         project.validate()
         return project
@@ -48,13 +49,39 @@ class Project(object):
                              scripts=None):
         """Updates project data from instances"""
         LOG.info("Pulling instance data from syncano")
+        classesI = self.classes
         classes = classes or self.classes.keys()
         scripts = scripts or set(s['label'] for s in self.scripts)
+        
         if all:
             classes = None
             scripts = None
+       
         self.classes = pull_classes(instance, classes)
         self.scripts = pull_scripts(instance, scripts)
+ 
+        def cmpDicts(d1, d2):
+            """
+            Compare two dicts returning added, removed, modified, same
+            """
+            d1_keys = set(d1.keys())
+            if not d2:
+                return None,d1,None,None
+            d2_keys = set(d2.keys())
+            intersect_keys = d1_keys.intersection(d2_keys)
+            added = d1_keys - d2_keys
+            removed = d2_keys - d1_keys
+            modified = {o : (d1[o], d2[o]) for o in intersect_keys if d1[o] != d2[o]}
+            same = set(o for o in intersect_keys if d1[o] == d2[o])
+            return same, added, removed, modified
+       
+        state = ("Not changed", "Added", "Removed", "Updated" )
+        if self.classes:
+            LOG.info("Stats for classes")
+            for i,s in enumerate(cmpDicts(self.classes, classesI)):
+                if s:
+                    LOG.info('%s : %s', state[i], ','.join(s))
+        
         LOG.info("Finished pulling instance data from syncano")
 
     def push_to_instance(self, instance, all=False, classes=None,
