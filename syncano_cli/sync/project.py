@@ -26,7 +26,6 @@ class Project(object):
             cfg['timestamp'] = os.path.getmtime(config)
         except IOError:
             cfg = {}
-        LOG.debug('Current config %s' % cfg)
         project = cls(**cfg)
         project.validate()
         return project
