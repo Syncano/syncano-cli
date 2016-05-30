@@ -73,6 +73,7 @@ syncano.yml or some script source code pointed to by syncano.yml your changes
 will be automatically pushed to syncano.
 
 ::
+
     syncano sync watch
 
 This command will push all your project configuration to syncano and will
