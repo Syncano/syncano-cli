@@ -56,7 +56,7 @@ class Project(object):
             scripts = None
         self.classes = pull_classes(instance, classes)
         self.scripts = pull_scripts(instance, scripts)
-        
+
         def cmpDicts(d1, d2):
             """
             Compare two dicts returning added, removed, modified, same
