@@ -48,7 +48,7 @@ class Project(object):
                              scripts=None):
         """Updates project data from instances"""
         LOG.info("Pulling instance data from syncano")
-        classesI = self.classes
+        prev_classes = self.classes
         classes = classes or self.classes.keys()
         scripts = scripts or set(s['label'] for s in self.scripts)
         if all:
@@ -74,7 +74,7 @@ class Project(object):
         state = ("Not changed", "Added", "Removed", "Updated")
         if self.classes:
             LOG.info("Stats for classes")
-            for i, s in enumerate(cmpDicts(self.classes, classesI)):
+            for i, s in enumerate(cmpDicts(self.classes, prev_classes)):
                 if s:
                     LOG.info('%s : %s', state[i], ','.join(s))
         LOG.info("Finished pulling instance data from syncano")
