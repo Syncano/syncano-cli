@@ -51,14 +51,11 @@ class Project(object):
         classesI = self.classes
         classes = classes or self.classes.keys()
         scripts = scripts or set(s['label'] for s in self.scripts)
-        
         if all:
             classes = None
             scripts = None
-       
         self.classes = pull_classes(instance, classes)
         self.scripts = pull_scripts(instance, scripts)
- 
         def cmpDicts(d1, d2):
             """
             Compare two dicts returning added, removed, modified, same
@@ -73,14 +70,12 @@ class Project(object):
             modified = {o : (d1[o], d2[o]) for o in intersect_keys if d1[o] != d2[o]}
             same = set(o for o in intersect_keys if d1[o] == d2[o])
             return same, added, removed, modified
-       
         state = ("Not changed", "Added", "Removed", "Updated" )
         if self.classes:
             LOG.info("Stats for classes")
             for i,s in enumerate(cmpDicts(self.classes, classesI)):
                 if s:
                     LOG.info('%s : %s', state[i], ','.join(s))
-        
         LOG.info("Finished pulling instance data from syncano")
 
     def push_to_instance(self, instance, all=False, classes=None,
