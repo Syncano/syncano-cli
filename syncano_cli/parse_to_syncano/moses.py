@@ -5,18 +5,19 @@ from syncano_cli.parse_to_syncano.config import CONFIG_VARIABLES_NAMES, P2S_CONF
 
 def force_config_value(config_var_name, section='P2S'):
     config_var = raw_input('{}: '.format(config_var_name))
+    if not config.has_section(section):
+        config.add_section(section)
     config.set(section, config_var_name, config_var)
 
 
 def check_config_value(config_var_name, silent, section='P2S'):
-    config_var = config.get(section, config_var_name)
-    if not config_var:
+    if not config.has_option(section, config_var_name):
         force_config_value(config_var_name, section)
     else:
         if not silent:
             print("{config_var_name}: \t\t{config_var}".format(
                 config_var_name=config_var_name,
-                config_var=config_var
+                config_var=config.get(section, config_var_name)
             ))
 
 

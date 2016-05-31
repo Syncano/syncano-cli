@@ -1,39 +1,27 @@
 # -*- coding: utf-8 -*-
-from __future__ import print_function, unicode_literals
+from __future__ import print_function
 
-import sys
-from ConfigParser import ConfigParser, NoOptionError
+from ConfigParser import ConfigParser
 
-from syncano_cli import LOG
-from syncano_cli.commands import Configure, Login, Parse, Pull, Push  # noqa
-from syncano_cli.commands_base import parse_arguments
-from syncano_cli.sync.project import Project
+import click
+from syncano.exceptions import SyncanoException
+from syncano_cli.commands import top_level
+from syncano_cli.parse_to_syncano.commands import top_transfer
+from syncano_cli.sync.commands import top_sync
 
 ACCOUNT_KEY = ''
-
 ACCOUNT_CONFIG = ConfigParser()
 
 
-def cli(args):
-    namespace = parse_arguments(args)
-    namespace.project = Project.from_config(namespace.file)
-
-    read = ACCOUNT_CONFIG.read(namespace.config)
-    if read and not namespace.key:
-        try:
-            namespace.key = ACCOUNT_CONFIG.get('DEFAULT', 'key')
-        except NoOptionError:
-            LOG.error('Do a login first.')
-
-    try:
-        namespace.func(namespace)
-    except ValueError as e:
-        LOG.error(e.message)
-
-
-def main():
-    cli(sys.argv[1:])
-
+cli = click.CommandCollection(
+    sources=[
+        top_level,
+        top_sync,
+        top_transfer,
+    ])
 
 if __name__ == "__main__":
-    main()
+    try:
+        cli(obj={})
+    except SyncanoException as error:
+        click.echo(error)

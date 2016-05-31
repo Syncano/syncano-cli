@@ -14,7 +14,7 @@ SYNCANO_ADMIN_API_KEY = os.getenv('SYNCANO_ADMIN_API_KEY', '')
 
 PARSE_PAGINATION_LIMIT = 1000  # the biggest value parse allows
 
-P2S_CONFIG_PATH = os.path.join(os.path.expanduser('~'), '.syncano')
+P2S_CONFIG_PATH = os.path.join(os.path.expanduser('~'), '.syncano')  # TODO: made this configuration file general
 
 config = ConfigParser()
 
