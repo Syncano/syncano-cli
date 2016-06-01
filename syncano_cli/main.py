@@ -20,8 +20,13 @@ cli = click.CommandCollection(
         top_transfer,
     ])
 
-if __name__ == "__main__":
+
+def main():
     try:
         cli(obj={})
     except SyncanoException as error:
         click.echo(error)
+
+
+if __name__ == "__main__":
+    main()
