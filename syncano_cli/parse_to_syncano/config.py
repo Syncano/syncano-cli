@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import os
-from ConfigParser import ConfigParser
+
+from syncano_cli.config import ACCOUNT_CONFIG
 
 CONFIG_VARIABLES_NAMES = ['PARSE_MASTER_KEY', 'PARSE_APPLICATION_ID',
                           'SYNCANO_ADMIN_API_KEY', 'SYNCANO_INSTANCE_NAME']
@@ -16,7 +17,7 @@ PARSE_PAGINATION_LIMIT = 1000  # the biggest value parse allows
 
 
 def read_config(config_path):
-    config = ConfigParser()
+    config = ACCOUNT_CONFIG
 
     read_ok = config.read(config_path)
 

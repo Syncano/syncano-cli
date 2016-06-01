@@ -5,7 +5,6 @@ import json
 import os
 import time
 
-import click
 import yaml
 from syncano_cli import LOG
 

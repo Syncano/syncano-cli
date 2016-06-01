@@ -7,7 +7,7 @@ import time
 import click
 import syncano
 from syncano_cli import LOG
-from syncano_cli.config import ACCOUNT_CONFIG_PATH, ACCOUNT_CONFIG
+from syncano_cli.config import ACCOUNT_CONFIG, ACCOUNT_CONFIG_PATH
 from syncano_cli.sync.project import Project
 from watchdog.observers import Observer
 
