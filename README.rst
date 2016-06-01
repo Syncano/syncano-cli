@@ -31,7 +31,7 @@ In order to pull your instance configuration you can execute
 
 This will fetch all Classes and Scripts into current working directory, and
 store configuration in syncano.yml file. If you want to pull only selected
-classes/scripts you can add -c/--class or -s/--script option eg.
+classes/scripts you can add -c/--klass or -s/--script option eg.
 
 ::
 
@@ -63,7 +63,7 @@ source code files for scripts. If you want to force push all changes you can
 use -a/--all option.
 
 If you want to just push selected classes/scripts changes you can provide them
-with -c/--class or -s/--script options like in the pull example above.
+with -c/--klass or -s/--script options like in the pull example above.
 
 Synchronization of changes in realtime
 --------------------------------------
@@ -99,7 +99,7 @@ Configuration
 
 ::
 
-    syncano import configure
+    syncano transfer configure
 
 Will run the configuration that will ask you for the following variables:
 
@@ -108,7 +108,7 @@ Will run the configuration that will ask you for the following variables:
 * SYNCANO_ADMIN_API_KEY: Syncano Account Key;
 * SYNCANO_INSTANCE_NAME: the Syncano instance name to which the transfer will be made;
 
-`syncano import configure` command will take following parameters:
+`syncano transfer configure` command will take following parameters:
 
 * -c (--current) which will display the current configuration;
 * -f (--force) which allow to override the previously set configuration; 
@@ -121,7 +121,7 @@ Run transfer
  
 ::
 
-    syncano import parse
+    syncano transfer parse
 
 This command will run the synchronization process between Parse and Syncano. Sit comfortably in your chair and read
 the output.
