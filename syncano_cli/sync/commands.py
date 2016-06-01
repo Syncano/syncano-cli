@@ -28,6 +28,14 @@ def top_sync(context):
 @click.option('--key', '--key', default=os.environ.get('SYNCANO_API_KEY', None),
               help=u'override ACCOUNT_KEY used for authentication.')
 def sync(context, file, config, key):
+    """
+    Command for syncing data - classes and scripts
+    :param context:
+    :param file: file which will be used for syncing
+    :param config: the config path - the cli config will be stored there
+    :param key: the Syncano API key
+    :return:
+    """
     from syncano_cli.main import ACCOUNT_CONFIG
     ACCOUNT_CONFIG.read(config)
     context.obj['file'] = file
@@ -40,7 +48,7 @@ def sync(context, file, config, key):
 @click.pass_context
 @click.option('-s', '--script', help=u"Pull only this script from syncano", multiple=True)
 @click.option('-c', '--klass', help=u"Pull only this class from syncano", multiple=True)
-@click.option('-a', '--all', help=u"Force push all configuration")
+@click.option('-a', '--all/--no-all', default=False, help=u"Force push all configuration")
 @click.argument('instance', envvar='SYNCANO_INSTANCE')
 def push(context, scripts, klass, all, instance):
     """
@@ -53,7 +61,7 @@ def push(context, scripts, klass, all, instance):
 @click.pass_context
 @click.option('-s', '--script', help=u"Pull only this script from syncano", multiple=True)
 @click.option('-c', '--klass', help=u"Pull only this class from syncano", multiple=True)
-@click.option('-a', '--all', help=u"Force push all configuration")
+@click.option('-a', '--all/--no-all', default=False, help=u"Force push all configuration")
 @click.argument('instance', envvar='SYNCANO_INSTANCE')
 def pull(context, script, klass, all, instance):
     """

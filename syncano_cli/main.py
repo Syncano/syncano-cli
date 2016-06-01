@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function
 
+import sys
 from ConfigParser import ConfigParser
 
 import click
@@ -26,6 +27,7 @@ def main():
         cli(obj={})
     except SyncanoException as error:
         click.echo(error)
+        sys.exit(1)
 
 
 if __name__ == "__main__":

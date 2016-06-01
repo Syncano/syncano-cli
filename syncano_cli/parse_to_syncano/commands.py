@@ -15,6 +15,9 @@ def top_transfer(context):
 @top_transfer.group()
 @click.pass_context
 def transfer(context):
+    """
+    Command for transfer data to Syncano
+    """
     pass
 
 
