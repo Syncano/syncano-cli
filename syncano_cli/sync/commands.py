@@ -12,8 +12,6 @@ from watchdog.observers import Observer
 
 from .watch import ProjectEventHandler
 
-ACCOUNT_CONFIG_PATH = os.path.join(os.path.expanduser('~'), '.syncano')
-
 
 @click.group()
 @click.pass_context
@@ -24,7 +22,7 @@ def top_sync(context):
 @top_sync.group()
 @click.pass_context
 @click.option('-f', '--file', default='syncano.yml', help=u'Instance configuration file.')
-@click.option('--config', default=ACCOUNT_CONFIG_PATH, help=u'Account configuration file.')
+@click.option('--config', help=u'Account configuration file.')
 @click.option('--key', '--key', default=os.environ.get('SYNCANO_API_KEY', None),
               help=u'override ACCOUNT_KEY used for authentication.')
 def sync(context, file, config, key):
@@ -36,7 +34,8 @@ def sync(context, file, config, key):
     :param key: the Syncano API key
     :return:
     """
-    from syncano_cli.main import ACCOUNT_CONFIG
+    from syncano_cli.main import ACCOUNT_CONFIG, ACCOUNT_CONFIG_PATH
+    config = config or ACCOUNT_CONFIG_PATH
     ACCOUNT_CONFIG.read(config)
     context.obj['file'] = file
     context.obj['config'] = config

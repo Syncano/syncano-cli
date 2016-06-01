@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 import click
 from syncano_cli import LOG
-from syncano_cli.parse_to_syncano.config import config
+from syncano_cli.config import ACCOUNT_CONFIG_PATH
+from syncano_cli.parse_to_syncano.config import read_config
 from syncano_cli.parse_to_syncano.migrations.transfer import SyncanoTransfer
 from syncano_cli.parse_to_syncano.moses import check_configuration, force_configuration_overwrite, print_configuration
 
@@ -14,11 +15,13 @@ def top_transfer(context):
 
 @top_transfer.group()
 @click.pass_context
-def transfer(context):
+@click.option('--config', help=u'Account configuration file.')
+def transfer(context, config):
     """
     Command for transfer data to Syncano
     """
-    pass
+    config = config or ACCOUNT_CONFIG_PATH
+    context.obj['config'] = config
 
 
 @transfer.command()
@@ -27,7 +30,8 @@ def parse(context):
     """
         Synchronize the parse data object with syncano data objects;
         """
-    check_configuration(silent=True)
+    config = read_config(config_path=context.obj['config'])
+    check_configuration(config, silent=True)
     application_id = config.get('P2S', 'PARSE_APPLICATION_ID')
     instance_name = config.get('P2S', 'SYNCANO_INSTANCE_NAME')
     confirmation = raw_input(
@@ -41,8 +45,8 @@ def parse(context):
         LOG.info('Transfer aborted.')
         return
 
-    transfer = SyncanoTransfer()
-    transfer.through_the_red_sea()
+    moses = SyncanoTransfer(config)
+    moses.through_the_red_sea()
 
 
 @transfer.command()
@@ -53,9 +57,10 @@ def configure(context, current, force):
     """
     Configure the data needed for connection to the parse and syncano;
     """
+    config = read_config(config_path=context.obj['config'])
     if current:
-        print_configuration()
+        print_configuration(config)
     elif force:
-        force_configuration_overwrite()
+        force_configuration_overwrite(config)
     else:
-        check_configuration()
+        check_configuration(config)

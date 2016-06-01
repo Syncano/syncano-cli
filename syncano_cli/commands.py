@@ -5,7 +5,7 @@ from getpass import getpass
 import click
 import syncano
 from syncano.exceptions import SyncanoException
-from syncano_cli.sync.commands import ACCOUNT_CONFIG_PATH
+from syncano_cli.config import ACCOUNT_CONFIG_PATH
 
 
 @click.group()
@@ -16,12 +16,13 @@ def top_level(context, config):
 
 @top_level.command()
 @click.pass_context
-@click.option('--config', default=ACCOUNT_CONFIG_PATH, help=u'Account configuration file.')
+@click.option('--config', help=u'Account configuration file.')
 def login(context, config):
     """
     Log in to syncano using email and password and store ACCOUNT_KEY
     in configuration file.
     """
+    config = config or ACCOUNT_CONFIG_PATH
     context.obj['config'] = config
     email = os.environ.get('SYNCANO_EMAIL', None)
     if email is None:
