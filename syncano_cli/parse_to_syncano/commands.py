@@ -51,8 +51,8 @@ def parse(context):
 
 @migrate.command()
 @click.pass_context
-@click.option('--current/--no-current', default=False, help="Show current configuration.")
-@click.option('--force/--no-force', default=False, help="Force to overwrite previous config.")
+@click.option('--current', is_flag=True, default=False, help="Show current configuration.")
+@click.option('--force', is_flag=True, default=False, help="Force to overwrite previous config.")
 def configure(context, current, force):
     """
     Configure the data needed for connection to the parse and syncano;
