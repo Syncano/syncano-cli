@@ -81,7 +81,6 @@ class Project(object):
             push_classes(instance, sync_classes)
         elif not scripts:
             LOG.info('Nothing to sync.')
-            click.echo('Nothing to sync.')
         now = time.time()
         self.timestamp = now
         os.utime('.sync', (now, now))

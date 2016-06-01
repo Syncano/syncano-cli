@@ -9,14 +9,14 @@ from syncano_cli.parse_to_syncano.moses import check_configuration, force_config
 
 @click.group()
 @click.pass_context
-def top_transfer(context):
+def top_migrate(context):
     pass
 
 
-@top_transfer.group()
+@top_migrate.group()
 @click.pass_context
 @click.option('--config', help=u'Account configuration file.')
-def transfer(context, config):
+def migrate(context, config):
     """
     Command for transfer data to Syncano
     """
@@ -24,7 +24,7 @@ def transfer(context, config):
     context.obj['config'] = config
 
 
-@transfer.command()
+@migrate.command()
 @click.pass_context
 def parse(context):
     """
@@ -49,7 +49,7 @@ def parse(context):
     moses.through_the_red_sea()
 
 
-@transfer.command()
+@migrate.command()
 @click.pass_context
 @click.option('--current/--no-current', default=False, help="Show current configuration.")
 @click.option('--force/--no-force', default=False, help="Force to overwrite previous config.")
