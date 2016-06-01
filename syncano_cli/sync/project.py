@@ -10,6 +10,7 @@ from syncano_cli import LOG
 
 from .classes import pull_classes, push_classes, validate_classes
 from .scripts import pull_scripts, push_scripts, validate_scripts
+from .utils import compare_dicts
 
 
 class Project(object):
@@ -48,6 +49,7 @@ class Project(object):
                              scripts=None):
         """Updates project data from instances"""
         LOG.info("Pulling instance data from syncano")
+        prev_classes = self.classes
         classes = classes or self.classes.keys()
         scripts = scripts or set(s['label'] for s in self.scripts)
         if all:
@@ -55,6 +57,14 @@ class Project(object):
             scripts = None
         self.classes = pull_classes(instance, classes)
         self.scripts = pull_scripts(instance, scripts)
+
+        state = ("Not changed", "Added", "Removed", "Updated")
+        if self.classes and all:
+            LOG.info("Stats for classes")
+            for info, classes in zip(state, compare_dicts(self.classes, prev_classes)):
+                if classes:
+                    LOG.info('%s : %s', info, ','.join(classes))
+
         LOG.info("Finished pulling instance data from syncano")
 
     def push_to_instance(self, instance, all=False, classes=None,
