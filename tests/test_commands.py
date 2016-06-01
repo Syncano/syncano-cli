@@ -14,7 +14,6 @@ class BaseCommandsTest(unittest.TestCase):
 
 
 class SyncCommandsTest(BaseCommandsTest):
-    # TODO: make test more 'real';
 
     def test_login(self):
         result = self.runner.invoke(cli, args=['login'], obj={})
@@ -23,7 +22,7 @@ class SyncCommandsTest(BaseCommandsTest):
     def test_sync_push(self):
         result = self.runner.invoke(cli, args=[
             'sync', 'push', 'test',
-            '--klass', 'test_class',
+            '--class', 'test_class',
             '--scripts', 'test_script',
             '--all',
         ], obj={})
@@ -32,7 +31,7 @@ class SyncCommandsTest(BaseCommandsTest):
     def test_sync_pull(self):
         result = self.runner.invoke(cli, args=[
             'sync', 'pull', 'test',
-            '--klass', 'test_class',
+            '--class', 'test_class',
             '--scripts', 'test_script',
             '--all',
         ], obj={})

@@ -5,7 +5,7 @@ from getpass import getpass
 import click
 import syncano
 from syncano.exceptions import SyncanoException
-from syncano_cli.config import ACCOUNT_CONFIG_PATH
+from syncano_cli.config import ACCOUNT_CONFIG, ACCOUNT_CONFIG_PATH
 
 
 @click.group()
@@ -32,7 +32,6 @@ def login(context, config):
         password = getpass("password: ").strip()
     connection = syncano.connect().connection()
     try:
-        from syncano_cli.main import ACCOUNT_CONFIG
         ACCOUNT_KEY = connection.authenticate(email=email, password=password)
         ACCOUNT_CONFIG.set('DEFAULT', 'key', ACCOUNT_KEY)
         with open(context.obj['config'], 'wb') as fp:

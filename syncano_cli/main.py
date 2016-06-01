@@ -2,7 +2,6 @@
 from __future__ import print_function
 
 import sys
-from ConfigParser import ConfigParser
 
 import click
 from syncano.exceptions import SyncanoException
@@ -11,8 +10,6 @@ from syncano_cli.parse_to_syncano.commands import top_migrate
 from syncano_cli.sync.commands import top_sync
 
 ACCOUNT_KEY = ''
-ACCOUNT_CONFIG = ConfigParser()
-
 
 cli = click.CommandCollection(
     sources=[

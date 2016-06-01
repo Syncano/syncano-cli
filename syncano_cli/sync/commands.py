@@ -7,6 +7,7 @@ import time
 import click
 import syncano
 from syncano_cli import LOG
+from syncano_cli.config import ACCOUNT_CONFIG_PATH, ACCOUNT_CONFIG
 from syncano_cli.sync.project import Project
 from watchdog.observers import Observer
 
@@ -34,7 +35,6 @@ def sync(context, file, config, key):
     :param key: the Syncano API key
     :return:
     """
-    from syncano_cli.main import ACCOUNT_CONFIG, ACCOUNT_CONFIG_PATH
     config = config or ACCOUNT_CONFIG_PATH
     ACCOUNT_CONFIG.read(config)
     context.obj['file'] = file
@@ -49,7 +49,7 @@ def sync(context, file, config, key):
 @click.option('-c', '--klass', help=u"Pull only this class from syncano", multiple=True)
 @click.option('-a', '--all/--no-all', default=False, help=u"Force push all configuration")
 @click.argument('instance', envvar='SYNCANO_INSTANCE')
-def push(context, scripts, klass, all, instance):
+def push(context, klass, scripts, all, instance):
     """
     Push configuration changes to syncano.
     """
@@ -59,10 +59,10 @@ def push(context, scripts, klass, all, instance):
 @sync.command()
 @click.pass_context
 @click.option('-s', '--script', help=u"Pull only this script from syncano", multiple=True)
-@click.option('-c', '--klass', help=u"Pull only this class from syncano", multiple=True)
+@click.option('-c', '--class', help=u"Pull only this class from syncano", multiple=True)
 @click.option('-a', '--all/--no-all', default=False, help=u"Force push all configuration")
 @click.argument('instance', envvar='SYNCANO_INSTANCE')
-def pull(context, script, klass, all, instance):
+def pull(context, klass, script, all, instance):
     """
     Pull configuration from syncano and store it in current directory.
     Updates syncano.yml configuration file, and places scripts in scripts
@@ -71,7 +71,6 @@ def pull(context, script, klass, all, instance):
     configuration file. If you want to pull all objects from syncano use
     -a/--all flag.
     """
-
     con = syncano.connect(api_key=context.obj['key'], instance_name=instance)
 
     context.obj['project'].update_from_instance(con, all, klass, script)
