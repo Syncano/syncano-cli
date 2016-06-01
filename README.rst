@@ -31,7 +31,7 @@ In order to pull your instance configuration you can execute
 
 This will fetch all Classes and Scripts into current working directory, and
 store configuration in syncano.yml file. If you want to pull only selected
-classes/scripts you can add -c/--klass or -s/--script option eg.
+classes/scripts you can add -c/--class or -s/--script option eg.
 
 ::
 
@@ -63,7 +63,7 @@ source code files for scripts. If you want to force push all changes you can
 use -a/--all option.
 
 If you want to just push selected classes/scripts changes you can provide them
-with -c/--klass or -s/--script options like in the pull example above.
+with -c/--class or -s/--script options like in the pull example above.
 
 Synchronization of changes in realtime
 --------------------------------------

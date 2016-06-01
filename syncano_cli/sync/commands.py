@@ -46,14 +46,15 @@ def sync(context, file, config, key):
 @sync.command()
 @click.pass_context
 @click.option('-s', '--script', help=u"Pull only this script from syncano", multiple=True)
-@click.option('-c', '--klass', help=u"Pull only this class from syncano", multiple=True)
+@click.option('-c', '--class', help=u"Pull only this class from syncano", multiple=True)
 @click.option('-a', '--all', is_flag=True, default=False, help=u"Force push all configuration")
 @click.argument('instance', envvar='SYNCANO_INSTANCE')
-def push(context, klass, scripts, all, instance):
+def push(context, script, all, instance, **kwargs):
     """
     Push configuration changes to syncano.
     """
-    do_push(context, scripts=scripts, classes=klass, all=all, instance=instance)
+    klass = kwargs.pop('class')
+    do_push(context, scripts=script, classes=klass, all=all, instance=instance)
 
 
 @sync.command()
@@ -62,7 +63,7 @@ def push(context, klass, scripts, all, instance):
 @click.option('-c', '--class', help=u"Pull only this class from syncano", multiple=True)
 @click.option('-a', '--all', is_flag=True, default=False, help=u"Force push all configuration")
 @click.argument('instance', envvar='SYNCANO_INSTANCE')
-def pull(context, klass, script, all, instance):
+def pull(context, script, all, instance, **kwargs):
     """
     Pull configuration from syncano and store it in current directory.
     Updates syncano.yml configuration file, and places scripts in scripts
@@ -72,7 +73,7 @@ def pull(context, klass, script, all, instance):
     -a/--all flag.
     """
     con = syncano.connect(api_key=context.obj['key'], instance_name=instance)
-
+    klass = kwargs.pop('class')
     context.obj['project'].update_from_instance(con, all, klass, script)
     context.obj['project'].write(context.obj['file'])
 
