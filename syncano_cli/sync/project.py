@@ -65,7 +65,12 @@ class Project(object):
             with open('.sync', 'wb'):  # touch file
                 pass
             last_sync = 0
-        scripts = scripts or self.scripts
+
+        if all or scripts is None:
+            scripts = self.scripts
+        else:
+            scripts = [s for s in self.scripts if s['label'] in scripts]
+
         scripts = [s for s in scripts
                    if all or os.path.getmtime(s['script']) > last_sync]
 

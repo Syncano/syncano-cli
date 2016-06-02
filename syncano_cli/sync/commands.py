@@ -3,9 +3,12 @@ from __future__ import print_function
 
 import os
 import time
+from ConfigParser import NoOptionError
 
 import click
 import syncano
+import sys
+
 from syncano_cli import LOG
 from syncano_cli.config import ACCOUNT_CONFIG, ACCOUNT_CONFIG_PATH
 from syncano_cli.sync.project import Project
@@ -39,7 +42,11 @@ def sync(context, file, config, key):
     ACCOUNT_CONFIG.read(config)
     context.obj['file'] = file
     context.obj['config'] = config
-    context.obj['key'] = key or ACCOUNT_CONFIG.get('DEFAULT', 'key')
+    try:
+        context.obj['key'] = key or ACCOUNT_CONFIG.get('DEFAULT', 'key')
+    except NoOptionError:
+        LOG.error('Do a login first: syncano login.')
+        sys.exit(1)
     context.obj['project'] = Project.from_config(context.obj['file'])
 
 

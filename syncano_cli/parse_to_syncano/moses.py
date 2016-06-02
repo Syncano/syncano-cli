@@ -12,7 +12,7 @@ def force_config_value(config, config_var_name, section='P2S'):
 
 def check_config_value(config, config_var_name, silent, section='P2S'):
     if not config.has_option(section, config_var_name):
-        force_config_value(config_var_name, section)
+        force_config_value(config, config_var_name)
     else:
         if not silent:
             print("{config_var_name}: \t\t{config_var}".format(
@@ -41,8 +41,15 @@ def force_configuration_overwrite(config):
 
 
 def print_configuration(config):
+    if not config.has_section('P2S'):
+        config.add_section('P2S')
     for config_var_name in CONFIG_VARIABLES_NAMES:
+        if not config.has_option('P2S', config_var_name):
+            config_var = "-- NOT SET --"
+        else:
+            config_var = config.get('P2S', config_var_name)
+
         print("{config_var_name}: \t\t{config_var}".format(
             config_var_name=config_var_name,
-            config_var=config.get('P2S', config_var_name) or "-- NOT SET --"
+            config_var=config_var
         ))

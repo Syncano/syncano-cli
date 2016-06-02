@@ -110,7 +110,7 @@ class SyncanoTransfer(ParseConnectionMixin, SyncanoConnectionMixin, PaginationMi
             self.syncano_classes[class_name] = s_class
         return s_class
 
-    def through_the_red_sea(self, config):
+    def through_the_red_sea(self):
         instance = self.get_syncano_instance()
         self.transfer_classes(instance)
         self.transfer_objects(instance)
