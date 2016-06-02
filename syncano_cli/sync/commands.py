@@ -2,13 +2,12 @@
 from __future__ import print_function
 
 import os
+import sys
 import time
 from ConfigParser import NoOptionError
 
 import click
 import syncano
-import sys
-
 from syncano_cli import LOG
 from syncano_cli.config import ACCOUNT_CONFIG, ACCOUNT_CONFIG_PATH
 from syncano_cli.sync.project import Project
