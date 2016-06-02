@@ -10,7 +10,7 @@ from syncano_cli.config import ACCOUNT_CONFIG, ACCOUNT_CONFIG_PATH
 
 @click.group()
 @click.pass_context
-def top_level(context, config):
+def top_level(context):
     pass
 
 
