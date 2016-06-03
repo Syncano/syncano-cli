@@ -24,10 +24,10 @@ def login(context, config):
     """
     config = config or ACCOUNT_CONFIG_PATH
     context.obj['config'] = config
-    email = os.environ.get('SYNCANO_EMAIL', None)
+    email = os.environ.get('SYNCANO_EMAIL')
     if email is None:
         email = raw_input("email: ")
-    password = os.environ.get('SYNCANO_PASSWORD', None)
+    password = os.environ.get('SYNCANO_PASSWORD')
     if password is None:
         password = getpass("password: ").strip()
     connection = syncano.connect().connection()

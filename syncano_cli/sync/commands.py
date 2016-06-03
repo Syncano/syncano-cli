@@ -26,7 +26,7 @@ def top_sync(context):
 @click.pass_context
 @click.option('-f', '--file', default='syncano.yml', help=u'Instance configuration file.')
 @click.option('--config', help=u'Account configuration file.')
-@click.option('--key', '--key', default=os.environ.get('SYNCANO_API_KEY', None),
+@click.option('--key', '--key', default=os.environ.get('SYNCANO_API_KEY'),
               help=u'override ACCOUNT_KEY used for authentication.')
 def sync(context, file, config, key):
     """
