@@ -57,3 +57,7 @@ docs/_build/
 target/
 
 .idea/*
+.eggs/*
+.sync
+syncano.yml
+scripts

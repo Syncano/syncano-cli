@@ -10,11 +10,11 @@ from .project import Project
 
 class ProjectEventHandler(FileSystemEventHandler):
     def __init__(self, context):
-        con = syncano.connect(api_key=context.key)
-        self.instance = con.instances.get(name=context.instance)
-        self.project = context.project
+        con = syncano.connect(api_key=context.obj['key'])
+        self.instance = con.instances.get(name=context.obj['instance'])
+        self.project = context.obj['project']
         self.context = context
-        self.project_file = os.path.relpath(context.file)
+        self.project_file = os.path.relpath(context.obj['file'])
 
     def normalize_path(self, path):
         return os.path.relpath(path)

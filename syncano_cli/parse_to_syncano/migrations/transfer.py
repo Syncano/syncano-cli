@@ -3,7 +3,7 @@ import time
 
 from syncano.models import Object
 from syncano_cli import LOG
-from syncano_cli.parse_to_syncano.config import PARSE_PAGINATION_LIMIT, config
+from syncano_cli.parse_to_syncano.config import PARSE_PAGINATION_LIMIT
 from syncano_cli.parse_to_syncano.migrations.aggregation import data_aggregate
 from syncano_cli.parse_to_syncano.migrations.mixins import PaginationMixin, ParseConnectionMixin, SyncanoConnectionMixin
 from syncano_cli.parse_to_syncano.migrations.relation import RelationProcessor
@@ -12,25 +12,26 @@ from syncano_cli.parse_to_syncano.processors.klass import ClassProcessor
 
 class SyncanoTransfer(ParseConnectionMixin, SyncanoConnectionMixin, PaginationMixin):
 
-    def __init__(self):
+    def __init__(self, config):
         super(SyncanoTransfer, self).__init__()
         self.data = data_aggregate
         self.syncano_classes = {}
         self.file_descriptors = {}
         self.relations = None
+        self.config = config
 
     def set_relations(self, relations):
         self.relations = relations
 
     def process_relations(self, instance):
         if self.relations:
-            RelationProcessor(relations=self.relations).process(instance=instance)
+            RelationProcessor(relations=self.relations).process(instance=instance, config=self.config)
 
     def get_syncano_instance(self):
         try:
-            instance = self.syncano.Instance.please.get(name=config.get('P2S', 'SYNCANO_INSTANCE_NAME'))
+            instance = self.syncano.Instance.please.get(name=self.config.get('P2S', 'SYNCANO_INSTANCE_NAME'))
         except:
-            instance = self.syncano.Instance.please.create(name=config.get('P2S', 'SYNCANO_INSTANCE_NAME'))
+            instance = self.syncano.Instance.please.create(name=self.config.get('P2S', 'SYNCANO_INSTANCE_NAME'))
 
         return instance
 

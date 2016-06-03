@@ -106,7 +106,7 @@ def push_classes(instance, class_dict):
             klass = instance.classes.get(name=name)
             LOG.info('Found class {0}'.format(name))
         except instance.classes.model.DoesNotExist:
-            klass = instance.clasess.model(name=name)
+            klass = instance.classes.model(name=name)
             LOG.info('Class {0} not found. Creating new one'.format(name))
         schema = []
         for name, field_config in config['fields'].iteritems():

@@ -14,9 +14,8 @@ setup(
     url='https://github.com/Syncano/syncano-cli',
     packages=find_packages(),
     license='MIT',
-    install_requires=['syncano>=5.1.0', 'PyYaml>=3.11', 'watchdog>=0.8.3'],
+    install_requires=['syncano>=5.1.0', 'PyYaml>=3.11', 'watchdog>=0.8.3', 'click>=6.6'],
     test_suite='tests',
-    tests_require=['mock'],
     entry_points="""
         [console_scripts]
         syncano=syncano_cli.main:main
