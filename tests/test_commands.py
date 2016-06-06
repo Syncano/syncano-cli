@@ -57,3 +57,13 @@ class TransferCommandsTest(BaseCommandsTest):
     def test_parse(self):
         result = self.runner.invoke(cli, args=['migrate', 'parse'], obj={})
         self.assertIn('Aborted!', result.output)
+
+
+class ExecuteCommandsTest(BaseCommandsTest):
+
+    def test_execute_execute(self):
+        result = self.runner.invoke(cli, args=[
+            'execute', 'test_instance', 'test_endpoint',
+            '--payload', '{}',
+        ], obj={})
+        self.assertIn('', result.output)

@@ -8,6 +8,7 @@ from syncano.exceptions import SyncanoException
 from syncano_cli.commands import top_level
 from syncano_cli.parse_to_syncano.commands import top_migrate
 from syncano_cli.sync.commands import top_sync
+from syncano_cli.execute.commands import top_execute
 
 ACCOUNT_KEY = ''
 
@@ -16,6 +17,7 @@ cli = click.CommandCollection(
         top_level,
         top_sync,
         top_migrate,
+        top_execute,
     ])
 
 
