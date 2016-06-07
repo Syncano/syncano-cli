@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function
 
+import json
 import sys
 from ConfigParser import NoOptionError
 
 import click
-import json
-from syncano_cli import LOG
 from syncano.models.incentives import ScriptEndpoint
+from syncano_cli import LOG
 
 from .connection import create_instance_connection
 
