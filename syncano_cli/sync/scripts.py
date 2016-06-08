@@ -51,7 +51,7 @@ def pull_scripts(instance, include):
     seen_labels = set()
 
     if not os.path.exists('scripts'):
-        LOG.debug("Creating scripts directory")
+        LOG.info("Creating scripts directory")
         os.makedirs('scripts')
 
     script_endpoints = defaultdict(list)
@@ -108,8 +108,8 @@ def push_scripts(instance, scripts, config_only=True):
         - scripts - a list of dictionaries containing configurations for
                     scripts
     """
-    LOG.debug('Pushing scripts')
-    LOG.debug('Pulling remote scripts')
+    LOG.info('Pushing scripts')
+    LOG.info('Pulling remote scripts')
 
     endpoints = {}
     remote_scripts_mapping = defaultdict(list)
@@ -122,7 +122,7 @@ def push_scripts(instance, scripts, config_only=True):
         existing_endpoints[endpoint.script].append(endpoint.name)
         endpoints[endpoint.name] = endpoint
 
-    LOG.debug('Pushing local scripts')
+    LOG.info('Pushing local scripts')
     for s in scripts:
         if s['label'] in remote_scripts_mapping:
             remote_count = len(remote_scripts_mapping[s['label']])
@@ -135,7 +135,7 @@ def push_scripts(instance, scripts, config_only=True):
             remote_script = instance.scripts.model(
                 label=s['label'],
                 runtime_name=s['runtime'],
-                instance_name=instance.name,
+                instance_name=instance.instance_name,
                 config={}
             )
         with open(s['script'], 'rb') as source:
@@ -144,7 +144,7 @@ def push_scripts(instance, scripts, config_only=True):
         config = s.get('config', {})
         remote_script.config.update(config)
 
-        LOG.debug('Pushing script {label}'.format(**s))
+        LOG.info('Pushing script {label}'.format(**s))
         remote_script.save()
 
         existing_set = {name for name in existing_endpoints[remote_script.id]}
@@ -157,7 +157,7 @@ def push_scripts(instance, scripts, config_only=True):
 
         for name in new_endpoints:
             endpoint = instance.script_endpoints.model(
-                instance_name=instance.name,
+                instance_name=instance.instance_name,
                 name=name,
                 script=remote_script.id
             )

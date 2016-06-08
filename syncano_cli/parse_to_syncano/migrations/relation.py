@@ -10,10 +10,11 @@ from syncano_cli.parse_to_syncano.processors.klass import ClassProcessor
 
 class ClassRelationProcessor(ParseConnectionMixin, PaginationMixin):
 
-    def __init__(self, class_name, relations):
+    def __init__(self, class_name, relations, config):
         self.class_name = class_name
         self.relations = relations
         self.reference_map = data_aggregate.reference_map
+        self.config = config
 
     def process_class(self, instance):
         for relation in self.relations:
@@ -95,9 +96,13 @@ class RelationProcessor(object):
         super(RelationProcessor, self).__init__(*args, **kwargs)
         self.relations = relations
 
-    def process(self, instance):
+    def process(self, instance, config):
         LOG.info('Processing relations...')
         for class_relation in self.relations:
             for class_name, relations in class_relation.iteritems():
-                class_relation_processor = ClassRelationProcessor(class_name=class_name, relations=relations)
+                class_relation_processor = ClassRelationProcessor(
+                    class_name=class_name,
+                    relations=relations,
+                    config=config
+                )
                 class_relation_processor.process_class(instance)

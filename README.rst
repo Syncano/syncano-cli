@@ -65,6 +65,22 @@ use -a/--all option.
 If you want to just push selected classes/scripts changes you can provide them
 with -c/--class or -s/--script options like in the pull example above.
 
+Synchronization of changes in realtime
+--------------------------------------
+
+There is also an option to synchronize your project live. When you change
+syncano.yml or some script source code pointed to by syncano.yml your changes
+will be automatically pushed to syncano.
+
+::
+
+    syncano sync watch
+
+This command will push all your project configuration to syncano and will
+wait for changes made to project files. When it detects file modification
+it will push those changes to syncano.
+
+
 Syncano Parse migration tool
 ============================
 
@@ -83,7 +99,7 @@ Configuration
 
 ::
 
-    syncano import configure
+    syncano migrate configure
 
 Will run the configuration that will ask you for the following variables:
 
@@ -92,7 +108,7 @@ Will run the configuration that will ask you for the following variables:
 * SYNCANO_ADMIN_API_KEY: Syncano Account Key;
 * SYNCANO_INSTANCE_NAME: the Syncano instance name to which the transfer will be made;
 
-`syncano import configure` command will take following parameters:
+`syncano migrate configure` command will take following parameters:
 
 * -c (--current) which will display the current configuration;
 * -f (--force) which allow to override the previously set configuration; 
@@ -100,12 +116,12 @@ Will run the configuration that will ask you for the following variables:
 The configuration will be stored in your home directory in .syncano file under the P2S section. 
 It's used to call the Parse API and Syncano API as well.
 
-Run transfer
+Run migration
 ------------
  
 ::
 
-    syncano import parse
+    syncano migrate parse
 
 This command will run the synchronization process between Parse and Syncano. Sit comfortably in your chair and read
 the output.
