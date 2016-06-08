@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 import click
-from syncano_cli import LOG
 from syncano_cli.config import ACCOUNT_CONFIG_PATH
+from syncano_cli.logger import get_logger
 from syncano_cli.parse_to_syncano.config import read_config
 from syncano_cli.parse_to_syncano.migrations.transfer import SyncanoTransfer
 from syncano_cli.parse_to_syncano.moses import check_configuration, force_configuration_overwrite, print_configuration
+
+LOG = get_logger('parse-to-syncano')
 
 
 @click.group()

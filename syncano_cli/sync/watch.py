@@ -2,10 +2,12 @@ import os
 
 import six
 import syncano
-from syncano_cli import LOG
+from syncano_cli.logger import get_logger
 from watchdog.events import FileSystemEventHandler
 
 from .project import Project
+
+LOG = get_logger('syncano-sync')
 
 
 class ProjectEventHandler(FileSystemEventHandler):

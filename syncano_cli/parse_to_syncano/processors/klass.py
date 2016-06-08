@@ -3,8 +3,10 @@
 import json
 
 import requests
-from syncano_cli import LOG
+from syncano_cli.logger import get_logger
 from syncano_cli.parse_to_syncano.parse.constants import ParseFieldTypeE
+
+LOG = get_logger('parse-to-syncano')
 
 
 class SyncanoSchema(object):
