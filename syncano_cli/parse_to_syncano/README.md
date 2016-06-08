@@ -75,8 +75,8 @@ During this process for each class the reference map is made. This reference map
 
 It is possible that this structure will use a lot of your local machine memory.
  
-Last step of data transfer is transferring the files. It's impossible to send files using batch in Syncano (and we do 
-not want to make query for each object) - so the files are stored and the update is made for data objects with files.
+Last step of data transfer is transferring the files. In previous steps we use batch calls when translating Parse objects into Syncano objects. Unfortunately it's not possible to send files using batch calls in Syncano, so during initial transfer files are not being moved.
+What we do here, is we download those files localy to your machine and then we attach them to the right Syncano objects. As a result - all your Parse objects with files end up being Syncano objects with files with a bonus of files are now being stored on Syncano servers.
 
 ### Relations rebuild
 
