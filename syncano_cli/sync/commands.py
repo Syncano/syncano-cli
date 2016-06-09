@@ -8,12 +8,14 @@ from ConfigParser import NoOptionError
 
 import click
 import syncano
-from syncano_cli import LOG
 from syncano_cli.config import ACCOUNT_CONFIG, ACCOUNT_CONFIG_PATH
+from syncano_cli.logger import get_logger
 from syncano_cli.sync.project import Project
 from watchdog.observers import Observer
 
 from .watch import ProjectEventHandler
+
+LOG = get_logger('syncano-sync')
 
 
 @click.group()
@@ -78,6 +80,7 @@ def pull(context, script, all, instance, **kwargs):
     configuration file. If you want to pull all objects from syncano use
     -a/--all flag.
     """
+    LOG.info('test')
     con = syncano.connect(api_key=context.obj['key'], instance_name=instance)
     klass = kwargs.pop('class')
     context.obj['project'].update_from_instance(con, all, klass, script)

@@ -2,12 +2,14 @@
 import time
 
 from syncano.models import Object
-from syncano_cli import LOG
+from syncano_cli.logger import get_logger
 from syncano_cli.parse_to_syncano.config import PARSE_PAGINATION_LIMIT
 from syncano_cli.parse_to_syncano.migrations.aggregation import data_aggregate
 from syncano_cli.parse_to_syncano.migrations.mixins import PaginationMixin, ParseConnectionMixin, SyncanoConnectionMixin
 from syncano_cli.parse_to_syncano.migrations.relation import RelationProcessor
 from syncano_cli.parse_to_syncano.processors.klass import ClassProcessor
+
+LOG = get_logger('parse-to-syncano')
 
 
 class SyncanoTransfer(ParseConnectionMixin, SyncanoConnectionMixin, PaginationMixin):

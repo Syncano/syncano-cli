@@ -6,11 +6,13 @@ import os
 import time
 
 import yaml
-from syncano_cli import LOG
+from syncano_cli.logger import get_logger
 
 from .classes import pull_classes, push_classes, validate_classes
 from .scripts import pull_scripts, push_scripts, validate_scripts
 from .utils import compare_dicts
+
+LOG = get_logger('syncano-sync')
 
 
 class Project(object):
