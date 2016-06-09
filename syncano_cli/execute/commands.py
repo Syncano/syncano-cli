@@ -7,9 +7,11 @@ from ConfigParser import NoOptionError
 
 import click
 from syncano.exceptions import SyncanoDoesNotExist
-from syncano_cli import LOG
+from syncano_cli.logger import get_logger
 
 from .connection import create_connection
+
+LOG = get_logger('syncano-execute')
 
 
 @click.group()
