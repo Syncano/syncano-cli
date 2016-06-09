@@ -6,7 +6,10 @@ import re
 from collections import defaultdict
 
 from syncano.exceptions import SyncanoRequestError
-from syncano_cli import LOG
+from syncano_cli.logger import get_logger
+
+LOG = get_logger('syncano-sync')
+
 
 ALLOWED_RUNTIMES = {
     'golang': '.go',
@@ -157,7 +160,7 @@ def push_scripts(instance, scripts, config_only=True):
 
         for name in new_endpoints:
             endpoint = instance.script_endpoints.model(
-                instance_name=instance.name,
+                instance_name=instance.instance_name,
                 name=name,
                 script=remote_script.id
             )

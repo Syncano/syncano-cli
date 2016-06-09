@@ -61,3 +61,5 @@ target/
 .sync
 syncano.yml
 scripts
+*.iml
+
