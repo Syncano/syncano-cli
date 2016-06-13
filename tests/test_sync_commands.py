@@ -9,10 +9,8 @@ from tests.base import InstanceMixin, IntegrationTest
 class SyncCommandsTest(InstanceMixin, IntegrationTest):
 
     def test_login(self):
-        self.runner.invoke(cli, args=['login'], obj={}, input='{email}\n{password}\n'.format(
-            email=self.API_EMAIL,
-            password=self.API_PASSWORD
-        ))
+        # tested throught system variables;
+        self.runner.invoke(cli, args=['login'], obj={})
         self.assertTrue(ACCOUNT_CONFIG.get('DEFAULT', 'key'))
         self.assertTrue(os.path.isfile(ACCOUNT_CONFIG_PATH))
 
@@ -25,7 +23,26 @@ class SyncCommandsTest(InstanceMixin, IntegrationTest):
         ], obj={})
         self.assertIn('', result.output)
 
-    def test_sync_pull(self):
+    def test_sync_pull_class(self):
+        self.instance.classes.create(
+            name='test_class',
+            schema=[
+                {'name': 'test_field', 'type': 'string'}
+            ]
+        )
+
+        self.runner.invoke(cli, args=[
+            'sync', 'pull', self.instance.name,
+            '--class', 'test_class',
+        ], obj={})
+
+        self.assertTrue(os.path.isfile('syncano.yml'))
+        with open('syncano.yml') as syncano_yml:
+            yml_content = syncano_yml.read()
+            self.assertIn('test_class', yml_content)
+            self.assertIn('test_field', yml_content)
+
+    def test_sync_all_options(self):
         result = self.runner.invoke(cli, args=[
             'sync', 'pull', 'test',
             '--class', 'test_class',
