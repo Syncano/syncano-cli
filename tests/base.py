@@ -10,17 +10,11 @@ import syncano
 from click.testing import CliRunner
 
 
-class BaseCommandsTest(unittest.TestCase):
+class IntegrationTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
         cls.runner = CliRunner()
-
-
-class IntegrationTest(BaseCommandsTest):
-
-    @classmethod
-    def setUpClass(cls):
         cls.API_KEY = os.getenv('INTEGRATION_API_KEY')
         cls.API_EMAIL = os.getenv('INTEGRATION_API_EMAIL')
         cls.API_PASSWORD = os.getenv('INTEGRATION_API_PASSWORD')
