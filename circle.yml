@@ -12,7 +12,7 @@ test:
   override:
     - python setup.py flake8
     - isort --recursive --check-only .
-    - pip install -r tests/requirements.txt
+    - pip install -r requirements-tests.txt
     - ./run_tests.sh
 
 deployment:
