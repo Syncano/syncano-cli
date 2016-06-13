@@ -5,15 +5,13 @@ machine:
 dependencies:
   pre:
     - pip install -U setuptools
-    - pip install -U flake8
-    - pip install -U isort
 
 test:
   override:
-    - python setup.py flake8
-    - isort --recursive --check-only .
     - pip install -r requirements-tests.txt
-    - ./run_tests.sh
+    - flake8 .
+    - isort --recursive --check-only .
+    - python setup.py test
 
 deployment:
   production:
