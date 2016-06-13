@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-from __future__ import print_function
-
 import json
 import sys
 from ConfigParser import NoOptionError
@@ -10,6 +8,7 @@ from syncano.exceptions import SyncanoDoesNotExist
 from syncano_cli.logger import get_logger
 
 from .connection import create_connection
+from .utils import print_response
 
 LOG = get_logger('syncano-execute')
 
@@ -34,10 +33,7 @@ def execute(config, instance_name, script_endpoint_name, payload):
         se = instance.script_endpoints.get(instance_name, script_endpoint_name)
         data = json.loads((payload or '').strip() or '{}')
         response = se.run(**data)
-        if response.status == 'success':
-            print(json.dumps(response.result['stdout'], indent=4, sort_keys=True))
-        else:
-            LOG.error(response.result['stderr'])
+        print_response(response)
     except NoOptionError:
         LOG.error('Do a login first: syncano login.')
         sys.exit(1)
