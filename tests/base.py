@@ -7,9 +7,17 @@ from hashlib import md5
 from uuid import uuid4
 
 import syncano
+from click.testing import CliRunner
 
 
-class IntegrationTest(unittest.TestCase):
+class BaseCommandsTest(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        cls.runner = CliRunner()
+
+
+class IntegrationTest(BaseCommandsTest):
 
     @classmethod
     def setUpClass(cls):
