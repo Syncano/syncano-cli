@@ -13,7 +13,7 @@ class BaseSyncCLITest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        super(BaseCLITest, cls).setUpClass()
+        super(BaseSyncCLITest, cls).setUpClass()
         cls.yml_file = 'syncano.yml'
         cls.scripts_dir = 'scripts/'
 
