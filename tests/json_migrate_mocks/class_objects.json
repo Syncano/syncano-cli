@@ -1,0 +1,286 @@
+{
+    "results": [
+        {
+            "objectId": "ZfowBYpvpw",
+            "blu": {
+                "className": "blu_bla",
+                "__type": "Relation"
+            },
+            "testarray": [
+                "a",
+                "b",
+                "c",
+                "d"
+            ],
+            "blubla": {
+                "className": "blu_bla",
+                "__type": "Pointer",
+                "objectId": "2cbMKPUwr7"
+            },
+            "barg": 12,
+            "updatedAt": "2016-02-04T14:17:33.162Z",
+            "darg": {
+                "__type": "Date",
+                "iso": "2016-01-31T13:29:00.000Z"
+            },
+            "carg": true,
+            "createdAt": "2016-01-31T13:29:33.643Z",
+            "aarg": "fdfda"
+        },
+        {
+            "objectId": "c61zBPjw87",
+            "blu": {
+                "className": "blu_bla",
+                "__type": "Relation"
+            },
+            "testarray": [
+                1,
+                2,
+                3,
+                4
+            ],
+            "blubla": {
+                "className": "blu_bla",
+                "__type": "Pointer",
+                "objectId": "2cbMKPUwr7"
+            },
+            "barg": 13,
+            "updatedAt": "2016-02-04T14:17:28.370Z",
+            "testobject": {
+                "dwa": "two",
+                "raz": 1
+            },
+            "darg": {
+                "__type": "Date",
+                "iso": "2016-01-31T13:30:00.000Z"
+            },
+            "carg": false,
+            "createdAt": "2016-01-31T13:29:57.774Z",
+            "aarg": "(fdasdfa)"
+        },
+        {
+            "objectId": "iAboxhB6uJ",
+            "blu": {
+                "className": "blu_bla",
+                "__type": "Relation"
+            },
+            "testarray": [
+                "a",
+                "b",
+                "c",
+                "d",
+                0
+            ],
+            "blubla": {
+                "className": "blu_bla",
+                "__type": "Pointer",
+                "objectId": "2cbMKPUwr7"
+            },
+            "barg": 12,
+            "updatedAt": "2016-02-05T10:03:37.744Z",
+            "darg": {
+                "__type": "Date",
+                "iso": "2016-02-05T11:03:37.162Z"
+            },
+            "carg": true,
+            "createdAt": "2016-02-05T10:03:37.744Z",
+            "aarg": "fdfda0"
+        },
+        {
+            "objectId": "JKWL5puLv1",
+            "blu": {
+                "className": "blu_bla",
+                "__type": "Relation"
+            },
+            "testarray": [
+                "a",
+                "b",
+                "c",
+                "d",
+                1
+            ],
+            "blubla": {
+                "className": "blu_bla",
+                "__type": "Pointer",
+                "objectId": "2cbMKPUwr7"
+            },
+            "barg": 13,
+            "updatedAt": "2016-02-05T10:03:38.350Z",
+            "darg": {
+                "__type": "Date",
+                "iso": "2016-02-05T11:03:37.807Z"
+            },
+            "carg": true,
+            "createdAt": "2016-02-05T10:03:38.350Z",
+            "aarg": "fdfda1"
+        },
+        {
+            "objectId": "sXQakFQO7p",
+            "blu": {
+                "className": "blu_bla",
+                "__type": "Relation"
+            },
+            "testarray": [
+                "a",
+                "b",
+                "c",
+                "d",
+                2
+            ],
+            "blubla": {
+                "className": "blu_bla",
+                "__type": "Pointer",
+                "objectId": "2cbMKPUwr7"
+            },
+            "barg": 14,
+            "updatedAt": "2016-02-05T10:03:39.105Z",
+            "darg": {
+                "__type": "Date",
+                "iso": "2016-02-05T11:03:38.485Z"
+            },
+            "carg": true,
+            "createdAt": "2016-02-05T10:03:39.105Z",
+            "aarg": "fdfda2"
+        },
+        {
+            "objectId": "TV37MGIiRy",
+            "blu": {
+                "className": "blu_bla",
+                "__type": "Relation"
+            },
+            "testarray": [
+                "a",
+                "b",
+                "c",
+                "d",
+                3
+            ],
+            "blubla": {
+                "className": "blu_bla",
+                "__type": "Pointer",
+                "objectId": "2cbMKPUwr7"
+            },
+            "barg": 15,
+            "updatedAt": "2016-02-05T10:03:39.717Z",
+            "darg": {
+                "__type": "Date",
+                "iso": "2016-02-05T11:03:39.175Z"
+            },
+            "carg": true,
+            "createdAt": "2016-02-05T10:03:39.717Z",
+            "aarg": "fdfda3"
+        },
+        {
+            "objectId": "VkcSO5ymga",
+            "blu": {
+                "className": "blu_bla",
+                "__type": "Relation"
+            },
+            "testarray": [
+                "a",
+                "b",
+                "c",
+                "d",
+                4
+            ],
+            "blubla": {
+                "className": "blu_bla",
+                "__type": "Pointer",
+                "objectId": "2cbMKPUwr7"
+            },
+            "barg": 16,
+            "updatedAt": "2016-02-05T10:03:40.340Z",
+            "darg": {
+                "__type": "Date",
+                "iso": "2016-02-05T11:03:39.825Z"
+            },
+            "carg": true,
+            "createdAt": "2016-02-05T10:03:40.340Z",
+            "aarg": "fdfda4"
+        },
+        {
+            "objectId": "LDVM2SMvy1",
+            "blu": {
+                "className": "blu_bla",
+                "__type": "Relation"
+            },
+            "testarray": [
+                "a",
+                "b",
+                "c",
+                "d",
+                5
+            ],
+            "blubla": {
+                "className": "blu_bla",
+                "__type": "Pointer",
+                "objectId": "2cbMKPUwr7"
+            },
+            "barg": 17,
+            "updatedAt": "2016-02-05T10:03:40.931Z",
+            "darg": {
+                "__type": "Date",
+                "iso": "2016-02-05T11:03:40.403Z"
+            },
+            "carg": true,
+            "createdAt": "2016-02-05T10:03:40.931Z",
+            "aarg": "fdfda5"
+        },
+        {
+            "objectId": "noBSH3Ajjj",
+            "blu": {
+                "className": "blu_bla",
+                "__type": "Relation"
+            },
+            "testarray": [
+                "a",
+                "b",
+                "c",
+                "d",
+                6
+            ],
+            "blubla": {
+                "className": "blu_bla",
+                "__type": "Pointer",
+                "objectId": "2cbMKPUwr7"
+            },
+            "barg": 18,
+            "updatedAt": "2016-02-05T10:03:41.734Z",
+            "darg": {
+                "__type": "Date",
+                "iso": "2016-02-05T11:03:41.057Z"
+            },
+            "carg": true,
+            "createdAt": "2016-02-05T10:03:41.734Z",
+            "aarg": "fdfda6"
+        },
+        {
+            "objectId": "hwCXDGmOAi",
+            "blu": {
+                "className": "blu_bla",
+                "__type": "Relation"
+            },
+            "testarray": [
+                "a",
+                "b",
+                "c",
+                "d",
+                7
+            ],
+            "blubla": {
+                "className": "blu_bla",
+                "__type": "Pointer",
+                "objectId": "2cbMKPUwr7"
+            },
+            "barg": 19,
+            "updatedAt": "2016-02-05T10:03:42.978Z",
+            "darg": {
+                "__type": "Date",
+                "iso": "2016-02-05T11:03:41.795Z"
+            },
+            "carg": true,
+            "createdAt": "2016-02-05T10:03:42.978Z",
+            "aarg": "fdfda7"
+        }
+    ]
+}

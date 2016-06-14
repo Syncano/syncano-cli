@@ -17,6 +17,7 @@ class SyncanoTransfer(ParseConnectionMixin, SyncanoConnectionMixin, PaginationMi
     def __init__(self, config):
         super(SyncanoTransfer, self).__init__()
         self.data = data_aggregate
+        self.data.clear()
         self.syncano_classes = {}
         self.file_descriptors = {}
         self.relations = None
@@ -44,8 +45,12 @@ class SyncanoTransfer(ParseConnectionMixin, SyncanoConnectionMixin, PaginationMi
 
         for parse_schema in schemas:
             syncano_schema = ClassProcessor.create_schema(parse_schema)
-            self.data.add_class(syncano_name=syncano_schema.class_name, syncano_schema=syncano_schema.schema,
-                                parse_name=parse_schema['className'], parse_schema=parse_schema)
+            self.data.add_class(
+                syncano_name=syncano_schema.class_name,
+                syncano_schema=syncano_schema.schema,
+                parse_name=parse_schema['className'],
+                parse_schema=parse_schema
+            )
 
             if syncano_schema.has_relations:
                 relations.append(
