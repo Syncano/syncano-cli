@@ -44,7 +44,7 @@ class InstanceMixin(object):
         super(InstanceMixin, cls).setUpClass()
 
         cls.instance = cls.connection.Instance.please.create(
-            name='i%s' % cls.generate_hash()[:10],
+            name='test_cli_i%s' % cls.generate_hash()[:10],
             description='IntegrationTest %s' % datetime.now(),
         )
 

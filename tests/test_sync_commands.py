@@ -17,20 +17,20 @@ class BaseSyncCLITest(unittest.TestCase):
         cls.yml_file = 'syncano.yml'
         cls.scripts_dir = 'scripts/'
 
-    def _assert_file_exists(self, path):
+    def assert_file_exists(self, path):
         self.assertTrue(os.path.isfile(path))
 
-    def _assert_config_variable_exists(self, config, section, key):
+    def assert_config_variable_exists(self, config, section, key):
         self.assertTrue(config.get(section, key))
 
-    def _assert_class_yml_file(self, unique):
+    def assert_class_yml_file(self, unique):
         with open(self.yml_file) as syncano_yml:
             yml_content = yaml.safe_load(syncano_yml)
             self.assertIn('test_class{unique}'.format(unique=unique), yml_content['classes'])
             self.assertIn('test_field{unique}'.format(unique=unique),
                           yml_content['classes']['test_class{unique}'.format(unique=unique)]['fields'])
 
-    def _assert_field_in_schema(self, syncano_class, unique):
+    def assert_field_in_schema(self, syncano_class, unique):
         has_field = False
         for field_schema in syncano_class.schema:
             if field_schema['name'] == 'test_field{unique}'.format(unique=unique) and field_schema['type'] == 'string':
@@ -39,12 +39,12 @@ class BaseSyncCLITest(unittest.TestCase):
 
         self.assertTrue(has_field)
 
-    def _assert_script_source(self, script_path, assert_source):
+    def assert_script_source(self, script_path, assert_source):
         with open(script_path, 'r+') as f:
             source = f.read()
             self.assertEqual(source, assert_source)
 
-    def _assert_script_remote(self, script_name, source):
+    def assert_script_remote(self, script_name, source):
         is_script = False
         check_script = None
         scripts = self.instance.scripts.all()
@@ -122,8 +122,8 @@ class SyncCommandsTest(BaseSyncCLITest, InstanceMixin, IntegrationTest):
     def test_login(self):
         # tested through system variables;
         self.runner.invoke(cli, args=['login'], obj={})
-        self._assert_config_variable_exists(ACCOUNT_CONFIG, 'DEFAULT', 'key')
-        self._assert_file_exists(ACCOUNT_CONFIG_PATH)
+        self.assert_config_variable_exists(ACCOUNT_CONFIG, 'DEFAULT', 'key')
+        self.assert_file_exists(ACCOUNT_CONFIG_PATH)
 
     def test_sync_pull_single_class(self):
         unique = '1'
@@ -134,8 +134,8 @@ class SyncCommandsTest(BaseSyncCLITest, InstanceMixin, IntegrationTest):
             '--class', 'test_class{unique}'.format(unique=unique),
         ], obj={})
 
-        self._assert_file_exists(self.yml_file)
-        self._assert_class_yml_file(unique=unique)
+        self.assert_file_exists(self.yml_file)
+        self.assert_class_yml_file(unique=unique)
 
     def test_sync_pull_all_classes(self):
         unique = '2'
@@ -146,8 +146,8 @@ class SyncCommandsTest(BaseSyncCLITest, InstanceMixin, IntegrationTest):
             '--class', 'test_class{unique}'.format(unique=unique),
         ], obj={})
 
-        self._assert_file_exists(self.yml_file)
-        self._assert_class_yml_file(unique=unique)
+        self.assert_file_exists(self.yml_file)
+        self.assert_class_yml_file(unique=unique)
 
     def test_sync_push_single_class(self):
         # modify yml file first
@@ -166,7 +166,7 @@ class SyncCommandsTest(BaseSyncCLITest, InstanceMixin, IntegrationTest):
         new_class_syncano = self.get_syncano_class(unique)
         self.assertTrue(new_class_syncano)
 
-        self._assert_field_in_schema(new_class_syncano, unique)
+        self.assert_field_in_schema(new_class_syncano, unique)
 
     def test_sync_push_all_classes(self):
         # modify yml file first
@@ -193,8 +193,8 @@ class SyncCommandsTest(BaseSyncCLITest, InstanceMixin, IntegrationTest):
         ], obj={})
 
         script_path = self.get_script_path(unique)
-        self._assert_file_exists(script_path)
-        self._assert_script_source(script_path, 'print(12)')
+        self.assert_file_exists(script_path)
+        self.assert_script_source(script_path, 'print(12)')
 
     def test_sync_pull_all_scripts(self):
         unique = 's2'
@@ -205,8 +205,8 @@ class SyncCommandsTest(BaseSyncCLITest, InstanceMixin, IntegrationTest):
         ], obj={})
 
         script_path = self.get_script_path(unique)
-        self._assert_file_exists(script_path)
-        self._assert_script_source(script_path, 'print(12)')
+        self.assert_file_exists(script_path)
+        self.assert_script_source(script_path, 'print(12)')
 
     def test_sync_push_single_script(self):
         unique = 's3'
@@ -218,7 +218,7 @@ class SyncCommandsTest(BaseSyncCLITest, InstanceMixin, IntegrationTest):
             'sync', 'push', self.instance.name,
             '--script', script_name,
         ], obj={})
-        self._assert_script_remote(script_name, source)
+        self.assert_script_remote(script_name, source)
 
     def test_sync_push_all_scripts(self):
         unique = 's4'
@@ -229,7 +229,7 @@ class SyncCommandsTest(BaseSyncCLITest, InstanceMixin, IntegrationTest):
         self.runner.invoke(cli, args=[
             'sync', 'push', self.instance.name, '--all'
         ], obj={})
-        self._assert_script_remote(script_name, source)
+        self.assert_script_remote(script_name, source)
 
     def test_sync_all_options(self):
         result = self.runner.invoke(cli, args=[

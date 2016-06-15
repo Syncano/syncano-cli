@@ -42,14 +42,13 @@ class MigrateCommandsTest(InstanceMixin, IntegrationTest):
         self.assertIn('Aborted!', result.output)
 
     @mock.patch('syncano_cli.parse_to_syncano.parse.connection.ParseConnection.request')
-    @mock.patch('syncano_cli.parse_to_syncano.migrations.transfer.SyncanoTransfer.transfer_objects')
-    @mock.patch('syncano_cli.parse_to_syncano.migrations.transfer.SyncanoTransfer.transfer_files')
-    @mock.patch('syncano_cli.parse_to_syncano.migrations.transfer.SyncanoTransfer.process_relations')
-    def test_class_migrations(self, relations_mock, files_mock, objects_mock, request_mock):
-        relations_mock.return_value = None
-        files_mock.return_value = None
-        objects_mock.return_value = None
-
+    @mock.patch('syncano_cli.parse_to_syncano.migrations.transfer.SyncanoTransfer.process_relations',
+                mock.MagicMock(return_value=None))
+    @mock.patch('syncano_cli.parse_to_syncano.migrations.transfer.SyncanoTransfer.transfer_objects',
+                mock.MagicMock(return_value=None))
+    @mock.patch('syncano_cli.parse_to_syncano.migrations.transfer.SyncanoTransfer.transfer_files',
+                mock.MagicMock(return_value=None))
+    def test_class_migrations(self, request_mock):
         with open('tests/json_migrate_mocks/schema.json', 'r+') as f:
             request_mock.return_value = json.loads(f.read())
 
