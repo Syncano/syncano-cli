@@ -2,17 +2,14 @@
 from syncano.models import RuntimeChoices
 from syncano_cli.config import ACCOUNT_CONFIG
 from syncano_cli.main import cli
-from tests.base import InstanceMixin, IntegrationTest
+from tests.base import BaseCLITest
 
 
-class ExecuteCommandsTest(InstanceMixin, IntegrationTest):
+class ExecuteCommandsTest(BaseCLITest):
 
-    @classmethod
-    def setUpClass(cls):
-        super(ExecuteCommandsTest, cls).setUpClass()
-        # do a login
-        cls.runner.invoke(cli, args=['login'], obj={})
-        cls.assert_config_variable_exists(ACCOUNT_CONFIG, 'DEFAULT', 'key')
+    def setUp(self):
+        self.runner.invoke(cli, args=['login'], obj={})
+        self.assert_config_variable_exists(ACCOUNT_CONFIG, 'DEFAULT', 'key')
 
     def _create_script_endpoint(self, source, name_prefix):
         script = self.instance.scripts.create(
