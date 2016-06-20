@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import syncano
-
 from syncano_cli.config import ACCOUNT_CONFIG, ACCOUNT_CONFIG_PATH
 
 
