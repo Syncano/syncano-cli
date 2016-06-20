@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-from tests.base import InstanceMixin, IntegrationTest
-
 from syncano.models import RuntimeChoices
 from syncano_cli.main import cli
+from tests.base import InstanceMixin, IntegrationTest
 
 
 class ExecuteCommandsTest(InstanceMixin, IntegrationTest):
