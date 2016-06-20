@@ -5,6 +5,7 @@ from ConfigParser import NoOptionError
 
 import click
 from syncano.exceptions import SyncanoDoesNotExist
+
 from syncano_cli.logger import get_logger
 
 from .connection import create_connection

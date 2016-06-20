@@ -41,5 +41,9 @@ class DataAggregated(object):
 
         return without_relations + with_relations
 
+    def clear(self):
+        self.classes = []
+        self.reference_map = defaultdict(dict)
+
 
 data_aggregate = DataAggregated()

@@ -80,7 +80,6 @@ def pull(context, script, all, instance, **kwargs):
     configuration file. If you want to pull all objects from syncano use
     -a/--all flag.
     """
-    LOG.info('test')
     con = syncano.connect(api_key=context.obj['key'], instance_name=instance)
     klass = kwargs.pop('class')
     context.obj['project'].update_from_instance(con, all, klass, script)
