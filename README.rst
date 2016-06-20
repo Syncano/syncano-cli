@@ -148,3 +148,15 @@ Tips & Troubleshooting
     * https://gitter.im/Syncano/community-pl
 * Slack: 
     * http://syncano-community.github.io/slack-invite/
+
+
+Running scripts
+===============
+
+This command will allow you to execute any script (Script Endpoint) with optional payload and read the output.
+
+Usage:
+
+::
+
+    syncano execute <instance_name> <script_endpoint_name> --payload="<payload_in_JSON_format>"
