@@ -10,6 +10,8 @@ import syncano
 import yaml
 from click.testing import CliRunner
 from syncano.models import RuntimeChoices
+from syncano_cli.config import ACCOUNT_CONFIG, ACCOUNT_CONFIG_PATH
+from syncano_cli.main import cli
 
 
 class IntegrationTest(unittest.TestCase):
@@ -63,6 +65,15 @@ class BaseCLITest(InstanceMixin, IntegrationTest):
         super(BaseCLITest, cls).setUpClass()
         cls.yml_file = 'syncano.yml'
         cls.scripts_dir = 'scripts/'
+
+    def setUp(self):
+        self.runner.invoke(cli, args=['login'], obj={})
+        self.assert_config_variable_exists(ACCOUNT_CONFIG, 'DEFAULT', 'key')
+
+    def tearDown(self):
+        # remove the .syncano file
+        os.remove(ACCOUNT_CONFIG_PATH)
+        self.assertFalse(os.path.isfile(ACCOUNT_CONFIG_PATH))
 
     def assert_file_exists(self, path):
         self.assertTrue(os.path.isfile(path))
