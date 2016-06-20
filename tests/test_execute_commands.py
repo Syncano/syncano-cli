@@ -9,10 +9,10 @@ class ExecuteCommandsTest(InstanceMixin, IntegrationTest):
 
     @classmethod
     def setUpClass(cls):
+        super(ExecuteCommandsTest, cls).setUpClass()
         # do a login
         cls.runner.invoke(cli, args=['login'], obj={})
         cls.assert_config_variable_exists(ACCOUNT_CONFIG, 'DEFAULT', 'key')
-        super(ExecuteCommandsTest, cls).setUpClass()
 
     def _create_script_endpoint(self, source, name_prefix):
         script = self.instance.scripts.create(
