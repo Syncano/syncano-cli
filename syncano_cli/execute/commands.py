@@ -5,10 +5,10 @@ from ConfigParser import NoOptionError
 
 import click
 from syncano.exceptions import SyncanoDoesNotExist
-
 from syncano_cli.base.connection import create_connection
 from syncano_cli.config import ACCOUNT_CONFIG_PATH
 from syncano_cli.logger import get_logger
+
 from .utils import print_response
 
 LOG = get_logger('syncano-execute')

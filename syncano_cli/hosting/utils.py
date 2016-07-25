@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import os
-
 import time
 
 
@@ -29,14 +28,24 @@ class HostingCommands(object):
                     file_path = '{}/{}'.format(path, single_file)
                 else:
                     file_path = single_file
-                print(file_path)
+
                 sys_path = os.path.join(folder, single_file)
                 with open(sys_path, 'rb') as upload_file:
                     hosting.upload_file(path=file_path, file=upload_file)
 
-            time.sleep(1)  # avoid throttling;
             uploaded_files.append(file_path)
+            time.sleep(1)  # avoid throttling;
         return uploaded_files
+
+    def create_hosting(self, label, domain):
+        hosting = self.instance.hostings.create(
+            label=label,
+            domains=[domain]
+        )
+        return hosting
+
+    def print_hostng_created_info(self, created_hosting):
+        print('{label:30}{domains}'.format(label=created_hosting.label, domains=created_hosting.domains))
 
     def _get_hosting(self, domain):
         hostings = self.instance.hostings.all()
@@ -56,5 +65,6 @@ class HostingCommands(object):
         for file_path in hosting_files:
             print(file_path)
 
-    def _print_separator(self):
+    @staticmethod
+    def _print_separator():
         print(79 * '-')
