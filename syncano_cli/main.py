@@ -7,6 +7,7 @@ import click
 from syncano.exceptions import SyncanoException
 from syncano_cli.commands import top_level
 from syncano_cli.execute.commands import top_execute
+from syncano_cli.hosting.commands import top_hosting
 from syncano_cli.parse_to_syncano.commands import top_migrate
 from syncano_cli.sync.commands import top_sync
 
@@ -18,6 +19,7 @@ cli = click.CommandCollection(
         top_sync,
         top_migrate,
         top_execute,
+        top_hosting,
     ])
 
 

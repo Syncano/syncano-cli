@@ -126,6 +126,25 @@ Run migration
 This command will run the synchronization process between Parse and Syncano. Sit comfortably in your chair and read
 the output.
 
+Syncano Hosting
+---------------
+
+Syncano Hosting is a simple way to host the static files. CLI supports it in the following way:
+
+::
+
+    syncano hosting <instance_name> --list-files
+
+This command will list files in hosting which match the default hosting.
+
+::
+
+    syncano hosting <instance_name> --publish <base_dir>
+
+This command will publish all files inside <base_dir> and will publish it to the Syncano Hosting (default one).
+The whole directory structure - will be mapped in Syncano Hosting.
+
+
 Tips & Troubleshooting
 ----------------------
 
