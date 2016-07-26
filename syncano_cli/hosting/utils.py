@@ -2,6 +2,10 @@
 import os
 import time
 
+from syncano_cli.logger import get_logger
+
+LOG = get_logger('syncano-hosting')
+
 
 class HostingCommands(object):
 
@@ -31,6 +35,7 @@ class HostingCommands(object):
 
                 sys_path = os.path.join(folder, single_file)
                 with open(sys_path, 'rb') as upload_file:
+                    LOG.info('Uploading file: {}'.format(file_path))
                     hosting.upload_file(path=file_path, file=upload_file)
 
                 uploaded_files.append(file_path)
