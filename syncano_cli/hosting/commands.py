@@ -34,7 +34,7 @@ def hosting(config, instance_name, list, create, label, list_files, publish, dom
         return 'default' if not provided_domain else provided_domain
 
     def validate_publish(base_dir):
-        if not os.isdir(base_dir):
+        if not os.path.isdir(base_dir):
             LOG.error('You should provide a project root directory here.')
             sys.exit(1)
 
