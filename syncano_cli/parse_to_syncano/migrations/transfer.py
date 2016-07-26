@@ -67,6 +67,7 @@ class SyncanoTransfer(ParseConnectionMixin, SyncanoConnectionMixin, PaginationMi
                     class_to_process.syncano_name, instance.name)
                 )
                 LOG.warning(e)
+            time.sleep(1)  # avoid throttling;
 
         self.set_relations(relations)
 
@@ -97,6 +98,8 @@ class SyncanoTransfer(ParseConnectionMixin, SyncanoConnectionMixin, PaginationMi
                     objects_to_add.append(batched_syncano_object)
                     parse_ids.append(data_object['objectId'])
 
+                    time.sleep(6)  # avoid throttling;
+
                 # if objects to add is less than < 10 elements
                 if objects_to_add:
                     self._add_last_objects(s_class, objects_to_add, parse_ids, class_to_process, processed)
@@ -108,7 +111,7 @@ class SyncanoTransfer(ParseConnectionMixin, SyncanoConnectionMixin, PaginationMi
                 id=self.data.reference_map[parse_class_name][parse_id],
                 files=files
             )
-            time.sleep(4)  # avoid throttling;
+            time.sleep(1)  # avoid throttling;
 
     def get_class(self, instance, class_name):
         s_class = self.syncano_classes.get(class_name)
