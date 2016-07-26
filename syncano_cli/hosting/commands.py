@@ -19,18 +19,14 @@ def top_hosting():
 @top_hosting.command()
 @click.option('--config', help=u'Account configuration file.')
 @click.argument('instance_name', envvar='SYNCANO_INSTANCE')
-@click.option('--list', is_flag=True, help='List available hostings in instance.')
-@click.option('--create', is_flag=True, help='Create hosting with specified domain.')
-@click.option('--label', required=False)
 @click.option('--list-files', is_flag=True, help='List files within the hosting.')
 @click.option('--publish', type=str, help='Publish files from the local directory to the Syncano Hosting.')
-@click.argument('domain', required=False)
-def hosting(config, instance_name, list, create, label, list_files, publish, domain):
+def hosting(config, instance_name, list_files, publish):
     """
     Execute script endpoint in given instance
     """
 
-    def validate_domain(provided_domain):
+    def validate_domain(provided_domain=None):
         return 'default' if not provided_domain else provided_domain
 
     def validate_publish(base_dir):
@@ -45,29 +41,18 @@ def hosting(config, instance_name, list, create, label, list_files, publish, dom
 
         hosting_commands = HostingCommands(instance)
 
-        if list:
-            LOG.info('List the hosting in instance: {}'.format(instance_name))
-            hosting_list = hosting_commands.list_hosting()
-            hosting_commands.print_hosting_list(hosting_list)
-
         if list_files:
-            domain = validate_domain(domain)
+            domain = validate_domain()
             LOG.info('List the hosting files: {} in instance: {}'.format(domain, instance_name))
             hosting_files = hosting_commands.list_hosting_files(domain=domain)
             hosting_commands.print_hosting_files(hosting_files)
 
         if publish:
-            domain = validate_domain(domain)
+            domain = validate_domain()
             LOG.info('Publish the hosting files: {} in instance: {}'.format(domain, instance_name))
             validate_publish(base_dir=publish)
             uploaded_files = hosting_commands.publish(domain=domain, base_dir=publish)
             hosting_commands.print_hosting_files(uploaded_files)
-
-        if create:
-            LOG.info('Create hosting in instance: {}'.format(instance_name))
-            domain = validate_domain(domain)
-            created_hosting = hosting_commands.create_hosting(domain=domain, label=label)
-            hosting_commands.print_hostng_created_info(created_hosting)
 
     except Exception as e:
         LOG.error(e)

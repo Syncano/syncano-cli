@@ -2,6 +2,8 @@
 import os
 import time
 
+import sys
+
 from syncano_cli.logger import get_logger
 
 LOG = get_logger('syncano-hosting')
@@ -19,12 +21,20 @@ class HostingCommands(object):
 
     def list_hosting_files(self, domain):
         hosting = self._get_hosting(domain=domain)
+        if not hosting:
+            LOG.warn('No default hosting found. Exit.')
+            sys.exit(1)
+
         files_list = hosting.list_files()
         return files_list
 
     def publish(self, domain, base_dir):
         uploaded_files = []
         hosting = self._get_hosting(domain=domain)
+        if not hosting:
+            # create a new hosting if no default is present;
+            hosting = self.create_hosting(label='Default hosting', domain=domain)
+
         for folder, subs, files in os.walk(base_dir):
             path = folder.split(base_dir)[1][1:]  # skip the /
             for single_file in files:
@@ -49,20 +59,11 @@ class HostingCommands(object):
         )
         return hosting
 
-    def print_hostng_created_info(self, created_hosting):
-        print('{label:30}{domains}'.format(label=created_hosting.label, domains=created_hosting.domains))
-
     def _get_hosting(self, domain):
         hostings = self.instance.hostings.all()
         for hosting in hostings:
             if domain in hosting.domains:
                 return hosting
-
-    def print_hosting_list(self, hosting_list):
-        print('Label: Domains')
-        self._print_separator()
-        for label, domains in hosting_list:
-            print('{label:30}{domains}'.format(label=label, domains=domains))
 
     def print_hosting_files(self, hosting_files):
         print('Hosting files:')
