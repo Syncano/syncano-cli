@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
-import time
-
 import sys
+import time
 
 from syncano_cli.logger import get_logger
 
