@@ -1,0 +1,76 @@
+{
+    "results": [
+        {
+            "className": "blu_bla",
+            "fields": {
+                "smthg": {
+                    "type": "String"
+                },
+                "ACL": {
+                    "type": "ACL"
+                },
+                "createdAt": {
+                    "type": "Date"
+                },
+                "objectId": {
+                    "type": "String"
+                },
+                "updatedAt": {
+                    "type": "Date"
+                }
+            }
+        },
+        {
+            "className": "test_class_1234",
+            "fields": {
+                "picture": {
+                    "type": "File"
+                },
+                "geo_test": {
+                    "type": "GeoPoint"
+                },
+                "ttt": {
+                    "type": "Array"
+                },
+                "barg": {
+                    "type": "Number"
+                },
+                "updatedAt": {
+                    "type": "Date"
+                },
+                "ACL": {
+                    "type": "ACL"
+                },
+                "darg": {
+                    "type": "Date"
+                },
+                "carg": {
+                    "type": "Boolean"
+                },
+                "createdAt": {
+                    "type": "Date"
+                },
+                "objectId": {
+                    "type": "String"
+                },
+                "blubla": {
+                    "targetClass": "blu_bla",
+                    "type": "Pointer"
+                },
+                "testarray": {
+                    "type": "Array"
+                },
+                "blu": {
+                    "targetClass": "blu_bla",
+                    "type": "Relation"
+                },
+                "testobject": {
+                    "type": "Object"
+                },
+                "aarg": {
+                    "type": "String"
+                }
+            }
+        }
+    ]
+}

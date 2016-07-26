@@ -5,10 +5,11 @@ import os
 import re
 from collections import defaultdict
 
-from syncano.models import fields
-from syncano.models.incentives import Script
+from syncano.exceptions import SyncanoRequestError
+from syncano_cli.logger import get_logger
 
-from . import LOG, mute_log
+LOG = get_logger('syncano-sync')
+
 
 ALLOWED_RUNTIMES = {
     'golang': '.go',
@@ -17,24 +18,12 @@ ALLOWED_RUNTIMES = {
     'nodejs_library_v1.0': '.js',
     'php': '.php',
     'python': '.py',
+    'python3': '.py',
     'python_library_v4.2': '.py',
     'python_library_v5.0': '.py',
     'ruby': '.rb',
     'swift': '.swift',
 }
-
-# FIXME: Waiting for python library runtime_name field fix.
-runtime_field = Script._meta.get_field('runtime_name')
-if isinstance(runtime_field, fields.ChoiceField):
-    field = fields.StringField(
-        name=runtime_field.name,
-        label=runtime_field.label,
-        model=runtime_field.model
-    )
-    setattr(Script, 'runtime_name', field)
-    Script._meta.field_names.remove(runtime_field.name)
-    Script._meta.fields.remove(runtime_field)
-    Script._meta.add_field(field)
 
 
 def get_runtime_extension(runtime):
@@ -65,8 +54,12 @@ def pull_scripts(instance, include):
     seen_labels = set()
 
     if not os.path.exists('scripts'):
-        LOG.debug("Creating scripts directory")
+        LOG.info("Creating scripts directory")
         os.makedirs('scripts')
+
+    script_endpoints = defaultdict(list)
+    for endpoint in instance.script_endpoints.all():
+        script_endpoints[endpoint.script].append(endpoint.name)
 
     for script in instance.scripts.all():
 
@@ -101,6 +94,8 @@ def pull_scripts(instance, include):
             'script': path,
             'runtime': script.runtime_name
         }
+        if script.id in script_endpoints:
+            script_info['endpoints'] = script_endpoints[script.id]
 
         if script.config:
             script_info['config'] = script.config
@@ -109,20 +104,28 @@ def pull_scripts(instance, include):
     return pulled
 
 
-def push_scripts(instance, scripts):
+def push_scripts(instance, scripts, config_only=True):
     """
     Push selected scripts to instance.
         - instance - instance object to push scripts to
         - scripts - a list of dictionaries containing configurations for
                     scripts
     """
-    LOG.debug('Pushing scripts')
-    LOG.debug('Pulling remote scripts')
+    LOG.info('Pushing scripts')
+    LOG.info('Pulling remote scripts')
+
+    endpoints = {}
     remote_scripts_mapping = defaultdict(list)
     for remote_script in instance.scripts.all():
         remote_scripts_mapping[remote_script.label].append(remote_script)
 
-    LOG.debug('Pushing local scripts')
+    existing_endpoints = defaultdict(list)
+
+    for endpoint in instance.script_endpoints.all():
+        existing_endpoints[endpoint.script].append(endpoint.name)
+        endpoints[endpoint.name] = endpoint
+
+    LOG.info('Pushing local scripts')
     for s in scripts:
         if s['label'] in remote_scripts_mapping:
             remote_count = len(remote_scripts_mapping[s['label']])
@@ -135,7 +138,7 @@ def push_scripts(instance, scripts):
             remote_script = instance.scripts.model(
                 label=s['label'],
                 runtime_name=s['runtime'],
-                instance_name=instance.name,
+                instance_name=instance.instance_name,
                 config={}
             )
         with open(s['script'], 'rb') as source:
@@ -144,9 +147,30 @@ def push_scripts(instance, scripts):
         config = s.get('config', {})
         remote_script.config.update(config)
 
-        LOG.debug('Pushing script {label}'.format(**s))
-        with mute_log():
-            remote_script.save()
+        LOG.info('Pushing script {label}'.format(**s))
+        remote_script.save()
+
+        existing_set = {name for name in existing_endpoints[remote_script.id]}
+        script_endpoints = set(s.get('endpoints', []))
+        new_endpoints = script_endpoints - existing_set
+        old_endpoints = existing_set - script_endpoints
+
+        for name in old_endpoints:
+            endpoints[name].delete()
+
+        for name in new_endpoints:
+            endpoint = instance.script_endpoints.model(
+                instance_name=instance.instance_name,
+                name=name,
+                script=remote_script.id
+            )
+            try:
+                endpoint.save()
+            except SyncanoRequestError as e:
+                raise ValueError(
+                    'Error when saving endpoint "{0}" for script "{1}": {2}.'
+                    .format(name, remote_script.label, e.message)
+                )
 
 
 def validate_script(script):

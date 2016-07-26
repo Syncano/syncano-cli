@@ -6,10 +6,13 @@ import os
 import time
 
 import yaml
+from syncano_cli.logger import get_logger
 
-from . import LOG
 from .classes import pull_classes, push_classes, validate_classes
 from .scripts import pull_scripts, push_scripts, validate_scripts
+from .utils import compare_dicts
+
+LOG = get_logger('syncano-sync')
 
 
 class Project(object):
@@ -48,6 +51,7 @@ class Project(object):
                              scripts=None):
         """Updates project data from instances"""
         LOG.info("Pulling instance data from syncano")
+        prev_classes = self.classes
         classes = classes or self.classes.keys()
         scripts = scripts or set(s['label'] for s in self.scripts)
         if all:
@@ -55,6 +59,14 @@ class Project(object):
             scripts = None
         self.classes = pull_classes(instance, classes)
         self.scripts = pull_scripts(instance, scripts)
+
+        state = ("Not changed", "Added", "Removed", "Updated")
+        if self.classes and all:
+            LOG.info("Stats for classes")
+            for info, classes in zip(state, compare_dicts(self.classes, prev_classes)):
+                if classes:
+                    LOG.info('%s : %s', info, ','.join(classes))
+
         LOG.info("Finished pulling instance data from syncano")
 
     def push_to_instance(self, instance, all=False, classes=None,
@@ -65,7 +77,12 @@ class Project(object):
             with open('.sync', 'wb'):  # touch file
                 pass
             last_sync = 0
-        scripts = scripts or self.scripts
+
+        if all or scripts is None:
+            scripts = self.scripts
+        else:
+            scripts = [s for s in self.scripts if s['label'] in scripts]
+
         scripts = [s for s in scripts
                    if all or os.path.getmtime(s['script']) > last_sync]
 
@@ -73,14 +90,15 @@ class Project(object):
             push_scripts(instance, scripts)
 
         sync_classes = self.classes
-        if classes and not all:
+        if classes is not None and not all:
             sync_classes = {c: self.classes[c] for c in classes}
 
-        if self.timestamp > last_sync:
+        if self.timestamp > last_sync and sync_classes:
             push_classes(instance, sync_classes)
         elif not scripts:
             LOG.info('Nothing to sync.')
         now = time.time()
+        self.timestamp = now
         os.utime('.sync', (now, now))
 
     def validate(self):
