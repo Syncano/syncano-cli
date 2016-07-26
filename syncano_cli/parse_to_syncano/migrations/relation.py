@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # a relation helper
 import time
+
 from syncano.models import Object
 from syncano_cli.logger import get_logger
 from syncano_cli.parse_to_syncano.config import PARSE_PAGINATION_LIMIT
