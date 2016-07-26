@@ -98,7 +98,7 @@ class SyncanoTransfer(ParseConnectionMixin, SyncanoConnectionMixin, PaginationMi
                     objects_to_add.append(batched_syncano_object)
                     parse_ids.append(data_object['objectId'])
 
-                    time.sleep(6)  # avoid throttling;
+                    time.sleep(1)  # avoid throttling;
 
                 # if objects to add is less than < 10 elements
                 if objects_to_add:
