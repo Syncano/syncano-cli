@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import os
 import sys
 
 import click
@@ -29,9 +30,12 @@ def hosting(config, instance_name, list, create, label, list_files, publish, dom
     Execute script endpoint in given instance
     """
 
-    def validate_domain(domain):
-        if not domain:
-            LOG.info('Domain is required if you want to list hosting files.')
+    def validate_domain(provided_domain):
+        return 'default' if not provided_domain else provided_domain
+
+    def validate_publish(base_dir):
+        if not os.isdir(base_dir):
+            LOG.error('You should provide a project root directory here.')
             sys.exit(1)
 
     config = config or ACCOUNT_CONFIG_PATH
@@ -46,17 +50,18 @@ def hosting(config, instance_name, list, create, label, list_files, publish, dom
             hosting_commands.print_hosting_list(hosting_list)
 
         if list_files:
-            validate_domain(domain)
+            domain = validate_domain(domain)
             hosting_files = hosting_commands.list_hosting_files(domain=domain)
             hosting_commands.print_hosting_files(hosting_files)
 
         if publish:
-            validate_domain(domain)
+            domain = validate_domain(domain)
+            validate_publish(base_dir=publish)
             uploaded_files = hosting_commands.publish(domain=domain, base_dir=publish)
             hosting_commands.print_hosting_files(uploaded_files)
 
         if create:
-            validate_domain(domain)
+            domain = validate_domain(domain)
             created_hosting = hosting_commands.create_hosting(domain=domain, label=label)
             hosting_commands.print_hostng_created_info(created_hosting)
 
