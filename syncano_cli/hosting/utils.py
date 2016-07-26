@@ -33,8 +33,8 @@ class HostingCommands(object):
                 with open(sys_path, 'rb') as upload_file:
                     hosting.upload_file(path=file_path, file=upload_file)
 
-            uploaded_files.append(file_path)
-            time.sleep(1)  # avoid throttling;
+                uploaded_files.append(file_path)
+                time.sleep(1)  # avoid throttling;
         return uploaded_files
 
     def create_hosting(self, label, domain):

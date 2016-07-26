@@ -144,12 +144,16 @@ This command will list available hosting in instance.
 
 This command will list files in hosting which match the domain.
 
+<domain> is not required - a 'default' would be used if not provided.
+
 ::
 
     syncano hosting <instance_name> --create --label <new_label> <domain>
 
 This command will create a new hosting in instance with <instance_name>. The <new_label> will be used as label, and the
 <domain> as domain for this hosting.
+
+<domain> is not required - a 'default' would be used if not provided.
 
 ::
 
@@ -158,6 +162,7 @@ This command will create a new hosting in instance with <instance_name>. The <ne
 This command will publish all files inside <base_dir> and will publish it to the Syncano Hosting. The whole
 directory structure - will be mapped in Syncano Hosting.
 
+<domain> is not required - a 'default' would be used if not provided.
 
 Tips & Troubleshooting
 ----------------------
