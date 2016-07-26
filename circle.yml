@@ -11,6 +11,7 @@ test:
     - pip install -r requirements-tests.txt
     - flake8 .
     - isort --recursive --check-only .
+    - python setup.py check -s --restructuredtext
     - python setup.py test
 
 deployment:
