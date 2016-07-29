@@ -42,6 +42,8 @@ class HostingCommands(object):
                 else:
                     file_path = single_file
 
+                self._validate_path(file_path)
+
                 sys_path = os.path.join(folder, single_file)
                 with open(sys_path, 'rb') as upload_file:
                     LOG.info('Uploading file: {}'.format(file_path))
@@ -63,6 +65,13 @@ class HostingCommands(object):
         for hosting in hostings:
             if domain in hosting.domains:
                 return hosting
+
+    def _validate_path(self, file_path):
+        try:
+            file_path.decode('ascii')
+        except UnicodeEncodeError:
+            LOG.error('Unicode characters in path are not supported. Check the files names.')
+            sys.exit(1)
 
     def print_hosting_files(self, hosting_files):
         print('Hosting files:')
