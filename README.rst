@@ -8,8 +8,7 @@ Installation
 
     pip install syncano-cli
 
-Usage
------
+**Usage:**
 
 First you need to login into your account
 
@@ -86,8 +85,7 @@ Syncano Parse migration tool
 
 This tool will help you to move your data from Parse to Syncano.
 
-Usage
------
+**Usage:**
 
 Currently supports only transferring data. This tool takes the Parse schemas and transform them to Syncano classes.
 Next step is to move all of the data between Parse and Syncano. The last step is rebuilding the relations between
@@ -117,7 +115,7 @@ The configuration will be stored in your home directory in .syncano file under t
 It's used to call the Parse API and Syncano API as well.
 
 Run migration
-------------
+-------------
  
 ::
 
@@ -127,7 +125,7 @@ This command will run the synchronization process between Parse and Syncano. Sit
 the output.
 
 Syncano Hosting
----------------
+===============
 
 Syncano Hosting is a simple way to host the static files. CLI supports it in the following way:
 
@@ -174,7 +172,7 @@ Running scripts
 
 This command will allow you to execute any script (Script Endpoint) with optional payload and read the output.
 
-Usage:
+**Usage:**
 
 ::
 
