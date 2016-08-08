@@ -1,13 +1,11 @@
 import os
 
+import click
 import six
 import syncano
-from syncano_cli.logger import get_logger
 from watchdog.events import FileSystemEventHandler
 
 from .project import Project
-
-LOG = get_logger('syncano-sync')
 
 
 class ProjectEventHandler(FileSystemEventHandler):
@@ -22,15 +20,14 @@ class ProjectEventHandler(FileSystemEventHandler):
         return os.path.relpath(path)
 
     def on_change(self, event):
-        LOG.debug(event)
         path = self.normalize_path(event.src_path)
         if path == self.project_file:
             try:
                 project = Project.from_config(path)
                 self.update_changes(project)
             except Exception as e:
-                LOG.warning('There was a problem parsing configuration file:'
-                            '%s', e)
+                click.echo('WARN: There was a problem parsing configuration file:'
+                           ' %s', e)
         else:
             changed_scripts = []
             for script in self.project.scripts:
@@ -48,7 +45,7 @@ class ProjectEventHandler(FileSystemEventHandler):
         self.on_change(event)
 
     def update_changes(self, new_project):
-        LOG.info('checking for changes')
+        click.echo('INFO: checking for changes')
 
         old_scripts = {s['label']: s for s in self.project.scripts}
         changed_scripts = []
@@ -62,8 +59,7 @@ class ProjectEventHandler(FileSystemEventHandler):
         for name, klass in six.iteritems(new_project.classes):
             if name not in old_classes or klass != old_classes[name]:
                 changed_clasess.append(klass)
-        LOG.debug('changed_clasess: %s', changed_clasess)
-        LOG.debug('changed_scripts: %s', changed_scripts)
+
         new_project.push_to_instance(self.instance, classes=changed_clasess,
                                      scripts=changed_scripts)
         self.project = new_project

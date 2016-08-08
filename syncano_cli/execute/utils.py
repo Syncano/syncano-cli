@@ -3,10 +3,6 @@ from __future__ import print_function
 
 import json
 
-from syncano_cli.logger import get_logger
-
-LOG = get_logger('syncano-execute')
-
 
 def print_response(response):
     if hasattr(response, 'result'):

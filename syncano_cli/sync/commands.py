@@ -9,13 +9,10 @@ from ConfigParser import NoOptionError
 import click
 import syncano
 from syncano_cli.config import ACCOUNT_CONFIG, ACCOUNT_CONFIG_PATH
-from syncano_cli.logger import get_logger
 from syncano_cli.sync.project import Project
 from watchdog.observers import Observer
 
 from .watch import ProjectEventHandler
-
-LOG = get_logger('syncano-sync')
 
 
 @click.group()
@@ -46,7 +43,7 @@ def sync(context, file, config, key):
     try:
         context.obj['key'] = key or ACCOUNT_CONFIG.get('DEFAULT', 'key')
     except NoOptionError:
-        LOG.error('Do a login first: syncano login.')
+        click.echo(u'ERROR: Do a login first: syncano login.')
         sys.exit(1)
     context.obj['project'] = Project.from_config(context.obj['file'])
 
@@ -100,7 +97,7 @@ def watch(context, instance):
     context.obj['project'].timestamp = 0
     context.obj['instance'] = instance
     do_push(context, classes=None, scripts=None, all=True, instance=instance)  # TODO: use context or arguments
-    LOG.info(u"Watching for file changes")
+    click.echo(u"INFO: Watching for file changes")
     observer = Observer()
     observer.schedule(ProjectEventHandler(context), path='.', recursive=True)
     observer.start()

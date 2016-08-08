@@ -2,11 +2,10 @@
 
 import json
 
+import click
 import requests
-from syncano_cli.logger import get_logger
+from syncano_cli.parse_to_syncano.migrations.aggregation import ClassAggregate
 from syncano_cli.parse_to_syncano.parse.constants import ParseFieldTypeE
-
-LOG = get_logger('parse-to-syncano')
 
 
 class SyncanoSchema(object):
@@ -102,7 +101,7 @@ class ClassProcessor(object):
         for i, item in enumerate(value):
             if isinstance(item, dict):
                 if item.get('__type') == ParseFieldTypeE.POINTER:
-                    LOG.warning('Array of pointers not supported, writing: {}'.format(item.get('objectId')))
+                    click.echo('\nINFO: Array of pointers not supported, writing: {}'.format(item.get('objectId')))
                     value[i] = item['objectId']
         values_list = json.dumps(value)
         processed_object[key.lower()] = values_list
@@ -180,3 +179,17 @@ class ClassProcessor(object):
         if name.startswith('_'):
             name = 'internal_' + name[1:].lower()
         return name
+
+    @classmethod
+    def show_class_name(cls, klass):
+        """
+        Displays class name in click progress bar.
+        :param klass: the class name;
+        :return: Formatted class name;
+        """
+        if klass is not None:
+            if isinstance(klass, ClassAggregate):
+                return u"Class: {}".format(klass.syncano_name)
+            elif isinstance(klass, tuple):
+                return u"Class: {}".format(klass[0])
+        return u'Done.'

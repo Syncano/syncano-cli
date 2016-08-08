@@ -5,11 +5,8 @@ import os
 import re
 from collections import defaultdict
 
+import click
 from syncano.exceptions import SyncanoRequestError
-from syncano_cli.logger import get_logger
-
-LOG = get_logger('syncano-sync')
-
 
 ALLOWED_RUNTIMES = {
     'golang': '.go',
@@ -54,7 +51,7 @@ def pull_scripts(instance, include):
     seen_labels = set()
 
     if not os.path.exists('scripts'):
-        LOG.info("Creating scripts directory")
+        click.echo("INFO: Creating scripts directory")
         os.makedirs('scripts')
 
     script_endpoints = defaultdict(list)
@@ -74,15 +71,15 @@ def pull_scripts(instance, include):
         filename = filename_for_script(script)
 
         if filename in seen_names:
-            LOG.warn("Script {0.label}({0.id}) label clashes with"
-                     "script {1.label}({1.id}). Skipping."
-                     .format(script, seen_names[filename]))
+            click.echo("WARN: Script {0.label}({0.id}) label clashes with"
+                       " script {1.label}({1.id}). Skipping."
+                       .format(script, seen_names[filename]))
             continue
         seen_names[filename] = script
 
         if filename != script.label:
-            LOG.warn('Saving script "{0}" as "{1}"'.format(script.label,
-                                                           filename))
+            click.echo('WARN: Saving script "{0}" as "{1}"'.format(script.label,
+                                                                   filename))
 
         path = os.path.join('scripts', filename)
 
@@ -111,8 +108,8 @@ def push_scripts(instance, scripts, config_only=True):
         - scripts - a list of dictionaries containing configurations for
                     scripts
     """
-    LOG.info('Pushing scripts')
-    LOG.info('Pulling remote scripts')
+    click.echo('INFO: Pushing scripts')
+    click.echo('INFO: Pulling remote scripts')
 
     endpoints = {}
     remote_scripts_mapping = defaultdict(list)
@@ -125,13 +122,13 @@ def push_scripts(instance, scripts, config_only=True):
         existing_endpoints[endpoint.script].append(endpoint.name)
         endpoints[endpoint.name] = endpoint
 
-    LOG.info('Pushing local scripts')
+    click.echo('INFO: Pushing local scripts')
     for s in scripts:
         if s['label'] in remote_scripts_mapping:
             remote_count = len(remote_scripts_mapping[s['label']])
             if remote_count > 1:
-                LOG.error('You have {0} scripts with label {1} on'
-                          'syncano. Skipping'.format(remote_count, s['label']))
+                click.error('ERROR: You have {0} scripts with label {1} on'
+                            ' syncano. Skipping'.format(remote_count, s['label']))
                 continue
             remote_script = remote_scripts_mapping[s['label']][0]
         else:
@@ -147,7 +144,7 @@ def push_scripts(instance, scripts, config_only=True):
         config = s.get('config', {})
         remote_script.config.update(config)
 
-        LOG.info('Pushing script {label}'.format(**s))
+        click.echo('INFO: Pushing script {label}'.format(**s))
         remote_script.save()
 
         existing_set = {name for name in existing_endpoints[remote_script.id]}
@@ -190,16 +187,16 @@ def validate_script(script):
     runtime = script.get('runtime')
     if not runtime:
         ext = os.path.splitext(source)[1]
-        LOG.warning(
-            'Runtime for script {label} not provided. Guessing runtime basing'
+        click.echo(
+            'WARN: Runtime for script {label} not provided. Guessing runtime basing'
             'on file extension'.format(**script)
         )
 
         for k, v in ALLOWED_RUNTIMES.iteritems():
             if v == ext:
                 script['runtime'] = runtime = k
-                LOG.warning(
-                    'Using runtime {runtime} for script {label}'.format(
+                click.echo(
+                    'WARN: Using runtime {runtime} for script {label}'.format(
                         **script
                     )
                 )
