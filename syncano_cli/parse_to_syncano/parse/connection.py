@@ -33,3 +33,7 @@ class ParseConnection(object):
         if query:
             params.update({'where': json.dumps(query)})
         return self.request(PARSE_API_MAP['classes'].format(class_name=class_name), params=params)
+
+    def get_installations(self, skip=0, limit=1000):
+        params = {'limit': limit, 'skip': skip}
+        return self.request(PARSE_API_MAP['installations'], params=params)

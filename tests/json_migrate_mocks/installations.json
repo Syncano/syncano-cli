@@ -1,0 +1,31 @@
+{
+    "results": [
+        {
+            "channels": [
+                "test"
+            ],
+            "deviceType": "ios",
+            "deviceToken": "4719084371920471208947120984731208947910827409128470912847120894",
+            "objectId": "LpjKqjNP7C",
+            "updatedAt": "2016-08-08T14:16:04.556Z",
+            "pushType": "gcm",
+            "createdAt": "2016-08-08T14:16:04.556Z",
+            "user": {
+                "className": "_User",
+                "__type": "Pointer",
+                "objectId": "sAvSfNaXso"
+            }
+        },
+        {
+            "objectId": "XBTOqjrLYg",
+            "channels": [
+                "test"
+            ],
+            "deviceType": "android",
+            "deviceToken": "86152312314401555",
+            "updatedAt": "2016-08-08T14:16:38.074Z",
+            "pushType": "gcm",
+            "createdAt": "2016-08-08T14:16:38.074Z"
+        }
+    ]
+}

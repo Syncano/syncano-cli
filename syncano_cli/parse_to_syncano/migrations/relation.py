@@ -2,7 +2,6 @@
 # a relation helper
 import time
 
-import click
 from syncano.models import Object
 from syncano_cli.parse_to_syncano.config import PARSE_PAGINATION_LIMIT
 from syncano_cli.parse_to_syncano.migrations.aggregation import data_aggregate
@@ -107,6 +106,3 @@ class RelationProcessor(object):
             config=config
         )
         class_relation_processor.process_class(instance)
-
-
-

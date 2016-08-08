@@ -5,9 +5,8 @@ import json
 import os
 import time
 
-import yaml
-
 import click
+import yaml
 
 from .classes import pull_classes, push_classes, validate_classes
 from .scripts import pull_scripts, push_scripts, validate_scripts

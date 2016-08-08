@@ -2,13 +2,15 @@
 import time
 
 import click
-from syncano.models import Object
 from syncano.exceptions import SyncanoException
-from syncano_cli.parse_to_syncano.config import PARSE_PAGINATION_LIMIT
+from syncano.models import APNSDevice, GCMDevice, Object
+from syncano_cli.parse_to_syncano.config import PARSE_PAGINATION_LIMIT, SYNCANO_BATCH_SIZE
 from syncano_cli.parse_to_syncano.migrations.aggregation import data_aggregate
 from syncano_cli.parse_to_syncano.migrations.mixins import PaginationMixin, ParseConnectionMixin, SyncanoConnectionMixin
 from syncano_cli.parse_to_syncano.migrations.relation import RelationProcessor
+from syncano_cli.parse_to_syncano.parse.constants import DeviceTypeE
 from syncano_cli.parse_to_syncano.processors.klass import ClassProcessor
+from syncano_cli.parse_to_syncano.processors.push_notifications import DeviceProcessor
 
 
 class SyncanoTransfer(ParseConnectionMixin, SyncanoConnectionMixin, PaginationMixin):
@@ -108,7 +110,7 @@ class SyncanoTransfer(ParseConnectionMixin, SyncanoConnectionMixin, PaginationMi
 
                         self._handle_files(files, data_object, class_to_process)
 
-                        if len(objects_to_add) == 10:
+                        if len(objects_to_add) == SYNCANO_BATCH_SIZE:
                             processed, objects_to_add, parse_ids = self._add_objects(
                                 processed, objects_to_add, parse_ids, s_class, class_to_process)
 
@@ -120,10 +122,37 @@ class SyncanoTransfer(ParseConnectionMixin, SyncanoConnectionMixin, PaginationMi
 
                     # if objects to add is less than < 10 elements
                     if objects_to_add:
-                        self._add_last_objects(s_class, objects_to_add, parse_ids, class_to_process, processed)
+                        self._add_last_objects(s_class, objects_to_add, parse_ids, class_to_process)
 
     def transfer_devices(self):
-        pass
+        limit, skip = self.get_limit_and_skip()
+        apns_devices = []
+        gcm_devices = []
+
+        # TODO: store channels somewhere (some additional class)?
+        while True:
+            installations = self.parse.get_installations(limit=limit, skip=skip)
+            if not installations['results']:
+                break
+
+            for installation in installations['results']:
+                syncano_device = DeviceProcessor(data_aggregate=self.data).process(installation)
+                if installation['deviceType'] == DeviceTypeE.IOS:
+                    apns_devices.append(APNSDevice.please.as_batch().create(**syncano_device))
+                elif installation['deviceType'] == DeviceTypeE.ANDROID:
+                    gcm_devices.append(GCMDevice.please.as_batch().create(**syncano_device))
+                else:
+                    click.echo(u'ERROR: Not supported device type: {}. Skipping.'.format(installation['deviceType']))
+                    continue
+
+                apns_devices = self._batch_devices(APNSDevice, apns_devices)
+                gcm_devices = self._batch_devices(GCMDevice, gcm_devices)
+
+            apns_devices = self._batch_devices(APNSDevice, apns_devices, last=True)
+            gcm_devices = self._batch_devices(GCMDevice, gcm_devices, last=True)
+
+            limit += PARSE_PAGINATION_LIMIT
+            skip += PARSE_PAGINATION_LIMIT
 
     def transfer_files(self):
         with click.progressbar(
@@ -163,7 +192,7 @@ class SyncanoTransfer(ParseConnectionMixin, SyncanoConnectionMixin, PaginationMi
                 class_to_process.parse_name
             )
 
-    def _add_last_objects(self, s_class, objects_to_add, parse_ids, class_to_process, processed):
+    def _add_last_objects(self, s_class, objects_to_add, parse_ids, class_to_process):
         created_objects = s_class.objects.batch(
             *objects_to_add
         )
@@ -193,6 +222,23 @@ class SyncanoTransfer(ParseConnectionMixin, SyncanoConnectionMixin, PaginationMi
     def _update_reference_map(self, class_to_process, parse_ids, created_objects):
         for parse_id, syncano_id in zip(parse_ids, [o.id for o in created_objects]):
             self.data.reference_map[class_to_process.parse_name][parse_id] = syncano_id
+
+    @classmethod
+    def _batch_devices(cls, device_class, devices, last=False):
+        if last:
+            device_class.please.batch(
+                *devices
+            )
+            return []
+
+        if len(devices) == SYNCANO_BATCH_SIZE:
+            device_class.please.batch(
+                *devices
+            )
+            time.sleep(1)
+            return []
+
+        return devices
 
     @classmethod
     def _clear_data(cls):

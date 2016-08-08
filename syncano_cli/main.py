@@ -3,9 +3,6 @@ from __future__ import print_function
 
 import sys
 
-sys.path.append('/home/sopalczy/projects/syncano/syncano-cli/')
-sys.path.append('/home/sopalczy/projects/syncano/syncano-python/')
-
 import click
 from syncano.exceptions import SyncanoException
 from syncano_cli.commands import top_level
