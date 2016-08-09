@@ -93,3 +93,9 @@ class MigrateCommandsTest(InstanceMixin, IntegrationTest):
         self.assertListEqual(object_to_test.testarray, ["a", "b", "c", "d"])
         self.assertEqual(object_to_test.barg, 12)
         self.assertEqual(object_to_test.carg, True)
+
+        apns_devices = self.instance.apns_devices.all()
+        gcm_devices = self.instance.gcm_devices.all()
+
+        self.assertEqual(len([apns_d for apns_d in apns_devices]), 1)
+        self.assertEqual(len([gcm_d for gcm_d in gcm_devices]), 1)
