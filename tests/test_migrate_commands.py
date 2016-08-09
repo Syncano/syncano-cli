@@ -76,8 +76,8 @@ class MigrateCommandsTest(InstanceMixin, IntegrationTest):
 
         # remove blu_bla class from classes;
         classes['results'] = classes['results'][1:]
-        # class schemas, objects, installations
-        request_mock.side_effect = [classes, objects, parse_installations]
+        # class schemas, objects, break the objects fetch, installations
+        request_mock.side_effect = [classes, objects, {'results': []}, parse_installations]
 
         self.assertFalse(request_mock.called)
         self.runner.invoke(cli, args=['migrate', 'parse'], obj={}, input='Y')
