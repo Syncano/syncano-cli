@@ -4,6 +4,7 @@ import json
 import mock
 from syncano_cli.config import ACCOUNT_CONFIG
 from syncano_cli.main import cli
+from syncano_cli.parse_to_syncano.processors.push_notifications import DEVICE_CHANNELS_CLASS_NAME
 from tests.base import InstanceMixin, IntegrationTest
 
 
@@ -99,3 +100,6 @@ class MigrateCommandsTest(InstanceMixin, IntegrationTest):
 
         self.assertEqual(len([apns_d for apns_d in apns_devices]), 1)
         self.assertEqual(len([gcm_d for gcm_d in gcm_devices]), 1)
+
+        channels_class = self.instance.classes.get(name=DEVICE_CHANNELS_CLASS_NAME)
+        self.assertEqual(len([channel_cl for channel_cl in channels_class.objects.all()]), 1)

@@ -2,6 +2,8 @@
 from syncano.exceptions import SyncanoException
 from syncano.models import Class
 
+DEVICE_CHANNELS_CLASS_NAME = 'internal_device_channels'
+
 
 class DeviceProcessor(object):
 
@@ -48,6 +50,6 @@ class DeviceProcessor(object):
                 schema=schema
             )
         except SyncanoException:
-            self.channel_class = Class.please.get(name='internal_device_channels')
+            self.channel_class = Class.please.get(name=DEVICE_CHANNELS_CLASS_NAME)
 
         return self.channel_class
