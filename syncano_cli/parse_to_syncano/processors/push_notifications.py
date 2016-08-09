@@ -1,23 +1,19 @@
 # -*- coding: utf-8 -*-
+from syncano.models import Class
 
 
 class DeviceProcessor(object):
 
     def __init__(self, data_aggregate):
+        self.channel_class = None
         self.data_aggregate = data_aggregate
 
     def process(self, parse_installation):
-        syncano_device = {}
-        is_found, parse_user_id = self.find_user(parse_installation)
-
-        if is_found:
-            pass
-            # find syncano user_id
-            # user_id = self.data_aggregate.reference_map['_User'][parse_user_id]
-            # TODO: skip this till the real user creation;
-            # syncano_device['user'] = user_id
-
-        syncano_device['registration_id'] = parse_installation['deviceToken']
+        syncano_device = {
+            'label': '',
+            'registration_id': parse_installation['deviceToken']
+        }
+        self.handle_channels(parse_installation)
         return syncano_device
 
     @classmethod
@@ -26,3 +22,28 @@ class DeviceProcessor(object):
             if isinstance(field_value, dict) and field_value[u'className'] == u'_User':
                 return True, field_value['objectId']
         return False, None
+
+    def handle_channels(self, parse_installation):
+        channel_class = self._get_channel_class()
+        channels = parse_installation['channels']
+        if channels:
+            channel_class.objects.create(
+                channels=channels,
+                registration_id=parse_installation['deviceToken']
+            )
+
+    def _get_channel_class(self):
+        if self.channel_class is not None:
+            return self.channel_class
+
+        schema = [
+            {'type': 'array', 'name': 'channels'},
+            {'type': 'string', 'name': 'registration_id'},
+        ]
+
+        self.channel_class = Class.please.create(
+            name='internal_device_channels',
+            schema=schema
+        )
+
+        return self.channel_class

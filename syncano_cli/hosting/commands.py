@@ -46,7 +46,7 @@ def hosting(config, instance_name, list_files, publish):
 
         if publish:
             domain = validate_domain()
-            click.info(u'INFO: Publish the hosting files: {} in instance: {}'.format(domain, instance_name))
+            click.echo(u'INFO: Publish the hosting files: {} in instance: {}'.format(domain, instance_name))
             validate_publish(base_dir=publish)
             uploaded_files = hosting_commands.publish(domain=domain, base_dir=publish)
             hosting_commands.print_hosting_files(uploaded_files)

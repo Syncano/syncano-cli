@@ -129,7 +129,6 @@ class SyncanoTransfer(ParseConnectionMixin, SyncanoConnectionMixin, PaginationMi
         apns_devices = []
         gcm_devices = []
 
-        # TODO: store channels somewhere (some additional class)?
         while True:
             installations = self.parse.get_installations(limit=limit, skip=skip)
             if not installations['results']:
@@ -229,6 +228,7 @@ class SyncanoTransfer(ParseConnectionMixin, SyncanoConnectionMixin, PaginationMi
             device_class.please.batch(
                 *devices
             )
+            time.sleep(1)
             return []
 
         if len(devices) == SYNCANO_BATCH_SIZE:

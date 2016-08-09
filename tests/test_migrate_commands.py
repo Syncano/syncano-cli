@@ -72,11 +72,12 @@ class MigrateCommandsTest(InstanceMixin, IntegrationTest):
             objects = json.loads(f.read())
 
         with open('tests/json_migrate_mocks/installations.json', 'r+') as f:
-            installations = json.loads(f.read())
+            parse_installations = json.loads(f.read())
 
         # remove blu_bla class from classes;
         classes['results'] = classes['results'][1:]
-        request_mock.side_effect = [classes, objects, installations]
+        # class schemas, objects, files, installations
+        request_mock.side_effect = [classes, objects, {}, parse_installations]
 
         self.assertFalse(request_mock.called)
         self.runner.invoke(cli, args=['migrate', 'parse'], obj={}, input='Y')
