@@ -102,4 +102,4 @@ class MigrateCommandsTest(InstanceMixin, IntegrationTest):
         self.assertEqual(len([gcm_d for gcm_d in gcm_devices]), 1)
 
         channels_class = self.instance.classes.get(name=DEVICE_CHANNELS_CLASS_NAME)
-        self.assertEqual(len([channel_cl for channel_cl in channels_class.objects.all()]), 1)
+        self.assertEqual(len([channel_cl for channel_cl in channels_class.objects.all()]), 2)
