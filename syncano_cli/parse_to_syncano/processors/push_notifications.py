@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from syncano.exceptions import SyncanoException
 from syncano.models import Class
 
 
@@ -10,7 +11,7 @@ class DeviceProcessor(object):
 
     def process(self, parse_installation):
         syncano_device = {
-            'label': '',
+            'label': 'Device migrated from parse',
             'registration_id': parse_installation['deviceToken']
         }
         self.handle_channels(parse_installation)
@@ -41,9 +42,12 @@ class DeviceProcessor(object):
             {'type': 'string', 'name': 'registration_id'},
         ]
 
-        self.channel_class = Class.please.create(
-            name='internal_device_channels',
-            schema=schema
-        )
+        try:
+            self.channel_class = Class.please.create(
+                name='internal_device_channels',
+                schema=schema
+            )
+        except SyncanoException:
+            self.channel_class = Class.please.get(name='internal_device_channels')
 
         return self.channel_class

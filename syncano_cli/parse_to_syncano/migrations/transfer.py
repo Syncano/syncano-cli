@@ -125,9 +125,12 @@ class SyncanoTransfer(ParseConnectionMixin, SyncanoConnectionMixin, PaginationMi
                         self._add_last_objects(s_class, objects_to_add, parse_ids, class_to_process)
 
     def transfer_devices(self):
+        click.echo(u'Transferring devices')
         limit, skip = self.get_limit_and_skip()
         apns_devices = []
         gcm_devices = []
+
+        device_processor = DeviceProcessor(data_aggregate=self.data)
 
         while True:
             installations = self.parse.get_installations(limit=limit, skip=skip)
@@ -135,7 +138,7 @@ class SyncanoTransfer(ParseConnectionMixin, SyncanoConnectionMixin, PaginationMi
                 break
 
             for installation in installations['results']:
-                syncano_device = DeviceProcessor(data_aggregate=self.data).process(installation)
+                syncano_device = device_processor.process(installation)
                 if installation['deviceType'] == DeviceTypeE.IOS:
                     apns_devices.append(APNSDevice.please.as_batch().create(**syncano_device))
                 elif installation['deviceType'] == DeviceTypeE.ANDROID:
