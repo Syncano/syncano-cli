@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 
 class ParseFieldTypeE(object):
@@ -8,3 +9,8 @@ class ParseFieldTypeE(object):
     FILE = 'File'
     GEO_POINT = 'GeoPoint'
     RELATION = 'Relation'
+
+
+class DeviceTypeE(object):
+    IOS = 'ios'
+    ANDROID = 'android'

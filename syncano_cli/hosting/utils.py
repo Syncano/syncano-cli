@@ -3,9 +3,7 @@ import os
 import sys
 import time
 
-from syncano_cli.logger import get_logger
-
-LOG = get_logger('syncano-hosting')
+import click
 
 
 class HostingCommands(object):
@@ -21,7 +19,7 @@ class HostingCommands(object):
     def list_hosting_files(self, domain):
         hosting = self._get_hosting(domain=domain)
         if not hosting:
-            LOG.warn('No default hosting found. Exit.')
+            click.echo(u'WARN: No default hosting found. Exit.')
             sys.exit(1)
 
         files_list = hosting.list_files()
@@ -46,7 +44,7 @@ class HostingCommands(object):
 
                 sys_path = os.path.join(folder, single_file)
                 with open(sys_path, 'rb') as upload_file:
-                    LOG.info('Uploading file: {}'.format(file_path))
+                    click.echo(u'INFO: Uploading file: {}'.format(file_path))
                     hosting.upload_file(path=file_path, file=upload_file)
 
                 uploaded_files.append(file_path)
@@ -70,7 +68,7 @@ class HostingCommands(object):
         try:
             file_path.decode('ascii')
         except UnicodeEncodeError:
-            LOG.error('Unicode characters in path are not supported. Check the files names.')
+            click.echo(u'ERROR: Unicode characters in path are not supported. Check the files names.')
             sys.exit(1)
 
     def print_hosting_files(self, hosting_files):

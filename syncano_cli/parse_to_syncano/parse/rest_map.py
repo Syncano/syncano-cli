@@ -2,5 +2,6 @@
 
 PARSE_API_MAP = {
     'schemas': '1/schemas/',
-    'classes': '1/classes/{class_name}'
+    'classes': '1/classes/{class_name}',
+    'installations': '1/installations/'
 }
