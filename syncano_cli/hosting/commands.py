@@ -20,7 +20,7 @@ def top_hosting():
 @click.option('--publish', type=str, help='Publish files from the local directory to the Syncano Hosting.')
 def hosting(config, instance_name, list_files, publish):
     """
-    Execute script endpoint in given instance
+    Handle hosting and hosting files. Allow to publish static pages to the Syncano Hosting.
     """
 
     def validate_domain(provided_domain=None):
