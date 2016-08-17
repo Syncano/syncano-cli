@@ -1,7 +1,4 @@
 # -*- coding: utf-8 -*-
-# a relation helper
-import time
-
 from syncano.models import Object
 from syncano_cli.parse_to_syncano.config import PARSE_PAGINATION_LIMIT
 from syncano_cli.parse_to_syncano.migrations.aggregation import data_aggregate
@@ -89,7 +86,6 @@ class ClassRelationProcessor(ParseConnectionMixin, PaginationMixin):
                 "instance_name": instance.name
             }
         )
-        time.sleep(1)  # avoid throttling;
 
 
 class RelationProcessor(object):
