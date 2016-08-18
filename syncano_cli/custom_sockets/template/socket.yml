@@ -1,0 +1,29 @@
+name: custom_socket
+author:
+  name: Info
+  email: info@synano.com
+icon:
+  name: icon-name
+  color: ffee11
+description: Some custom integration
+endpoints:
+  - custom_endpoint:
+      script: custom_script
+
+  - custom_endpoint_1:
+      POST:
+        script: custom_script_1
+      GET:
+        script: custom_script_2
+
+dependencies:
+  - scripts:
+      - custom_script:
+          runtime_name: python_library_v5.0
+          file: custom_script.py
+      - custom_script_1:
+          runtime_name: python_library_v5.0
+          file: custom_script_1.py
+      - custom_script_2:
+          runtime_name: python_library_v5.0
+          file: custom_script_2.py

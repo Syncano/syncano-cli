@@ -1,13 +1,20 @@
 # -*- coding: utf-8 -*-
+import json
+import os
+import subprocess
+import yaml
+
 import click
 from syncano.models import CustomSocket, SocketEndpoint
 from syncano_cli.custom_sockets.formatters import SocketFormatter
 
 
-class SocketParser(object):
+class SocketCommand(object):
 
     list_line_template = '{socket_name:^29}|{socket_status:^19}|{status_info:^29}'
     socket_line_template = '{endpoint_name:^39}|{calls:^40}'
+    TEMPLATE_DIR = 'custom_sockets/template/'
+    SOCKET_FILE_NAME = 'socket.yml'
 
     def __init__(self, instance):
         self.instance = instance
@@ -43,10 +50,36 @@ class SocketParser(object):
         print('delete {}'.format(socket_name))
 
     def publish_from_dir(self, dir_path):
-        print('dir publish')
+        with open(os.path.join(dir_path, self.SOCKET_FILE_NAME)) as socket_file:
+            yml_file = yaml.safe_load(socket_file)
+
+        api_data = SocketFormatter.to_json(socket_yml=yml_file, directory=dir_path)
+        api_data.update({'instance_name': self.instance.name})
+        custom_socket = CustomSocket.please.create(**api_data)
+        print(custom_socket.status)
 
     def publish_from_url(self, ulr_path):
         print('url publish')
 
-    def create_template(self, destination):
+    def create_template(self, socket_name, destination):
         print('template {}'.format(destination))
+
+    def create_template_from_local_template(self, destination):
+
+        if not os.path.isdir(destination):
+            os.makedirs(destination)
+
+        for roots, dirs, files in os.walk(self.TEMPLATE_DIR):
+            for dir_name in dirs:
+                if not os.path.isdir(os.path.join(destination, dir_name)):
+                    os.makedirs(os.path.join(destination, dir_name))
+
+            for file_name in files:
+                try:
+                    directory = roots.split(self.TEMPLATE_DIR)[1]
+                except IndexError:
+                    directory = ''
+                with open(os.path.join(roots, file_name), 'r+') as file_to_read:
+                    with open(os.path.join("{}/{}".format(destination, directory) if directory else destination,
+                                           file_name), 'w+') as file_to_write:
+                        file_to_write.write(file_to_read.read())

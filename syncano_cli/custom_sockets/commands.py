@@ -4,7 +4,7 @@ import sys
 import click
 from syncano_cli.base.connection import create_connection
 from syncano_cli.config import ACCOUNT_CONFIG_PATH
-from syncano_cli.custom_sockets.parser import SocketParser
+from syncano_cli.custom_sockets.command import SocketCommand
 
 
 @click.group()
@@ -25,7 +25,7 @@ def sockets(ctx, config, instance_name, **kwargs):
     try:
         connection = create_connection(config)
         instance = connection.Instance.please.get(name=instance_name)
-        socket_parser = SocketParser(instance=instance)
+        socket_parser = SocketCommand(instance=instance)
         ctx.obj['socket_parser'] = socket_parser
 
     except Exception as e:
@@ -41,6 +41,7 @@ def list(ctx, sockets, endpoints):
     socket_parser = ctx.obj['socket_parser']
     if not sockets and not endpoints:
         click.echo('ERROR: specify on of the available flags: --sockets, --endpoints')
+        sys.exit(1)
 
     try:
         if sockets:
@@ -64,6 +65,7 @@ def publish(ctx, **kwargs):
 
     if not directory and not url:
         click.echo('ERROR: specify on of the available flags: --dir, --url')
+        sys.exit(1)
 
     try:
         if directory:
@@ -81,8 +83,7 @@ def publish(ctx, **kwargs):
 @click.pass_context
 @click.option('--details', help=u'Display details of the custom socket.')
 @click.option('--delete', help=u'Deletes the custom socket.')
-@click.option('--template', help=u'Create the template for custom socket creation. Provide output path.')
-def socket(ctx, details, delete, template):
+def socket(ctx, details, delete):
     socket_parser = ctx.obj['socket_parser']
 
     try:
@@ -94,6 +95,29 @@ def socket(ctx, details, delete, template):
 
         if template:
             socket_parser.create_template(destination=template)
+
+    except Exception as e:
+        click.echo(u'ERROR: {}'.format(e))
+        sys.exit(1)
+
+
+@sockets.command()
+@click.pass_context
+@click.option('--output-dir', help=u'Directory path to write socket definition.')
+@click.option('--socket', help=u'Socket name from which the template should be created.')
+@click.option('--default', is_flag=True, help=u'Socket template will be created from local template.')
+def template(ctx, output_dir, socket, default):
+    if not socket and not default:
+        click.echo('ERROR: specify one of the available flags: --socket, --default')
+
+    socket_parser = ctx.obj['socket_parser']
+
+    try:
+        if default:
+            socket_parser.create_template_from_local_template(destination=output_dir)
+
+        if socket:
+            socket_parser.create_template(source=socket, destination=output_dir)
 
     except Exception as e:
         click.echo(u'ERROR: {}'.format(e))
