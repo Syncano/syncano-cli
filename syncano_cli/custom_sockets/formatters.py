@@ -1,4 +1,5 @@
 import os
+import yaml
 
 import click
 import six
@@ -13,7 +14,7 @@ class SocketScopeFormat(object):
 
 class SocketFormatter(object):
 
-    SOCKET_NAMES = ['name', 'description', 'endpoints', 'dependencies']
+    SOCKET_FIELDS = ['name', 'description', 'endpoints', 'dependencies']
     HTTP_METHODS = ['GET', 'POST', 'DELETE', 'PUT', 'PATCH']
     ENDPOINT_TYPES = ['script']
     DEPENDENCY_TYPES = {'scripts': 'script'}
@@ -26,7 +27,21 @@ class SocketFormatter(object):
         :param scope: how many attributes should be processed and showed in output;
         :return: the yml format of the CustomSocket;
         """
-        pass
+        yml_dict = {}
+
+        for socket_field in cls.SOCKET_FIELDS:
+            if socket_field == 'endpoints':
+                yml_dict[socket_field] = cls._yml_process_endpoints(socket_object.endpoints)
+            elif socket_field == 'dependencies':
+                yml_dict[socket_field] = cls._yml_process_dependencies(socket_object.dependencies)
+            else:
+                # TODO: None for skip the description now;
+                yml_dict[socket_field] = getattr(socket_object, socket_field, None)
+
+        for meta_name, meta_data in six.iteritems(socket_object.metadata):
+            yml_dict[meta_name] = meta_data
+
+        return yaml.safe_dump(yml_dict, default_flow_style=False)
 
     @classmethod
     def to_json(cls, socket_yml, directory=None):
@@ -38,7 +53,7 @@ class SocketFormatter(object):
         metadata_dict = {}
         api_dict = {}
         for key, value in six.iteritems(socket_yml):
-            if key not in cls.SOCKET_NAMES:
+            if key not in cls.SOCKET_FIELDS:
                 metadata_dict[key] = value
             else:
                 if key == 'endpoints':
@@ -114,6 +129,26 @@ class SocketFormatter(object):
     def _get_source(cls, file_name, directory):
         with open(os.path.join(directory, 'scripts/{}'.format(file_name)), 'r+') as source_file:
             return source_file.read()
+
+    @classmethod
+    def _yml_process_endpoints(cls, endpoints):
+        yml_endpoints = []
+        print(endpoints)
+        for index, (endpoint_name, endpoint_data) in enumerate(six.iteritems(endpoints)):
+            yml_endpoints.append({endpoint_name: {}})
+            calls = {}
+            for call in endpoint_data['calls']:
+                if call['methods'] == ['*']:
+                    yml_endpoints[index][endpoint_name] = {call['type']: call['name']}
+                else:
+                    for method in call['methods']:
+                        calls.update({method: {call['type']: call['name']}})
+                    yml_endpoints[index][endpoint_name] = calls
+        return yml_endpoints
+
+    @classmethod
+    def _yml_process_dependencies(cls, dependencies):
+        return {}
 
     @classmethod
     def format_socket_details(cls, cs):

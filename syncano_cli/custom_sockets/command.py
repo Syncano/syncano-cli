@@ -56,13 +56,26 @@ class SocketCommand(object):
         api_data = SocketFormatter.to_json(socket_yml=yml_file, directory=dir_path)
         api_data.update({'instance_name': self.instance.name})
         custom_socket = CustomSocket.please.create(**api_data)
-        print(custom_socket.status)
+        click.echo('INFO: socket {} created.'.format(custom_socket.name))
 
-    def publish_from_url(self, ulr_path):
-        print('url publish')
+    def publish_from_url(self, url_path):
+        # TODO: add integration with new url endpoint integration
+        pass
 
     def create_template(self, socket_name, destination):
-        print('template {}'.format(destination))
+
+        if not os.path.isdir(destination):
+            os.makedirs(destination)
+
+        socket = CustomSocket.please.get(name=socket_name, instance_name=self.instance.name)
+
+        yml_file = SocketFormatter.to_yml(socket_object=socket)
+
+        with open(os.path.join(destination, 'socket.yml'), 'w+') as socket_yml:
+            socket_yml.write(yml_file)
+        click.echo('INFO: template created in {}.'.format(destination))
+
+        # TODO: create scripts;
 
     def create_template_from_local_template(self, destination):
 

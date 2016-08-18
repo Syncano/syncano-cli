@@ -117,7 +117,7 @@ def template(ctx, output_dir, socket, default):
             socket_parser.create_template_from_local_template(destination=output_dir)
 
         if socket:
-            socket_parser.create_template(source=socket, destination=output_dir)
+            socket_parser.create_template(socket_name=socket, destination=output_dir)
 
     except Exception as e:
         click.echo(u'ERROR: {}'.format(e))
