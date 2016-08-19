@@ -1,6 +1,19 @@
 Syncano command line tool
 =========================
 
+Build Status
+------------
+
+**Master**
+
+.. image:: https://circleci.com/gh/Syncano/syncano-cli/tree/master.svg?style=svg
+    :target: https://circleci.com/gh/Syncano/syncano-cli/tree/master
+
+**Develop**
+
+.. image:: https://circleci.com/gh/Syncano/syncano-cli/tree/develop.svg?style=svg
+    :target: https://circleci.com/gh/Syncano/syncano-cli/tree/develop
+
 Installation
 ------------
 
