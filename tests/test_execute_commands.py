@@ -26,7 +26,7 @@ class ExecuteCommandsTest(BaseCLITest):
         )
 
         result = self.runner.invoke(cli, args=[
-            'execute', self.instance.name, '{}_test_script_endpoint'.format(name_prefix)
+            'execute', '{}_test_script_endpoint'.format(name_prefix)
         ], obj={})
 
         self.assertIn('ZeroDivisionError', result.output)
@@ -39,7 +39,7 @@ class ExecuteCommandsTest(BaseCLITest):
         )
 
         result = self.runner.invoke(cli, args=[
-            'execute', self.instance.name, '{}_test_script_endpoint'.format(name_prefix)
+            'execute', '{}_test_script_endpoint'.format(name_prefix)
         ], obj={})
 
         self.assertEqual(result.output, '12\n')
@@ -53,7 +53,7 @@ class ExecuteCommandsTest(BaseCLITest):
         )
 
         result = self.runner.invoke(cli, args=[
-            'execute', self.instance.name, '{}_test_script_endpoint'.format(name_prefix),
+            'execute', '{}_test_script_endpoint'.format(name_prefix),
             '--payload', '{"data": "some nice string"}'
         ], obj={})
         print(result.exception)
@@ -75,7 +75,7 @@ class ExecuteCommandsTest(BaseCLITest):
         )
 
         result = self.runner.invoke(cli, args=[
-            'execute', self.instance.name, '{}_test_script_endpoint'.format(name_prefix)
+            'execute', '{}_test_script_endpoint'.format(name_prefix)
         ], obj={})
 
         self.assertEqual(result.output, """{\n    "test": "amazing thing"\n}\n""")

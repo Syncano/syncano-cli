@@ -8,6 +8,7 @@ from ConfigParser import NoOptionError
 
 import click
 import syncano
+from syncano_cli.base.connection import get_instance_name
 from syncano_cli.config import ACCOUNT_CONFIG, ACCOUNT_CONFIG_PATH
 from syncano_cli.sync.project import Project
 from watchdog.observers import Observer
@@ -53,13 +54,14 @@ def sync(context, file, config, key):
 @click.option('-s', '--script', help=u"Pull only this script from syncano", multiple=True)
 @click.option('-c', '--class', help=u"Pull only this class from syncano", multiple=True)
 @click.option('-a', '--all', is_flag=True, default=False, help=u"Force push all configuration")
-@click.argument('instance', envvar='SYNCANO_INSTANCE')
-def push(context, script, all, instance, **kwargs):
+@click.option('--instance-name', help=u'Instance name.')
+def push(context, script, all, instance_name, **kwargs):
     """
     Push configuration changes to syncano.
     """
     klass = kwargs.pop('class')
-    do_push(context, scripts=script, classes=klass, all=all, instance=instance)
+    instance_name = get_instance_name(context.obj['config'], instance_name)
+    do_push(context, scripts=script, classes=klass, all=all, instance=instance_name)
 
 
 @sync.command()
@@ -67,8 +69,8 @@ def push(context, script, all, instance, **kwargs):
 @click.option('-s', '--script', help=u"Pull only this script from syncano", multiple=True)
 @click.option('-c', '--class', help=u"Pull only this class from syncano", multiple=True)
 @click.option('-a', '--all', is_flag=True, default=False, help=u"Force push all configuration")
-@click.argument('instance', envvar='SYNCANO_INSTANCE')
-def pull(context, script, all, instance, **kwargs):
+@click.option('--instance-name', help=u'Instance name.')
+def pull(context, script, all, instance_name, **kwargs):
     """
     Pull configuration from syncano and store it in current directory.
     Updates syncano.yml configuration file, and places scripts in scripts
@@ -77,7 +79,8 @@ def pull(context, script, all, instance, **kwargs):
     configuration file. If you want to pull all objects from syncano use
     -a/--all flag.
     """
-    con = syncano.connect(api_key=context.obj['key'], instance_name=instance)
+    instance_name = get_instance_name(context.obj['config'], instance_name)
+    con = syncano.connect(api_key=context.obj['key'], instance_name=instance_name)
     klass = kwargs.pop('class')
     context.obj['project'].update_from_instance(con, all, klass, script)
     context.obj['project'].write(context.obj['file'])
@@ -85,18 +88,19 @@ def pull(context, script, all, instance, **kwargs):
 
 @sync.command()
 @click.pass_context
-@click.argument('instance', envvar='SYNCANO_INSTANCE')
-def watch(context, instance):
+@click.option('--instance-name', help=u'Instance name.')
+def watch(context, instance_name):
     """
     Push configuration to syncano. After that  watch for changes in
     syncano.yml file and scripts and push changed items to syncano.
     """
+    instance_name = get_instance_name(context.obj['config'], instance_name)
     context.obj['classes'] = None
     context.obj['scripts'] = None
     context.obj['all'] = True
     context.obj['project'].timestamp = 0
-    context.obj['instance'] = instance
-    do_push(context, classes=None, scripts=None, all=True, instance=instance)  # TODO: use context or arguments
+    context.obj['instance'] = instance_name
+    do_push(context, classes=None, scripts=None, all=True, instance=instance_name)  # TODO: use context or arguments
     click.echo(u"INFO: Watching for file changes")
     observer = Observer()
     observer.schedule(ProjectEventHandler(context), path='.', recursive=True)

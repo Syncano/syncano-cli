@@ -12,10 +12,6 @@ from syncano_cli.hosting.commands import top_hosting
 from syncano_cli.parse_to_syncano.commands import top_migrate
 from syncano_cli.sync.commands import top_sync
 
-sys.path.append('/home/sopalczy/projects/syncano/syncano-python')
-sys.path.append('/home/sopalczy/projects/syncano/syncano-cli')
-
-
 ACCOUNT_KEY = ''
 
 cli = click.CommandCollection(

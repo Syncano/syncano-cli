@@ -18,7 +18,7 @@ class SyncCommandsTest(BaseCLITest, InstanceMixin, IntegrationTest):
         self.create_syncano_class(unique=unique)
 
         self.runner.invoke(cli, args=[
-            'sync', 'pull', self.instance.name,
+            'sync', 'pull',
             '--class', 'test_class{unique}'.format(unique=unique),
         ], obj={})
 
@@ -30,7 +30,7 @@ class SyncCommandsTest(BaseCLITest, InstanceMixin, IntegrationTest):
         self.create_syncano_class(unique=unique)
 
         self.runner.invoke(cli, args=[
-            'sync', 'pull', self.instance.name,
+            'sync', 'pull',
             '--class', 'test_class{unique}'.format(unique=unique),
         ], obj={})
 
@@ -46,7 +46,7 @@ class SyncCommandsTest(BaseCLITest, InstanceMixin, IntegrationTest):
 
         # do push
         self.runner.invoke(cli, args=[
-            'sync', 'push', self.instance.name,
+            'sync', 'push',
             '--class', 'test_class{unique}'.format(unique=unique),
         ], obj={})
 
@@ -65,7 +65,7 @@ class SyncCommandsTest(BaseCLITest, InstanceMixin, IntegrationTest):
 
         # do push
         self.runner.invoke(cli, args=[
-            'sync', 'push', self.instance.name, '--all'
+            'sync', 'push', '--all'
         ], obj={})
 
         new_class_syncano = self.get_syncano_class(unique)
@@ -76,7 +76,7 @@ class SyncCommandsTest(BaseCLITest, InstanceMixin, IntegrationTest):
         self.create_script(unique=unique)
 
         self.runner.invoke(cli, args=[
-            'sync', 'pull', self.instance.name,
+            'sync', 'pull',
             '--script', 'script_{unique}'.format(unique=unique),
         ], obj={})
 
@@ -89,7 +89,7 @@ class SyncCommandsTest(BaseCLITest, InstanceMixin, IntegrationTest):
         self.create_script(unique=unique)
 
         self.runner.invoke(cli, args=[
-            'sync', 'pull', self.instance.name, '--all'
+            'sync', 'pull', '--all'
         ], obj={})
 
         script_path = self.get_script_path(unique)
@@ -103,7 +103,7 @@ class SyncCommandsTest(BaseCLITest, InstanceMixin, IntegrationTest):
 
         script_name = 'script_{unique}'.format(unique=unique)
         self.runner.invoke(cli, args=[
-            'sync', 'push', self.instance.name,
+            'sync', 'push',
             '--script', script_name,
         ], obj={})
         self.assert_script_remote(script_name, source)
@@ -115,7 +115,7 @@ class SyncCommandsTest(BaseCLITest, InstanceMixin, IntegrationTest):
 
         script_name = 'script_{unique}'.format(unique=unique)
         self.runner.invoke(cli, args=[
-            'sync', 'push', self.instance.name, '--all'
+            'sync', 'push', '--all'
         ], obj={})
         self.assert_script_remote(script_name, source)
 

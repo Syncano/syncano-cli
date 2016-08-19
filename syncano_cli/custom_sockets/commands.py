@@ -3,8 +3,8 @@ import json
 import sys
 
 import click
-from syncano_cli.base.connection import create_connection
-from syncano_cli.config import ACCOUNT_CONFIG, ACCOUNT_CONFIG_PATH
+from syncano_cli.base.connection import create_connection, get_instance_name
+from syncano_cli.config import ACCOUNT_CONFIG_PATH
 from syncano_cli.custom_sockets.command import SocketCommand
 
 
@@ -16,14 +16,13 @@ def top_sockets():
 @top_sockets.group()
 @click.pass_context
 @click.option('--config', help=u'Account configuration file.')
-@click.option('--instance_name', help=u'An instance name used for API calls.')
+@click.option('--instance-name', help=u'Instance name.')
 def sockets(ctx, config, instance_name, **kwargs):
     """
     Allow to create a custom socket.
     """
     config = config or ACCOUNT_CONFIG_PATH
-    ACCOUNT_CONFIG.read(config)
-    instance_name = instance_name or ACCOUNT_CONFIG.get('DEFAULT', 'instance_name')
+    instance_name = get_instance_name(config, instance_name)
     try:
         connection = create_connection(config)
         instance = connection.Instance.please.get(name=instance_name)
