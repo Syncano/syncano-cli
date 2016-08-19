@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-import json
+
 import os
-import subprocess
 import yaml
 
 import click
@@ -11,8 +10,6 @@ from syncano_cli.custom_sockets.formatters import SocketFormatter
 
 class SocketCommand(object):
 
-    list_line_template = '{socket_name:^29}|{socket_status:^19}|{status_info:^29}'
-    socket_line_template = '{endpoint_name:^39}|{calls:^40}'
     TEMPLATE_DIR = 'custom_sockets/template/'
     SOCKET_FILE_NAME = 'socket.yml'
 
@@ -20,30 +17,16 @@ class SocketCommand(object):
         self.instance = instance
 
     def list(self):
-        # TODO: move the presentation logic to formatter;
-        click.echo(self.list_line_template.format(
-            socket_name='socket name',
-            socket_status='status',
-            status_info='status info',
-        ))
-        click.echo(80 * '-')
-        for cs in CustomSocket.please.all(instance_name=self.instance.name):
-            click.echo(self.list_line_template.format(
-                socket_name=cs.name,
-                socket_status=cs.status,
-                status_info=cs.status_info
-            ))
+        sockets = [cs for cs in CustomSocket.please.all(instance_name=self.instance.name)]
+        click.echo(SocketFormatter.format_socket_list(socket_list=sockets))
 
     def details(self, socket_name):
         cs = CustomSocket.please.get(name=socket_name, instance_name=self.instance.name)
         click.echo(SocketFormatter.format_socket_details(cs))
 
     def list_endpoints(self):
-        click.echo(self.socket_line_template.format(endpoint_name='Name', calls='Calls'))
-        click.echo(80 * '-')
         endpoints = SocketEndpoint.get_all_endpoints(instance_name=self.instance.name)
-        for endpoint in endpoints:
-            click.echo(self.socket_line_template.format(endpoint_name=endpoint.name, calls=endpoint.calls))
+        click.echo(SocketFormatter.format_endpoints_list(socket_endpoints=endpoints))
 
     def delete(self, socket_name):
         custom_socket = CustomSocket.please.get(name=socket_name, instance_name=self.instance.name)

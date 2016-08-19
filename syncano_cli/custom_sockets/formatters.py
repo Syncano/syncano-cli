@@ -138,15 +138,19 @@ class SocketFormatter(object):
         yml_endpoints = []
         for index, (endpoint_name, endpoint_data) in enumerate(six.iteritems(endpoints)):
             yml_endpoints.append({endpoint_name: {}})
-            calls = {}
-            for call in endpoint_data['calls']:
-                if call['methods'] == ['*']:
-                    yml_endpoints[index][endpoint_name] = {call['type']: call['name']}
-                else:
-                    for method in call['methods']:
-                        calls.update({method: {call['type']: call['name']}})
-                    yml_endpoints[index][endpoint_name] = calls
+            yml_endpoints[index][endpoint_name] = cls._yml_process_calls(endpoint_data['calls'])
         return yml_endpoints
+
+    @classmethod
+    def _yml_process_calls(cls, data_calls):
+        calls = {}
+        for call in data_calls:
+            if call['methods'] == ['*']:
+                calls = {call['type']: call['name']}
+            else:
+                for method in call['methods']:
+                    calls.update({method: {call['type']: call['name']}})
+        return calls
 
     @classmethod
     def _yml_process_dependencies(cls, dependencies):
@@ -178,52 +182,29 @@ class SocketFormatter(object):
 
     @classmethod
     def format_socket_details(cls, cs):
-        details_sting = ""
-        fields = [
-            'name', 'endpoints', 'dependencies', 'metadata',
-            'status', 'status_info', 'created_at', 'updated_at'
-        ]
+        yml_content, files = cls.to_yml(cs)
+        return yml_content
 
-        formatter_map = {
-            'default': cls._default_formatter,
-            'endpoints': cls._endpoints_formatter,
-            'dependencies': cls._dependencies_formatter
-        }
-
-        for field_name in fields:
-            formatter = formatter_map.get(field_name, formatter_map['default'])
-            details_sting += "{label:>29}: {value}\n".format(
-                label=field_name.replace('_', ' '),
-                value=formatter(getattr(cs, field_name))
+    @classmethod
+    def format_socket_list(cls, socket_list):
+        yml_dict = {'sockets': []}
+        for cs in socket_list:
+            yml_dict['sockets'].append(
+                {
+                    'socket': {
+                        'name': cs.name,
+                        'status':  cs.status,
+                        'info': cs.status_info
+                    }
+                }
             )
-        return details_sting
+        return yaml.safe_dump(yml_dict, default_flow_style=False)
 
     @classmethod
-    def _endpoints_formatter(cls, endpoints):
-
-        def format_calls(calls):
-            details_string = ''
-            for call in calls:
-                for label, value in six.iteritems(call):
-                    details_string += "\n{label:>55}: {value}".format(label=label, value=value)
-                details_string += '\n'
-            return details_string
-
-        details_string = "\n"
-        for endpoint_name, endpoint_data in six.iteritems(endpoints):
-            details_string += "{name:>43}: {calls}\n".format(name=endpoint_name,
-                                                             calls=format_calls(endpoint_data['calls']))
-        return details_string
-
-    @classmethod
-    def _dependencies_formatter(cls, dependencies):
-        details_string = ""
-        for dependency in dependencies:
-            for label, value in six.iteritems(dependency):
-                details_string += "\n{label:>55}: {value}".format(label=label, value=value.strip())
-            details_string += '\n'
-        return details_string
-
-    @classmethod
-    def _default_formatter(cls, value):
-        return value
+    def format_endpoints_list(cls, socket_endpoints):
+        yml_dict = {'endpoints': []}
+        for endpoint in socket_endpoints:
+            endpoint_data = {'name': endpoint.name, 'path': endpoint.links.endpoint}
+            endpoint_data.update(cls._yml_process_calls(endpoint.calls))
+            yml_dict['endpoints'].append({'endpoint': endpoint_data})
+        return yaml.safe_dump(yml_dict, default_flow_style=False)
