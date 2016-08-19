@@ -5,6 +5,8 @@ import click
 import six
 import sys
 
+from syncano_cli.sync.scripts import ALLOWED_RUNTIMES
+
 
 class SocketScopeFormat(object):
     ALL = 'all'
@@ -28,12 +30,13 @@ class SocketFormatter(object):
         :return: the yml format of the CustomSocket;
         """
         yml_dict = {}
+        files = []
 
         for socket_field in cls.SOCKET_FIELDS:
             if socket_field == 'endpoints':
                 yml_dict[socket_field] = cls._yml_process_endpoints(socket_object.endpoints)
             elif socket_field == 'dependencies':
-                yml_dict[socket_field] = cls._yml_process_dependencies(socket_object.dependencies)
+                yml_dict[socket_field], files = cls._yml_process_dependencies(socket_object.dependencies)
             else:
                 # TODO: None for skip the description now;
                 yml_dict[socket_field] = getattr(socket_object, socket_field, None)
@@ -41,7 +44,7 @@ class SocketFormatter(object):
         for meta_name, meta_data in six.iteritems(socket_object.metadata):
             yml_dict[meta_name] = meta_data
 
-        return yaml.safe_dump(yml_dict, default_flow_style=False)
+        return yaml.safe_dump(yml_dict, default_flow_style=False), files
 
     @classmethod
     def to_json(cls, socket_yml, directory=None):
@@ -133,7 +136,6 @@ class SocketFormatter(object):
     @classmethod
     def _yml_process_endpoints(cls, endpoints):
         yml_endpoints = []
-        print(endpoints)
         for index, (endpoint_name, endpoint_data) in enumerate(six.iteritems(endpoints)):
             yml_endpoints.append({endpoint_name: {}})
             calls = {}
@@ -148,7 +150,29 @@ class SocketFormatter(object):
 
     @classmethod
     def _yml_process_dependencies(cls, dependencies):
-        return {}
+        yml_dependencies = {}
+        scripts = {}
+        files = []
+        for dependency in dependencies:
+            if dependency['type'] == 'script':
+                file_name = '{name}{ext}'.format(name=dependency['name'],
+                                                 ext=ALLOWED_RUNTIMES[dependency['runtime_name']])
+
+                scripts[dependency['name']] = {
+                    'runtime_name': dependency['runtime_name'],
+                    'file': file_name
+                }
+                # create file list;
+                files.append(
+                    {
+                        'source': dependency['source'],
+                        'file_name': file_name
+                    }
+                )
+
+        yml_dependencies['scripts'] = scripts
+
+        return yml_dependencies, files
 
     @classmethod
     def format_socket_details(cls, cs):

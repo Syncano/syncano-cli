@@ -67,15 +67,20 @@ class SocketCommand(object):
         if not os.path.isdir(destination):
             os.makedirs(destination)
 
+        if not os.path.isdir(os.path.join(destination, 'scripts')):
+            os.makedirs(os.path.join(destination, 'scripts'))
+
         socket = CustomSocket.please.get(name=socket_name, instance_name=self.instance.name)
 
-        yml_file = SocketFormatter.to_yml(socket_object=socket)
+        yml_file, files = SocketFormatter.to_yml(socket_object=socket)
 
         with open(os.path.join(destination, 'socket.yml'), 'w+') as socket_yml:
             socket_yml.write(yml_file)
-        click.echo('INFO: template created in {}.'.format(destination))
 
-        # TODO: create scripts;
+        for file_meta in files:
+            with open(os.path.join(destination, 'scripts/{}'.format(file_meta['file_name'])), 'w+') as script_file:
+                script_file.write(file_meta['source'])
+        click.echo('INFO: template created in {}.'.format(destination))
 
     def create_template_from_local_template(self, destination):
 
