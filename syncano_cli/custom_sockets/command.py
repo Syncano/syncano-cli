@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import os
-import yaml
 
 import click
+import yaml
 from syncano.models import CustomSocket, SocketEndpoint
 from syncano_cli.custom_sockets.formatters import SocketFormatter
 

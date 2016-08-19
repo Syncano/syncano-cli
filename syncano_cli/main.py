@@ -3,9 +3,6 @@ from __future__ import print_function
 
 import sys
 
-sys.path.append('/home/sopalczy/projects/syncano/syncano-python')
-sys.path.append('/home/sopalczy/projects/syncano/syncano-cli')
-
 import click
 from syncano.exceptions import SyncanoException
 from syncano_cli.commands import top_level
@@ -14,6 +11,10 @@ from syncano_cli.execute.commands import top_execute
 from syncano_cli.hosting.commands import top_hosting
 from syncano_cli.parse_to_syncano.commands import top_migrate
 from syncano_cli.sync.commands import top_sync
+
+sys.path.append('/home/sopalczy/projects/syncano/syncano-python')
+sys.path.append('/home/sopalczy/projects/syncano/syncano-cli')
+
 
 ACCOUNT_KEY = ''
 

@@ -1,10 +1,9 @@
 import os
-import yaml
+import sys
 
 import click
 import six
-import sys
-
+import yaml
 from syncano_cli.sync.scripts import ALLOWED_RUNTIMES
 
 
@@ -193,7 +192,7 @@ class SocketFormatter(object):
                 {
                     'socket': {
                         'name': cs.name,
-                        'status':  cs.status,
+                        'status': cs.status,
                         'info': cs.status_info
                     }
                 }

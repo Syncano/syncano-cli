@@ -4,7 +4,7 @@ import sys
 
 import click
 from syncano_cli.base.connection import create_connection
-from syncano_cli.config import ACCOUNT_CONFIG_PATH, ACCOUNT_CONFIG
+from syncano_cli.config import ACCOUNT_CONFIG, ACCOUNT_CONFIG_PATH
 from syncano_cli.custom_sockets.command import SocketCommand
 
 
