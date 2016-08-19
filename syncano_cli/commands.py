@@ -17,7 +17,8 @@ def top_level(context):
 @top_level.command()
 @click.pass_context
 @click.option('--config', help=u'Account configuration file.')
-def login(context, config):
+@click.option('--instance-name', help=u'Default instance name.')
+def login(context, config, instance_name):
     """
     Log in to syncano using email and password and store ACCOUNT_KEY
     in configuration file.
@@ -34,6 +35,8 @@ def login(context, config):
     try:
         ACCOUNT_KEY = connection.authenticate(email=email, password=password)
         ACCOUNT_CONFIG.set('DEFAULT', 'key', ACCOUNT_KEY)
+        if instance_name:
+            ACCOUNT_CONFIG.set('DEFAULT', 'instance_name', instance_name)
         with open(context.obj['config'], 'wb') as fp:
             ACCOUNT_CONFIG.write(fp)
     except SyncanoException as error:

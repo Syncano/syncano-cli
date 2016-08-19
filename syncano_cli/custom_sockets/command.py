@@ -39,7 +39,6 @@ class SocketCommand(object):
         click.echo(SocketFormatter.format_socket_details(cs))
 
     def list_endpoints(self):
-        # TODO: move the presentation logic to formatter;
         click.echo(self.socket_line_template.format(endpoint_name='Name', calls='Calls'))
         click.echo(80 * '-')
         endpoints = SocketEndpoint.get_all_endpoints(instance_name=self.instance.name)
@@ -63,6 +62,18 @@ class SocketCommand(object):
     def publish_from_url(self, url_path):
         # TODO: add integration with new url endpoint integration
         pass
+
+    def run(self, endpoint_name, method='GET', data=None):
+        endpoints = SocketEndpoint.get_all_endpoints(instance_name=self.instance.name)
+        run_endpoint = None
+        for endpoint in endpoints:
+            if endpoint.name == endpoint_name:
+                run_endpoint = endpoint
+                break
+
+        if not run_endpoint:
+            click.echo("ERROR: endpoint not found")
+        return run_endpoint.run(method=method, data=data or {})
 
     def create_template(self, socket_name, destination):
 

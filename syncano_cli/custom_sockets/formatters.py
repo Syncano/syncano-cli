@@ -150,18 +150,20 @@ class SocketFormatter(object):
 
     @classmethod
     def _yml_process_dependencies(cls, dependencies):
-        yml_dependencies = {}
-        scripts = {}
+        yml_dependencies = []
+        scripts = []
         files = []
         for dependency in dependencies:
             if dependency['type'] == 'script':
+                script = {}
                 file_name = '{name}{ext}'.format(name=dependency['name'],
                                                  ext=ALLOWED_RUNTIMES[dependency['runtime_name']])
 
-                scripts[dependency['name']] = {
+                script[dependency['name']] = {
                     'runtime_name': dependency['runtime_name'],
                     'file': file_name
                 }
+                scripts.append(script)
                 # create file list;
                 files.append(
                     {
@@ -170,7 +172,7 @@ class SocketFormatter(object):
                     }
                 )
 
-        yml_dependencies['scripts'] = scripts
+        yml_dependencies.append({'scripts': scripts})
 
         return yml_dependencies, files
 
@@ -200,7 +202,7 @@ class SocketFormatter(object):
     def _endpoints_formatter(cls, endpoints):
 
         def format_calls(calls):
-            details_string = ""
+            details_string = ''
             for call in calls:
                 for label, value in six.iteritems(call):
                     details_string += "\n{label:>55}: {value}".format(label=label, value=value)

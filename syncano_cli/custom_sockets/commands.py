@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
+import json
 import sys
 
 import click
 from syncano_cli.base.connection import create_connection
-from syncano_cli.config import ACCOUNT_CONFIG_PATH
+from syncano_cli.config import ACCOUNT_CONFIG_PATH, ACCOUNT_CONFIG
 from syncano_cli.custom_sockets.command import SocketCommand
 
 
@@ -15,18 +16,45 @@ def top_sockets():
 @top_sockets.group()
 @click.pass_context
 @click.option('--config', help=u'Account configuration file.')
-@click.argument('instance_name', envvar='SYNCANO_INSTANCE')
+@click.option('--instance_name', help=u'An instance name used for API calls.')
 def sockets(ctx, config, instance_name, **kwargs):
     """
     Allow to create a custom socket.
     """
-
     config = config or ACCOUNT_CONFIG_PATH
+    ACCOUNT_CONFIG.read(config)
+    instance_name = instance_name or ACCOUNT_CONFIG.get('DEFAULT', 'instance_name')
     try:
         connection = create_connection(config)
         instance = connection.Instance.please.get(name=instance_name)
-        socket_parser = SocketCommand(instance=instance)
-        ctx.obj['socket_parser'] = socket_parser
+        socket_command = SocketCommand(instance=instance)
+        ctx.obj['socket_command'] = socket_command
+
+    except Exception as e:
+        click.echo(u'ERROR: {}'.format(e))
+        sys.exit(1)
+
+
+@sockets.group(invoke_without_command=True)
+@click.pass_context
+def list(ctx):
+    socket_command = ctx.obj['socket_command']
+
+    if ctx.invoked_subcommand is None:
+        try:
+            socket_command.list()
+
+        except Exception as e:
+            click.echo(u'ERROR: {}'.format(e))
+            sys.exit(1)
+
+
+@list.command()
+@click.pass_context
+def endpoints(ctx):
+    socket_command = ctx.obj['socket_command']
+    try:
+        socket_command.list_endpoints()
 
     except Exception as e:
         click.echo(u'ERROR: {}'.format(e))
@@ -35,19 +63,16 @@ def sockets(ctx, config, instance_name, **kwargs):
 
 @sockets.command()
 @click.pass_context
-@click.option('--sockets', is_flag=True, help=u'List all defined custom sockets.')
-@click.option('--endpoints', is_flag=True, help=u'List all defined endpoints.')
-def list(ctx, sockets, endpoints):
-    socket_parser = ctx.obj['socket_parser']
-    if not sockets and not endpoints:
-        click.echo('ERROR: specify on of the available flags: --sockets, --endpoints')
-        sys.exit(1)
+@click.argument('source')
+def install(ctx, source):
+    socket_command = ctx.obj['socket_command']
 
     try:
-        if sockets:
-            socket_parser.list()
-        if endpoints:
-            socket_parser.list_endpoints()
+        if 'http' in source:
+            socket_command.publish_from_url(url_path=source)
+
+        else:
+            socket_command.publish_from_dir(dir_path=source)
 
     except Exception as e:
         click.echo(u'ERROR: {}'.format(e))
@@ -56,23 +81,12 @@ def list(ctx, sockets, endpoints):
 
 @sockets.command()
 @click.pass_context
-@click.option('--dir', help=u'Directory path to read socket definition.')
-@click.option('--url', help=u'An url path to the repository: eg.: github.')
-def publish(ctx, **kwargs):
-    socket_parser = ctx.obj['socket_parser']
-    directory = kwargs.get('dir')
-    url = kwargs.get('url')
-
-    if not directory and not url:
-        click.echo('ERROR: specify on of the available flags: --dir, --url')
-        sys.exit(1)
+@click.argument('socket_name')
+def details(ctx, socket_name):
+    socket_command = ctx.obj['socket_command']
 
     try:
-        if directory:
-            socket_parser.publish_from_dir(directory)
-
-        if url:
-            socket_parser.publish_from_url(url)
+        socket_command.details(socket_name=socket_name)
 
     except Exception as e:
         click.echo(u'ERROR: {}'.format(e))
@@ -81,20 +95,12 @@ def publish(ctx, **kwargs):
 
 @sockets.command()
 @click.pass_context
-@click.option('--details', help=u'Display details of the custom socket.')
-@click.option('--delete', help=u'Deletes the custom socket.')
-def socket(ctx, details, delete):
-    socket_parser = ctx.obj['socket_parser']
+@click.argument('socket_name')
+def delete(ctx, socket_name):
+    socket_command = ctx.obj['socket_command']
 
     try:
-        if details:
-            socket_parser.details(socket_name=details)
-
-        if delete:
-            socket_parser.delete(socket_name=delete)
-
-        if template:
-            socket_parser.create_template(destination=template)
+        socket_command.delete(socket_name=socket_name)
 
     except Exception as e:
         click.echo(u'ERROR: {}'.format(e))
@@ -103,21 +109,45 @@ def socket(ctx, details, delete):
 
 @sockets.command()
 @click.pass_context
-@click.option('--output-dir', help=u'Directory path to write socket definition.')
+@click.argument('output_dir')
 @click.option('--socket', help=u'Socket name from which the template should be created.')
-@click.option('--default', is_flag=True, help=u'Socket template will be created from local template.')
-def template(ctx, output_dir, socket, default):
-    if not socket and not default:
-        click.echo('ERROR: specify one of the available flags: --socket, --default')
+def template(ctx, output_dir, socket):
 
-    socket_parser = ctx.obj['socket_parser']
+    socket_command = ctx.obj['socket_command']
 
     try:
-        if default:
-            socket_parser.create_template_from_local_template(destination=output_dir)
-
         if socket:
-            socket_parser.create_template(socket_name=socket, destination=output_dir)
+            socket_command.create_template(socket_name=socket, destination=output_dir)
+
+        else:
+            socket_command.create_template_from_local_template(destination=output_dir)
+
+    except Exception as e:
+        click.echo(u'ERROR: {}'.format(e))
+        sys.exit(1)
+
+
+@sockets.command()
+@click.pass_context
+@click.argument('endpoint_name')
+@click.argument('method', default='GET')
+@click.option('--data', help='A JSON formatted data')
+def run(ctx, endpoint_name, method, data):
+    socket_command = ctx.obj['socket_command']
+
+    if method in ['POST', 'PUT', 'PATCH'] and not data:
+        click.echo('ERROR: --data option should be provided when metho {} is used'.format(method))
+        sys.exit(1)
+
+    try:
+        try:
+            data = json.loads(data)
+        except (ValueError, TypeError) as e:
+            click.echo('ERROR: invalid JSON data. Parse error.')
+            sys.exit(1)
+
+        results = socket_command.run(endpoint_name, method=method, data=data)
+        click.echo("{}".format(results))
 
     except Exception as e:
         click.echo(u'ERROR: {}'.format(e))
