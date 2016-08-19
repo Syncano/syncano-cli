@@ -47,7 +47,9 @@ class SocketCommand(object):
             click.echo(self.socket_line_template.format(endpoint_name=endpoint.name, calls=endpoint.calls))
 
     def delete(self, socket_name):
-        print('delete {}'.format(socket_name))
+        custom_socket = CustomSocket.please.get(name=socket_name, instance_name=self.instance.name)
+        custom_socket.delete()
+        click.echo("INFO: Custom Socket {} delted.".format(socket_name))
 
     def publish_from_dir(self, dir_path):
         with open(os.path.join(dir_path, self.SOCKET_FILE_NAME)) as socket_file:
