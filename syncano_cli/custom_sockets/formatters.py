@@ -203,7 +203,7 @@ class SocketFormatter(object):
     def format_endpoints_list(cls, socket_endpoints):
         yml_dict = {'endpoints': []}
         for endpoint in socket_endpoints:
-            endpoint_data = {'name': endpoint.name, 'path': endpoint.links.endpoint}
-            endpoint_data.update(cls._yml_process_calls(endpoint.calls))
+            endpoint_data = {'name': endpoint.name, 'path': endpoint.links.self}
+            endpoint_data.update({'methods': endpoint.allowed_methods})
             yml_dict['endpoints'].append({'endpoint': endpoint_data})
         return yaml.safe_dump(yml_dict, default_flow_style=False)

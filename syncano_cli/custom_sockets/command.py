@@ -33,7 +33,7 @@ class SocketCommand(object):
         custom_socket.delete()
         click.echo("INFO: Custom Socket {} delted.".format(socket_name))
 
-    def publish_from_dir(self, dir_path):
+    def install_from_dir(self, dir_path):
         with open(os.path.join(dir_path, self.SOCKET_FILE_NAME)) as socket_file:
             yml_file = yaml.safe_load(socket_file)
 
@@ -42,9 +42,9 @@ class SocketCommand(object):
         custom_socket = CustomSocket.please.create(**api_data)
         click.echo('INFO: socket {} created.'.format(custom_socket.name))
 
-    def publish_from_url(self, url_path):
-        # TODO: add integration with new url endpoint integration
-        pass
+    def install_from_url(self, url_path, name):
+        CustomSocket(name=name).install_from_url(url=url_path, instance_name=self.instance.name)
+        click.echo('INFO: Installing socket from url: do `syncano sockets list` to obtain the status.')
 
     def run(self, endpoint_name, method='GET', data=None):
         endpoints = SocketEndpoint.get_all_endpoints(instance_name=self.instance.name)

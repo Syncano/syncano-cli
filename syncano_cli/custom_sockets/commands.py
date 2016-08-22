@@ -63,15 +63,19 @@ def endpoints(ctx):
 @sockets.command()
 @click.pass_context
 @click.argument('source')
-def install(ctx, source):
+@click.option('--name', help='A socket name when installed from url.')
+def install(ctx, source, name):
     socket_command = ctx.obj['socket_command']
 
     try:
         if 'http' in source:
-            socket_command.publish_from_url(url_path=source)
+            if not name:
+                click.echo('ERROR: name should be specified: --name')
+                sys.exit(1)
+            socket_command.install_from_url(url_path=source, name=name)
 
         else:
-            socket_command.publish_from_dir(dir_path=source)
+            socket_command.install_from_dir(dir_path=source)
 
     except Exception as e:
         click.echo(u'ERROR: {}'.format(e))
@@ -140,7 +144,7 @@ def run(ctx, endpoint_name, method, data):
 
     try:
         try:
-            data = json.loads(data)
+            data = json.loads(data or '{}')
         except (ValueError, TypeError) as e:
             click.echo('ERROR: invalid JSON data. Parse error.')
             sys.exit(1)
