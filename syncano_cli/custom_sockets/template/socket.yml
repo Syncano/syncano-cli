@@ -20,10 +20,10 @@ dependencies:
   scripts:
     custom_script:
       runtime_name: python_library_v5.0
-      file: custom_script.py
+      file: scripts/custom_script.py
     custom_script_1:
       runtime_name: python_library_v5.0
-      file: custom_script_1.py
+      file: scripts/custom_script_1.py
     custom_script_2:
       runtime_name: python_library_v5.0
-      file: custom_script_2.py
+      file: scripts/custom_script_2.py

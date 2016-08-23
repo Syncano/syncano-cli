@@ -10,7 +10,7 @@ from syncano_cli.custom_sockets.formatters import SocketFormatter
 
 class SocketCommand(object):
 
-    TEMPLATE_DIR = 'custom_sockets/template/'
+    TEMPLATE_DIR = 'template/'
     SOCKET_FILE_NAME = 'socket.yml'
 
     def __init__(self, instance):
@@ -68,13 +68,13 @@ class SocketCommand(object):
 
         socket = CustomSocket.please.get(name=socket_name, instance_name=self.instance.name)
 
-        yml_file, files = SocketFormatter.to_yml(socket_object=socket)
+        yml_file, scripts = SocketFormatter.to_yml(socket_object=socket)
 
         with open(os.path.join(destination, 'socket.yml'), 'w+') as socket_yml:
             socket_yml.write(yml_file)
 
-        for file_meta in files:
-            with open(os.path.join(destination, '{}'.format(file_meta['file_name'])), 'w+') as script_file:
+        for file_meta in scripts:
+            with open(os.path.join(destination, 'scripts/{}'.format(file_meta['file_name'])), 'w+') as script_file:
                 script_file.write(file_meta['source'])
         click.echo('INFO: template created in {}.'.format(destination))
 
@@ -82,8 +82,7 @@ class SocketCommand(object):
 
         if not os.path.isdir(destination):
             os.makedirs(destination)
-
-        for roots, dirs, files in os.walk(self.TEMPLATE_DIR):
+        for roots, dirs, files in os.walk(os.path.join(os.path.dirname(__file__), self.TEMPLATE_DIR)):
             for dir_name in dirs:
                 if not os.path.isdir(os.path.join(destination, dir_name)):
                     os.makedirs(os.path.join(destination, dir_name))
