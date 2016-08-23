@@ -74,7 +74,7 @@ class SocketCommand(object):
             socket_yml.write(yml_file)
 
         for file_meta in files:
-            with open(os.path.join(destination, 'scripts/{}'.format(file_meta['file_name'])), 'w+') as script_file:
+            with open(os.path.join(destination, '{}'.format(file_meta['file_name'])), 'w+') as script_file:
                 script_file.write(file_meta['source'])
         click.echo('INFO: template created in {}.'.format(destination))
 
