@@ -40,7 +40,7 @@ class CustomSocketCommandsTest(BaseCLITest):
         time.sleep(2)  # wait for socket creation;
 
         result = self.runner.invoke(cli, args=['sockets', 'list'], obj={})
-        self.assertIn('custom_socket', result.output)
+        self.assertIn('custom_socket_example', result.output)
 
     def test_url_install(self):
         path = 'https://raw.githubusercontent.com/Syncano/custom-socket-test/master/socket.yml'
