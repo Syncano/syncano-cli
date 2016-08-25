@@ -79,20 +79,17 @@ class SocketCommand(object):
         click.echo('INFO: template created in {}.'.format(destination))
 
     def create_template_from_local_template(self, destination):
-
         if not os.path.isdir(destination):
             os.makedirs(destination)
         for roots, dirs, files in os.walk(self.TEMPLATE_DIR):
+            print(roots, dirs, files)
             for dir_name in dirs:
                 if not os.path.isdir(os.path.join(destination, dir_name)):
                     os.makedirs(os.path.join(destination, dir_name))
 
+            directory = roots.split(self.TEMPLATE_DIR)[1]
+
             for file_name in files:
-                try:
-                    directory = roots.split(self.TEMPLATE_DIR)[1]
-                except IndexError:
-                    directory = ''
                 with open(os.path.join(roots, file_name), 'r+') as file_to_read:
-                    with open(os.path.join("{}/{}".format(destination, directory) if directory else destination,
-                                           file_name), 'w+') as file_to_write:
+                    with open(os.path.join(destination, directory, file_name), 'w+') as file_to_write:
                         file_to_write.write(file_to_read.read())
