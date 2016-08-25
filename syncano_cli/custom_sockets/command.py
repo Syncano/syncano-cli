@@ -82,7 +82,6 @@ class SocketCommand(object):
         if not os.path.isdir(destination):
             os.makedirs(destination)
         for roots, dirs, files in os.walk(self.TEMPLATE_DIR):
-            print(roots, dirs, files)
             for dir_name in dirs:
                 if not os.path.isdir(os.path.join(destination, dir_name)):
                     os.makedirs(os.path.join(destination, dir_name))
@@ -90,6 +89,8 @@ class SocketCommand(object):
             directory = roots.split(self.TEMPLATE_DIR)[1]
 
             for file_name in files:
+                if file_name == '__init__.py':
+                    continue
                 with open(os.path.join(roots, file_name), 'r+') as file_to_read:
                     with open(os.path.join(destination, directory, file_name), 'w+') as file_to_write:
                         file_to_write.write(file_to_read.read())

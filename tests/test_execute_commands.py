@@ -56,7 +56,7 @@ class ExecuteCommandsTest(BaseCLITest):
             'execute', '{}_test_script_endpoint'.format(name_prefix),
             '--payload', '{"data": "some nice string"}'
         ], obj={})
-        print(result.exception)
+
         self.assertEqual(result.output, 'some nice string\n')
 
     def test_script_endpoint_custom_response(self):
