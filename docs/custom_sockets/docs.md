@@ -35,3 +35,9 @@
         script_endpoint_3:
           runtime_name: python_library_v5.0
           file: scripts/script3.py
+
+
+## Custom Socket examples
+
+* ['HelloWorld' example](examples/hello_world.md)
+* [Advanced example: <provide title here>](examples/advanced.md)
