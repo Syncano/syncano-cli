@@ -3,14 +3,15 @@
 import os
 
 import click
+import six
 import yaml
 from syncano.models import CustomSocket, SocketEndpoint
 from syncano_cli.custom_sockets.formatters import SocketFormatter
+from syncano_cli.custom_sockets.templates.socket_template import SCRIPTS, SOCKET_YML
 
 
 class SocketCommand(object):
 
-    TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), 'template/')
     SOCKET_FILE_NAME = 'socket.yml'
 
     def __init__(self, instance):
@@ -81,16 +82,13 @@ class SocketCommand(object):
     def create_template_from_local_template(self, destination):
         if not os.path.isdir(destination):
             os.makedirs(destination)
-        for roots, dirs, files in os.walk(self.TEMPLATE_DIR):
-            for dir_name in dirs:
-                if not os.path.isdir(os.path.join(destination, dir_name)):
-                    os.makedirs(os.path.join(destination, dir_name))
 
-            directory = roots.split(self.TEMPLATE_DIR)[1]
+        if not os.path.isdir(os.path.join(destination, 'scripts')):
+            os.makedirs(os.path.join(destination, 'scripts'))
 
-            for file_name in files:
-                if file_name == '__init__.py':
-                    continue
-                with open(os.path.join(roots, file_name), 'r+') as file_to_read:
-                    with open(os.path.join(destination, directory, file_name), 'w+') as file_to_write:
-                        file_to_write.write(file_to_read.read())
+        with open(os.path.join(destination, 'socket.yml'), 'w+') as socket_yml:
+            socket_yml.write(SOCKET_YML)
+
+        for script_name, script_source in six.iteritems(SCRIPTS):
+            with open(os.path.join(destination, script_name), 'w+') as script_file:
+                script_file.write(script_source)
