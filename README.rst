@@ -40,6 +40,11 @@ After when you want to override this setting use --instance-name in particular c
 
     syncano sync pull --instance-name new-instance-1234
 
+Documentation
+-------------
+
+You can read detailed documentation `here <https://github.com/Syncano/syncano-cli/blob/develop/docs/README.md>`_.
+
 Pulling your instance classes and scripts
 -----------------------------------------
 
@@ -162,6 +167,10 @@ This command will list files in hosting which match the default hosting.
 
 This command will publish all files inside <base_dir> and will publish it to the Syncano Hosting (default one).
 The whole directory structure - will be mapped in Syncano Hosting.
+
+
+Custom Sockets
+--------------
 
 
 Tips & Troubleshooting
