@@ -43,7 +43,7 @@ After when you want to override this setting use --instance-name in particular c
 Documentation
 -------------
 
-You can read detailed documentation `here <https://github.com/Syncano/syncano-cli/blob/develop/docs/README.md>`_.
+You can read detailed documentation `here <docs/README.md>`_.
 
 Pulling your instance classes and scripts
 -----------------------------------------
