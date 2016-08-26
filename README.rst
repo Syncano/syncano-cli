@@ -172,6 +172,55 @@ The whole directory structure - will be mapped in Syncano Hosting.
 Custom Sockets
 --------------
 
+The commands available for Custom Sockets are (read the detailed docs about Custom Sockets if you want to know
+`more <docs/custom_sockets/docs.md>`_):
+
+To install Custom Socket from local files::
+
+    syncano sockets install /path/to/dir
+
+To install Custom Socket from ulr::
+
+    syncano sockets install https://...
+
+List all Custom Sockets::
+
+    syncano sockets list
+
+List all defined endpoints (for all Custom Sockets)::
+
+    syncano sockets list endpoints
+
+Display the Custom Socket details::
+
+    syncano sockets details socket_name
+
+Deletes the Custom Socket::
+
+    syncano sockets delete socket_name
+
+Create a template from template stored in Syncano CLI::
+
+    syncano sockets template /path/to/output_dir
+
+Create a template from a existing Custom Socket::
+
+    syncano sockets template /path/to/out --socket socket_name
+
+Run endpoint defined in Custom Socket::
+
+    syncano sockets run socket_name/endpoint_name
+
+Run endpoint providing the POST data::
+
+    syncano sockets run socket_name/my_endpoint_12 POST --data '{"raz": 1}'
+
+In all of the above cases you can defined an option::
+
+    --instance-name my_instance_name
+
+Which override the default used instance (in syncano login --instance-name my_other_instance)
+
 
 Tips & Troubleshooting
 ----------------------
