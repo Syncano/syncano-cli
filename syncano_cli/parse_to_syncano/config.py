@@ -14,6 +14,7 @@ SYNCANO_INSTANCE_NAME = os.getenv('SYNCANO_INSTANCE_NAME', '')
 SYNCANO_ADMIN_API_KEY = os.getenv('SYNCANO_ADMIN_API_KEY', '')
 
 PARSE_PAGINATION_LIMIT = 1000  # the biggest value parse allows
+SYNCANO_BATCH_SIZE = 30
 
 
 def read_config(config_path):

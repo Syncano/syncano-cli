@@ -1,15 +1,9 @@
 # -*- coding: utf-8 -*-
-# a relation helper
-import time
-
 from syncano.models import Object
-from syncano_cli.logger import get_logger
 from syncano_cli.parse_to_syncano.config import PARSE_PAGINATION_LIMIT
 from syncano_cli.parse_to_syncano.migrations.aggregation import data_aggregate
 from syncano_cli.parse_to_syncano.migrations.mixins import PaginationMixin, ParseConnectionMixin
 from syncano_cli.parse_to_syncano.processors.klass import ClassProcessor
-
-LOG = get_logger('parse-to-syncano')
 
 
 class ClassRelationProcessor(ParseConnectionMixin, PaginationMixin):
@@ -92,22 +86,19 @@ class ClassRelationProcessor(ParseConnectionMixin, PaginationMixin):
                 "instance_name": instance.name
             }
         )
-        time.sleep(1)  # avoid throttling;
 
 
 class RelationProcessor(object):
 
-    def __init__(self, relations, *args, **kwargs):
+    def __init__(self, class_name, class_relations, *args, **kwargs):
         super(RelationProcessor, self).__init__(*args, **kwargs)
-        self.relations = relations
+        self.class_relations = class_relations
+        self.class_name = class_name
 
     def process(self, instance, config):
-        LOG.info('Processing relations...')
-        for class_relation in self.relations:
-            for class_name, relations in class_relation.iteritems():
-                class_relation_processor = ClassRelationProcessor(
-                    class_name=class_name,
-                    relations=relations,
-                    config=config
-                )
-                class_relation_processor.process_class(instance)
+        class_relation_processor = ClassRelationProcessor(
+            class_name=self.class_name,
+            relations=self.class_relations,
+            config=config
+        )
+        class_relation_processor.process_class(instance)

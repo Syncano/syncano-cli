@@ -67,8 +67,9 @@ class BaseCLITest(InstanceMixin, IntegrationTest):
         cls.scripts_dir = 'scripts/'
 
     def setUp(self):
-        self.runner.invoke(cli, args=['login'], obj={})
+        self.runner.invoke(cli, args=['login', '--instance-name', self.instance.name], obj={})
         self.assert_config_variable_exists(ACCOUNT_CONFIG, 'DEFAULT', 'key')
+        self.assert_config_variable_exists(ACCOUNT_CONFIG, 'DEFAULT', 'instance_name')
 
     def tearDown(self):
         # remove the .syncano file

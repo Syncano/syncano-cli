@@ -3,10 +3,7 @@ from __future__ import print_function, unicode_literals
 
 import re
 
-from syncano_cli.logger import get_logger
-
-LOG = get_logger('syncano-sync')
-
+import click
 
 ALLOWED_TYPES = {"array", "boolean", "datetime", "file", "float", "geopoint",
                  "integer", "object", "reference", "relation", "string",
@@ -102,15 +99,15 @@ def pull_classes(instance, include, update_dict=None):
 
 
 def push_classes(instance, class_dict):
-    LOG.info('Pushing classes.')
+    click.echo('INFO: Pushing classes.')
     for name, config in class_dict.iteritems():
-        LOG.info('Pushing class {0}'.format(name))
+        click.echo('INFO: Pushing class {0}'.format(name))
         try:
             klass = instance.classes.get(name=name)
-            LOG.info('Found class {0}'.format(name))
+            click.echo('INFO: Found class {0}'.format(name))
         except instance.classes.model.DoesNotExist:
             klass = instance.classes.model(name=name)
-            LOG.info('Class {0} not found. Creating new one'.format(name))
+            click.echo('INFO: Class {0} not found. Creating new one'.format(name))
         schema = []
         for name, field_config in config['fields'].iteritems():
             field = {'name': name}
@@ -119,7 +116,7 @@ def push_classes(instance, class_dict):
         klass.schema = schema
 
         klass.save()
-        LOG.info('Class {0} pushed.'.format(name))
+        click.echo('INFO: Class {0} pushed.'.format(name))
 
 
 def validate_class(class_dict):

@@ -4,6 +4,7 @@ import json
 import mock
 from syncano_cli.config import ACCOUNT_CONFIG
 from syncano_cli.main import cli
+from syncano_cli.parse_to_syncano.processors.push_notifications import DEVICE_CHANNELS_CLASS_NAME
 from tests.base import InstanceMixin, IntegrationTest
 
 
@@ -71,9 +72,13 @@ class MigrateCommandsTest(InstanceMixin, IntegrationTest):
         with open('tests/json_migrate_mocks/class_objects.json', 'r+') as f:
             objects = json.loads(f.read())
 
+        with open('tests/json_migrate_mocks/installations.json', 'r+') as f:
+            parse_installations = json.loads(f.read())
+
         # remove blu_bla class from classes;
         classes['results'] = classes['results'][1:]
-        request_mock.side_effect = [classes, objects, ]
+        # class schemas, objects, break the objects fetch, installations
+        request_mock.side_effect = [classes, objects, {'results': []}, parse_installations]
 
         self.assertFalse(request_mock.called)
         self.runner.invoke(cli, args=['migrate', 'parse'], obj={}, input='Y')
@@ -89,3 +94,12 @@ class MigrateCommandsTest(InstanceMixin, IntegrationTest):
         self.assertListEqual(object_to_test.testarray, ["a", "b", "c", "d"])
         self.assertEqual(object_to_test.barg, 12)
         self.assertEqual(object_to_test.carg, True)
+
+        apns_devices = self.instance.apns_devices.all()
+        gcm_devices = self.instance.gcm_devices.all()
+
+        self.assertEqual(len([apns_d for apns_d in apns_devices]), 1)
+        self.assertEqual(len([gcm_d for gcm_d in gcm_devices]), 1)
+
+        channels_class = self.instance.classes.get(name=DEVICE_CHANNELS_CLASS_NAME)
+        self.assertEqual(len([channel_cl for channel_cl in channels_class.objects.all()]), 2)
