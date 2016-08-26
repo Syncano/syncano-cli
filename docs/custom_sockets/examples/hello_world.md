@@ -52,14 +52,13 @@ The script (`scripts/hello_world.py`) consist of a few lines:
     content = """
     <!DOCTYPE html>
     <html>
-    <head>
-    <title>Hello world!</title>
-    </head>
+        <head>
+            <title>Hello world!</title>
+        </head>
     
-    <body>
-    Hello World!
-    </body>
-    
+        <body>
+            Hello World!
+        </body>
     </html>
     """
     
@@ -151,14 +150,13 @@ of Custom Socket dependencies (currently of type `script`).
     
         <!DOCTYPE html>
         <html>
-        <head>
-        <title>Hello world!</title>
-        </head>
+            <head>
+                <title>Hello world!</title>
+            </head>
         
-        <body>
-        Hello World!
-        </body>
-        
+            <body>
+                Hello World!
+            </body>   
         </html>
 
     Lets see if output can be seen in the browser:
