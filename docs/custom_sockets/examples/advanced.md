@@ -204,8 +204,11 @@ or in tree format:
             path: /v1.1/instances/patient-resonance-4283/endpoints/sockets/mailgun_integration/send_mail/
 
 4. Before you run an endpoints - be sure that you have a Mailgun `api_key` in your instance Global Config. See the 
-`send_mail.py` description for more details.
- 
+`send_mail.py` description for more details. My config looks like this:
+
+        {"mailgun_api_key": "key-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"}
+
+
 5. Run the endpoint defined in Custom Socket:
 
     First run the stats endpoint - as it is easier, because it is simple GET and no arguments are required.
