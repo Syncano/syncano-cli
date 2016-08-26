@@ -13,7 +13,8 @@ This can be installed in Syncano instance using the install from url functionali
 ## Prerequisites
 
 1. Syncano Account - Create one [here](https://www.syncano.io/). 
-2. GIT - for repository clone: `git clone git@github.com:Syncano/custom-socket-hello-world.git`.
+2. GIT - for repository clone: `git clone git@github.com:Syncano/custom-socket-hello-world.git`. If you want to edit
+    files locally.
 3. Syncano [CLI tool](https://pypi.python.org/pypi/syncano-cli/0.5) in version 0.5 or higher.
 
     > Note:
@@ -21,7 +22,7 @@ This can be installed in Syncano instance using the install from url functionali
     > Then create virtual env: `virtualenv cli` and active it: `source cli/bin/activate`
     > Install Syncano CLI: `pip install syncano_cli>=0.5`
 
-4. Your favourite editor.
+4. Your favourite text editor.
   
 ## YML definition
 
@@ -88,7 +89,7 @@ of Custom Socket dependencies (currently of type `script`).
     
         syncano login --instance-name patient-resonance-4283
 
-    Next you will see the prompt for `username` and `password`; Fill it. 
+    Next you will see the prompt for `username` and `password`; Provide it. 
     
 2. There are two ways of installing Custom Socket - one is using your local files and the second is to use a url.
 
@@ -96,7 +97,7 @@ of Custom Socket dependencies (currently of type `script`).
     
         syncano sockets install https://raw.githubusercontent.com/Syncano/custom-socket-hello-world/master/socket.yml --name hello_world
 
-    In such scenario - you do not need even clone the repository to your local machine. The name here is neede - because
+    In such scenario - you do not need even clone the repository to your local machine. The name here is needed - because
     under the hood empty Custom Socket is created - and code fetch from repository is done asynchronously in second
     step.
     
