@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-import time
-
 import click
 from syncano.exceptions import SyncanoException
 from syncano.models import APNSDevice, GCMDevice, Object
@@ -81,7 +79,6 @@ class SyncanoTransfer(ParseConnectionMixin, SyncanoConnectionMixin, PaginationMi
                         class_to_process.syncano_name, instance.name)
                     )
                     click.echo('WARN: {}'.format(e))
-                time.sleep(1)  # avoid throttling;
 
         self.set_relations(relations)
 
@@ -117,8 +114,6 @@ class SyncanoTransfer(ParseConnectionMixin, SyncanoConnectionMixin, PaginationMi
                         batched_syncano_object = s_class.objects.as_batch().create(**syncano_object)
                         objects_to_add.append(batched_syncano_object)
                         parse_ids.append(data_object['objectId'])
-
-                        time.sleep(1)  # avoid throttling;
 
                     # if objects to add is less than < 10 elements
                     if objects_to_add:
@@ -168,7 +163,6 @@ class SyncanoTransfer(ParseConnectionMixin, SyncanoConnectionMixin, PaginationMi
                     id=self.data.reference_map[parse_class_name][parse_id],
                     files=files
                 )
-                time.sleep(1)  # avoid throttling;
 
     def get_class(self, instance, class_name):
         s_class = self.syncano_classes.get(class_name)
@@ -231,14 +225,12 @@ class SyncanoTransfer(ParseConnectionMixin, SyncanoConnectionMixin, PaginationMi
             device_class.please.batch(
                 *devices
             )
-            time.sleep(1)
             return []
 
         if len(devices) == SYNCANO_BATCH_SIZE:
             device_class.please.batch(
                 *devices
             )
-            time.sleep(1)
             return []
 
         return devices
@@ -249,5 +241,4 @@ class SyncanoTransfer(ParseConnectionMixin, SyncanoConnectionMixin, PaginationMi
 
     @classmethod
     def _clear_data_and_wait(cls):
-        time.sleep(1)
         return cls._clear_data()

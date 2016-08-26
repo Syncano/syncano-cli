@@ -3,7 +3,7 @@ import os
 import sys
 
 import click
-from syncano_cli.base.connection import create_connection
+from syncano_cli.base.connection import create_connection, get_instance_name
 from syncano_cli.config import ACCOUNT_CONFIG_PATH
 from syncano_cli.hosting.utils import HostingCommands
 
@@ -15,12 +15,12 @@ def top_hosting():
 
 @top_hosting.command()
 @click.option('--config', help=u'Account configuration file.')
-@click.argument('instance_name', envvar='SYNCANO_INSTANCE')
+@click.option('--instance-name', help=u'Instance name.')
 @click.option('--list-files', is_flag=True, help='List files within the hosting.')
 @click.option('--publish', type=str, help='Publish files from the local directory to the Syncano Hosting.')
 def hosting(config, instance_name, list_files, publish):
     """
-    Execute script endpoint in given instance
+    Handle hosting and hosting files. Allow to publish static pages to the Syncano Hosting.
     """
 
     def validate_domain(provided_domain=None):
@@ -32,6 +32,8 @@ def hosting(config, instance_name, list_files, publish):
             sys.exit(1)
 
     config = config or ACCOUNT_CONFIG_PATH
+    instance_name = get_instance_name(config, instance_name)
+
     try:
         connection = create_connection(config)
         instance = connection.Instance.please.get(name=instance_name)

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
-import time
 
 import click
 
@@ -48,7 +47,6 @@ class HostingCommands(object):
                     hosting.upload_file(path=file_path, file=upload_file)
 
                 uploaded_files.append(file_path)
-                time.sleep(0.02)  # avoid throttling;
         return uploaded_files
 
     def create_hosting(self, label, domain):

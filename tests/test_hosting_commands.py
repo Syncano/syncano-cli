@@ -9,7 +9,7 @@ class HostingCommandsTest(BaseCLITest):
         self._publish_files()
 
         result = self.runner.invoke(cli, args=[
-            'hosting', self.instance.name, '--list-files'
+            'hosting', '--list-files'
         ])
 
         self.assertIn('index.html', result.output)
@@ -17,7 +17,7 @@ class HostingCommandsTest(BaseCLITest):
 
     def _publish_files(self):
         result = self.runner.invoke(cli, args=[
-            'hosting', self.instance.name, '--publish', 'tests/hosting_files_examples'
+            'hosting', '--publish', 'tests/hosting_files_examples'
         ], obj={})
 
         self.assertIn('index.html', result.output)

@@ -1,6 +1,19 @@
 Syncano command line tool
 =========================
 
+Build Status
+------------
+
+**Master**
+
+.. image:: https://circleci.com/gh/Syncano/syncano-cli/tree/master.svg?style=svg
+    :target: https://circleci.com/gh/Syncano/syncano-cli/tree/master
+
+**Develop**
+
+.. image:: https://circleci.com/gh/Syncano/syncano-cli/tree/develop.svg?style=svg
+    :target: https://circleci.com/gh/Syncano/syncano-cli/tree/develop
+
 Installation
 ------------
 
@@ -19,6 +32,14 @@ First you need to login into your account
 It will ask you for your email and password and store account key in
 ${HOME}/.syncano file. You can also override account key with --key option.
 
+You can specify the default instance name - that would be used in all CLI calls::
+
+    syncano login --instance-name patient-resonance-4283
+
+After when you want to override this setting use --instance-name in particular command, eg::
+
+    syncano sync pull --instance-name new-instance-1234
+
 Pulling your instance classes and scripts
 -----------------------------------------
 
@@ -26,7 +47,7 @@ In order to pull your instance configuration you can execute
 
 ::
 
-    syncano sync pull <instance_name>
+    syncano sync pull
 
 This will fetch all Classes and Scripts into current working directory, and
 store configuration in syncano.yml file. If you want to pull only selected
@@ -34,7 +55,7 @@ classes/scripts you can add -c/--class or -s/--script option eg.
 
 ::
 
-    syncano sync pull -c Class1 -c Class2 -s script_label_1 -s "script label 2" my_instance
+    syncano sync pull -c Class1 -c Class2 -s script_label_1 -s "script label 2"
 
 Scripts source code is stored in scripts subdirectory, and names are based on
 script labels. Keep in mind that script labels in syncano are not unique, and
@@ -53,7 +74,7 @@ can push the changes to syncano using
 
 ::
 
-    syncano sync push <instance_name>
+    syncano sync push
 
 It will push only changes newer then last synchronization time. This time is
 recorded using .sync file last modification time. If syncano.yml has changed
@@ -131,13 +152,13 @@ Syncano Hosting is a simple way to host the static files. CLI supports it in the
 
 ::
 
-    syncano hosting <instance_name> --list-files
+    syncano hosting --list-files
 
 This command will list files in hosting which match the default hosting.
 
 ::
 
-    syncano hosting <instance_name> --publish <base_dir>
+    syncano hosting --publish <base_dir>
 
 This command will publish all files inside <base_dir> and will publish it to the Syncano Hosting (default one).
 The whole directory structure - will be mapped in Syncano Hosting.
