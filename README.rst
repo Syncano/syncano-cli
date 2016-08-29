@@ -29,7 +29,7 @@ First you need to login into your Syncano account
 
     syncano login
 
-It will ask you for your email and password. After successful login your Account Key (admin key) 
+It will ask you for your email and password. After successfully logging in your Account Key (admin key) 
 will be stored in *${HOME}/.syncano* file. You can also override an Account Key later with *--key* option.
 
 You can specify the default instance name that will be used in all consecutive CLI calls::
@@ -54,7 +54,7 @@ In order to pull your instance configuration, execute
 
     syncano sync pull
 
-This will fetch all Classes and Scripts into current working directory, and
+This will fetch all Classes and Scripts into the current working directory, and
 store configuration in *syncano.yml* file. If you want to pull only selected
 classes/scripts you can add *-c/--class* or *-s/--script* option e.g.
 
@@ -62,13 +62,13 @@ classes/scripts you can add *-c/--class* or *-s/--script* option e.g.
 
     syncano sync pull -c Class1 -c Class2 -s script_label_1 -s "script label 2"
 
-Scripts' source code is stored in scripts subdirectory. Their names are based on
+The Scripts' source code is stored in the scripts subdirectory. Their names are based on
 script labels. Keep in mind that script labels in Syncano are not unique, and
-this tools cannot yet handle this kind of situation when pulling Script from Syncano.
+this tool cannot yet handle this kind of situation when pulling a Script from Syncano.
 
 Classes and Scripts configuration is stored in *syncano.yml* file. If this file already 
 exists, only classes and scripts stored in this file will be pulled and updated. 
-If you want to pull whole instance you can use *-a/--all* switch flag.
+If you want to pull the whole instance you can use *-a/--all* switch flag.
 
 Pushing your changes
 --------------------
@@ -86,21 +86,21 @@ If *syncano.yml* has changed, it will try to push all data to Syncano. Otherwise
 it will just push the source code files for scripts that were changed. 
 If you want to force push all changes you can use *-a/--all* option.
 
-If you want to just push selected classes/scripts changes you can provide them
+If you only want to push changes from selected classes/scripts you can provide them
 with *-c/--class* or *-s/--script* options like in the pull example above.
 
 Synchronize changes in real-time
 --------------------------------------
 
 There is an option to synchronize your project in real-time. When you change
-syncano.yml or a source code of script described in *syncano.yml*, your changes
+syncano.yml or the source code of a script described in *syncano.yml*, your changes
 will be automatically pushed to Syncano.
 
 ::
 
     syncano sync watch
 
-This command will push all your project configuration to Syncano and will
+This command will push all of your project's configuration to Syncano and will
 wait for changes made to project files. When it detects that any file was modified,
 it will push those changes to Syncano.
 
@@ -112,8 +112,8 @@ This tool will help you to move your data from Parse to Syncano.
 
 **Usage:**
 
-Currently supports only transferring data. This tool takes the Parse schemas and transform them to Syncano classes.
-Next step is to move all of the data between Parse and Syncano. The last step is rebuilding the relations between
+Currently supports only transferring data. This tool takes the Parse schemas and transforms them to Syncano classes.
+The next step is to move all of the data between Parse and Syncano. The last step is rebuilding the relations between
 objects.
 
 
@@ -136,7 +136,7 @@ Will run the configuration that will ask you for the following variables:
 * -c (--current) which will display the current configuration;
 * -f (--force) which allow to override the previously set configuration; 
 
-The configuration will be stored in your home directory in .syncano file under the P2S section. 
+The configuration will be stored in your home directory in the .syncano file under the P2S section. 
 It's used to call the Parse API and Syncano API as well.
 
 Run migration
@@ -146,23 +146,23 @@ Run migration
 
     syncano migrate parse
 
-This command will run the synchronization process between Parse and Syncano. Sit comfortably in your chair and read
+This command will run the synchronization process between Parse and Syncano. Sit back, relax, and read
 the output.
 
 Tips & Troubleshooting
 ----------------------
 
-1. This tool currently does not support checking if some object is already present in the Syncano instance.
-   If sync is run twice, the end results is that data will duplicated. To avoid such cases,
+1. This tool currently does not support checking if an object is already present in the Syncano instance.
+   If the sync is run twice, the data will be duplicated. To avoid this,
    simply remove your instance using Syncano dashboard;
 
-2. The whole process can be quite slow - it's because of the throttling on both sides: Parse and Syncano on free trial accounts (which is the bottom boundary for scripts);
+2. The whole process can be quite slow because of the throttling on both sides: Parse and Syncano on free trial accounts (which is the bottom boundary for scripts);
 
 Syncano Hosting
 ===============
 
-Syncano Hosting is a simple way to host the static files on Syncano servers. 
-CLI supports it in the following way:
+Syncano Hosting is a simple way to host your static files on Syncano servers. 
+The CLI supports it in the following way:
 
 ::
 
@@ -174,14 +174,14 @@ This command will list files for currently hosted website:
 
     syncano hosting --publish <base_dir>
 
-This command will publish all files inside *<base_dir>* in the default Syncano Hosting instance.
-When publishing whole directory structure will be mapped on Syncano.
+This command will publish all files inside *<base_dir>* to the default Syncano Hosting instance.
+When publishing the whole directory, the structure will be mapped on Syncano.
 
 
 Custom Sockets
 --------------
 
-You can find here list of commands available for Custom Sockets. 
+This is a list of commands available for Custom Sockets. 
 If you want to know more about Custom Sockets, `read the detailed docs here <docs/custom_sockets/docs.md>`_.
 
 To install a Custom Socket from a local file::
@@ -204,11 +204,11 @@ Display chosen Custom Socket details::
 
     syncano sockets details socket_name
 
-Deletes a Custom Socket::
+Delete a Custom Socket::
 
     syncano sockets delete socket_name
 
-Create a template from template stored in Syncano CLI::
+Create a template from a template stored in Syncano CLI::
 
     syncano sockets template /path/to/output_dir
 
@@ -224,12 +224,12 @@ Run endpoint providing POST data::
 
     syncano sockets run socket_name/my_endpoint_12 POST --data '{"one": 1}'
 
-In all of the above cases you can override Syncano instance being used::
+In all of the above cases you can override the Syncano instance being used::
 
     --instance-name my_instance_name
 
-Instance name provided this way will override the default instance name
-defined during  initial setup (*syncano login --instance-name my_instance*)
+Providing the instance name this way will override the default instance name
+defined during initial setup (*syncano login --instance-name my_instance*)
 
 
 Running scripts
