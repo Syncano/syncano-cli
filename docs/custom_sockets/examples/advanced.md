@@ -4,14 +4,14 @@
 
 This in an advanced example of Syncano Custom Sockets, showing an integration with Mailgun (https://mailgun.com/). 
 
-We will use Mailgun sandbox environment, that allows sending up to 300 mails per day - it should be more than enough for testing. 
+We will use Mailgun's sandbox environment, which allows sending up to 300 emails per day - it should be more than enough for testing. 
 
-We will implement two endpoint inside Custom Socket - one for sending emails, and second one to obtain some basic statistics.
+We will implement two endpoints inside the Custom Socket - one for sending emails, and a second one to obtain some basic statistics.
 
 ## Repository link
 
-Whole example can be found under: [Syncano/custom-socket-advanced-example](https://github.com/Syncano/custom-socket-advanced-example).
-It can be installed to your Syncano instance using the `install from url` functionality in CLI. The url is: 
+The whole example can be found under: [Syncano/custom-socket-advanced-example](https://github.com/Syncano/custom-socket-advanced-example).
+It can be installed to your Syncano instance using the `install from url` functionality in the CLI. The url is: 
 
 https://github.com/Syncano/custom-socket-advanced-example/blob/master/socket.yml
 
@@ -31,7 +31,7 @@ git clone git@github.com:Syncano/custom-socket-advanced-example.git`
     > Then create virtual env: `virtualenv cli` and active it: `source cli/bin/activate`
     > Install Syncano CLI: `pip install syncano_cli>=0.5`
 
-* Your favourite text editor.
+* Your favorite text editor.
 
 ## YML definition
 
@@ -60,7 +60,7 @@ git clone git@github.com:Syncano/custom-socket-advanced-example.git`
           file: scripts/get_stats.py
 
 Above YAML file defines one Custom Socket with two endpoints: 
-* `send_mail` for sending emails, it's run on POST HTTP method call; we want to pass here some basic information about who it should be sent to, what subject should be used and what text should be in the email itself;
+* `send_mail` for sending emails, it's run on POST HTTP method call; we want to pass some basic information about who it should be sent to, what subject should be used and what text should be in the email itself;
 * `get_stats` - second endpoint is for obtaining basic stats from Mailgun service.
 
 There are also two `script` dependencies defined.
@@ -107,7 +107,7 @@ There are also two `script` dependencies defined.
         set_response(HttpResponse(status_code=400, content=fail_content, content_type='application/json'))
 
 Script above will send a request to Mailgun service - and this service will send an email to a user.
-It's worth to note the `CONFIG` variable - it's an Instance global config dictionary/map - you can define its content inside
+It's worth noting the `CONFIG` variable - it's an Instance global config dictionary/map - you can define its content inside
 Syncano Dasboard under `Global Config` menu on the left, or using Syncano Libraries - more about it can be found 
 [in our docs](http://docs.syncano.io/docs/snippets-scripts#section-global-config-dictionary).
 
@@ -162,7 +162,7 @@ or in tree format:
 
 2. There are two ways of installing a Custom Socket - one is using your local files and the second one is by using a URL.
 
-    To install Custom Socket from a URL do:
+    To install the Custom Socket from a URL do:
     
         syncano sockets install https://raw.githubusercontent.com/Syncano/custom-socket-advanced-example/master/socket.yml --name mailgun_integration
 
@@ -189,7 +189,7 @@ or in tree format:
             name: mailgun_integration
             status: ok
 
-    This means that Custom Socket `mailgun_integration` was created successfuly - the status is `ok`. In any other case you will see here an `error` and detailed information in `info` about what went wrong.
+    This means that Custom Socket `mailgun_integration` was created successfuly - the status is `ok`. In any other case you will see an `error` and detailed information in `info` about what went wrong.
     
     Now, list all defined endpoints:
     
@@ -259,7 +259,7 @@ or in tree format:
 
     Above response is one-to-one to the response provided by Mailgun.
     
-    Now lets send an e-mail!
+    Now let's send an e-mail!
     
     Run:
     
