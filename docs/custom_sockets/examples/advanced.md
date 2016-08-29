@@ -2,28 +2,36 @@
  
 ## Abstract
 
-In this advanced example the integration with Mailgun will be made (https://mailgun.com/). The mailgun sandbox environment
-will be used. It allows to send 300 mails per day - so it should be enough. In this example two endpoints in Custom Socket
-will be implemented - one for sending emails, and second - to obtain some basic statistics.
+This in an advanced example of Syncano Custom Sockets, showing an integration with Mailgun (https://mailgun.com/). 
+
+We will use Mailgun sandbox environment, that allows sending up to 300 mails per day - it should be more than enough for testing. 
+
+We will implement two endpoint inside Custom Socket - one for sending emails, and second one to obtain some basic statistics.
 
 ## Repository link
 
-The whole example can be found under: [Syncano/custom-socket-advanced-example](https://github.com/Syncano/custom-socket-advanced-example)
-This can be installed in Syncano instance using the install from url functionality in CLI. The url is: url here
+Whole example can be found under: [Syncano/custom-socket-advanced-example](https://github.com/Syncano/custom-socket-advanced-example).
+It can be installed to your Syncano instance using the `install from url` functionality in CLI. The url is: 
+
+https://github.com/Syncano/custom-socket-advanced-example/blob/master/socket.yml
 
 ## Prerequisites
 
-1. Syncano Account - Create one [here](https://www.syncano.io/). 
-2. GIT - for repository clone: `git clone git@github.com:Syncano/custom-socket-hello-world.git`. If you want to edit
-    files locally.
-3. Syncano [CLI tool](https://pypi.python.org/pypi/syncano-cli/0.5) in version 0.5 or higher.
+* Syncano Account - [Create one here](https://www.syncano.io/). 
+* GIT - If you want to edit files locally, clone our repository using: 
+
+```bash
+git clone git@github.com:Syncano/custom-socket-hello-world.git`
+```
+
+* Syncano [CLI tool](https://pypi.python.org/pypi/syncano-cli/0.5) in version 0.5 or higher.
 
     > Note:
     > It is nice to use virtualenv to separate your tools: `sudo pip install virtualenv`
     > Then create virtual env: `virtualenv cli` and active it: `source cli/bin/activate`
     > Install Syncano CLI: `pip install syncano_cli>=0.5`
 
-4. Your favourite text editor.
+* Your favourite text editor.
 
 ## YML definition
 
@@ -51,11 +59,11 @@ This can be installed in Syncano instance using the install from url functionali
           runtime_name: python_library_v5.0
           file: scripts/get_stats.py
 
-The above YAML definition defines a one Custom Socket with two endpoints: one for send email: `send_mail` with POST 
-http method (we want to pass here some basic information about email: to who it should be send, what subject should be used
-and what text should be in the email itself). The second endpoint is for obtaining basic stats from Mailgun service.
+Above YAML file defines one Custom Socket with two endpoints: 
+* `send_mail` for sending emails, it's run on POST HTTP method call; we want to pass here some basic information about who it should be sent to, what subject should be used and what text should be in the email itself;
+* `get_stats` - second endpoint is for obtaining basic stats from Mailgun service.
 
-There're also two `script` dependencies defined.
+There are also two `script` dependencies defined.
 
 ## Scripts definition
 
@@ -85,7 +93,7 @@ There're also two `script` dependencies defined.
         success_content = json.dumps(
             {
                 'status_code': 200,
-                'info': u'Mail successfully send to {}'.format(to_email)
+                'info': u'Mail successfully sent to {}'.format(to_email)
             }
         )
         set_response(HttpResponse(status_code=200, content=success_content, content_type='application/json'))
@@ -98,10 +106,10 @@ There're also two `script` dependencies defined.
         )
         set_response(HttpResponse(status_code=400, content=fail_content, content_type='application/json'))
 
-The above script will send a request to the Mailgun service - and this service will send an email to user.
-It's worth to note the `CONFIG` variable - it's a Instance global config map - you can define its content in the
-Syncano Dasboard under the `Global Config` menu or using Syncano Libraries - more can be found at 
-[docs.](http://docs.syncano.io/docs/snippets-scripts#section-global-config-dictionary)
+Script above will send a request to Mailgun service - and this service will send an email to a user.
+It's worth to note the `CONFIG` variable - it's an Instance global config dictionary/map - you can define its content inside
+Syncano Dasboard under `Global Config` menu on the left, or using Syncano Libraries - more about it can be found 
+[in our docs](http://docs.syncano.io/docs/snippets-scripts#section-global-config-dictionary).
 
 ### scripts/get_stats.py
 
@@ -122,13 +130,13 @@ Syncano Dasboard under the `Global Config` menu or using Syncano Libraries - mor
     else:
         set_response(HttpResponse(status_code=400, content=response.text, content_type='application/json'))
 
-Above script will work as a proxy to the Mailgun service - will send a request about stats and passes the results as
+Above script will work as a proxy to the Mailgun service - will send a request about stats and pass the result as
 a response.
 
 
 ## Custom Socket directory structure
 
-The directory structure in my favourite editors looks like this:
+The directory structure in my favourite editor looks like this:
 
 ![](../images/project_struct_adv.png)
 
@@ -141,26 +149,24 @@ or in tree format:
     └── socket.yml
 
 
-## Pulling everything together
+## Putting everything together
 
 ### Steps:
 
-1. Assuming that you have Syncano CLI installed, do a login: `syncano login --instance-name your-instance-name`
+1. Assuming that you have Syncano CLI installed, log in using: `syncano login --instance-name your-instance-name`
     In my case it is:
     
         syncano login --instance-name patient-resonance-4283
 
-    Next you will see the prompt for `username` and `password`; Provide it.
+    Next you will see a prompt for `username` and `password`; provide both and confirm with `enter`.
 
-2. There are two ways of installing Custom Socket - one is using your local files and the second is to use a url.
+2. There are two ways of installing a Custom Socket - one is using your local files and the second one is by using a URL.
 
-    To install Custom Socket from url do:
+    To install Custom Socket from a URL do:
     
         syncano sockets install https://raw.githubusercontent.com/Syncano/custom-socket-advanced-example/master/socket.yml --name mailgun_integration
 
-    In such scenario - you do not need even clone the repository to your local machine. The name here is needed - because
-    under the hood empty Custom Socket is created - and code fetch from repository is done asynchronously in second
-    step.
+    In such scenario - you do not even need to clone the repository to your local machine. The `--name` parameter and name here are needed - because under the hood, empty Custom Socket is created - and code fetching from repository is done asynchronously in the second step.
     
     To install Custom Socket from local files do:
     
@@ -172,7 +178,7 @@ or in tree format:
         
 3. Try a newly created Custom Socket:
 
-    To list a Custom Sockets, do:
+    To list Custom Sockets, do:
     
         syncano sockets list
 
@@ -183,10 +189,9 @@ or in tree format:
             name: mailgun_integration
             status: ok
 
-    This mean that Custom Socket hello_world was created successfuly - the status is `ok`. In any other case you will see
-    here and `error` and detailed information in `info` - what was wrong.
+    This means that Custom Socket `mailgun_integration` was created successfuly - the status is `ok`. In any other case you will see here an `error` and detailed information in `info` about what went wrong.
     
-    Now list the defined endpoints:
+    Now, list all defined endpoints:
     
         syncano sockets list endpoints
 
@@ -203,15 +208,17 @@ or in tree format:
             name: mailgun_integration/send_mail
             path: /v1.1/instances/patient-resonance-4283/endpoints/sockets/mailgun_integration/send_mail/
 
-4. Before you run an endpoints - be sure that you have a Mailgun `api_key` in your instance Global Config. See the 
+4. Before you run an endpoint - be sure that you have Mailgun `api_key` inside your Instance Global Config. See the 
 `send_mail.py` description for more details. My config looks like this:
 
         {"mailgun_api_key": "key-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"}
+        
+ Of course you need to replace `key-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx` with your Mailgun API Key.
 
 
-5. Run the endpoint defined in Custom Socket:
+5. Run the endpoint defined in your Custom Socket:
 
-    First run the stats endpoint - as it is easier, because it is simple GET and no arguments are required.
+    First, run the stats endpoint - it's easier, as it is a simple GET request without any arguments required.
     
         syncano sockets run mailgun_integration/get_stats
 
@@ -250,30 +257,30 @@ or in tree format:
             "start": "Mon, 01 Aug 2016 00:00:00 UTC"
         }
 
-    The above response is one-to-one to the response provided by Mailgun.
+    Above response is one-to-one to the response provided by Mailgun.
     
-    **Let send a mail now**
+    Now lets send an e-mail!
     
     Run:
     
-        syncano sockets run mailgun_integration/send_mail POST --data '{"subject": "CustomSocket MailGun test", "to_email": "FirstName LastName <your_email>", "email_body": "It is nice to create Custom Sockets!"}'
+        syncano sockets run mailgun_integration/send_mail POST --data '{"subject": "CustomSocket MailGun test", "to_email": "FirstName LastName <your_email>", "email_body": "So nice to create Custom Sockets!"}'
 
-    Do not forget to change email in JSON data.
+    Do not forget to change e-mail address in JSON data.
     
-    This should return:
+    It should return:
     
         {
-            u'info': u'Mail successfully send to {to_email_value}', 
+            u'info': u'Mail successfully sent to {to_email_value}', 
             u'status_code': 200
         }
         
-    You can now call stats again and see if any changes appeared. 
+    You can now call stats again and see if anything changed. 
 
-6. To delete Custom Socket do:
+6. To delete mailgun Custom Socket do:
 
         syncano sockets delete mailgun_integration
 
 ## Summary
 
-Hope this will help. If you have any question or problems do no hesitate to contact me: sebastian.opalczynski@syncano.com
-Also I am available on the Syncano slack community: http://syncano-community.github.io/slack-invite/
+Hope this was helpful! If you have any question or issues, do no hesitate to contact me directly: sebastian.opalczynski@syncano.com
+I am also available on the [Syncano Slack community](http://syncano-community.github.io/slack-invite/). See you there!
