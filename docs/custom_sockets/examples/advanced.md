@@ -1,4 +1,4 @@
-# Adanced Custom Socket example
+# Advanced Custom Socket example
  
 ## Abstract
 
