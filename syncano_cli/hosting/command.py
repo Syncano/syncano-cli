@@ -55,6 +55,7 @@ class HostingCommands(object):
         hosting = self._get_hosting(domain=domain)
         hosting.domains = ['unpublished']
         hosting.save()
+        click.echo('INFO: Hosting `{}` unpublished.'.format(hosting.label))
 
     def delete_hosting(self, domain, path=None):
         hosting = self._get_hosting(domain=domain)
