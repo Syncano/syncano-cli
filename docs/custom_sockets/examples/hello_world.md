@@ -2,12 +2,12 @@
 
 ## Abstract
 
-In this example we will create a simple Custom Socket. Idea here is to create an endpoint which will return
+In this example we will create a simple Custom Socket. The idea here is to create an endpoint which will return
 a `Hello world` message. 
 
 ## Repository link
 
-Whole example can be found under: [Syncano/custom-socket-hello-world](https://github.com/Syncano/custom-socket-hello-world)
+The whole example can be found under: [Syncano/custom-socket-hello-world](https://github.com/Syncano/custom-socket-hello-world)
 It's possible to install it to Syncano Instance using `install from url` functionality in CLI. The URL is:
 
 `https://github.com/Syncano/custom-socket-hello-world/blob/master/socket.yml`
@@ -26,7 +26,7 @@ git clone git@github.com:Syncano/custom-socket-hello-world.git
     > Then create virtual env: `virtualenv cli` and active it: `source cli/bin/activate`
     > Install Syncano CLI: `pip install syncano_cli>=0.5`
 
-4. Your favourite text editor.
+4. Your favorite text editor.
   
 ## YML definition
 
@@ -50,13 +50,13 @@ Above YAML file defines one Custom Socket with one endpoint:
 
 There is also one `script` dependency defined, to `hello_world` script.
 
-In my favourite editor the project look as follows:
+In my favorite editor the project look as follows:
 
 ![](../images/project_struct.png)
 
 ## Scripts definition
 
-The script (`scripts/hello_world.py`) consist of a few lines:
+The script (`scripts/hello_world.py`) consists of a few lines:
 
     content = """
     <!DOCTYPE html>
@@ -73,8 +73,8 @@ The script (`scripts/hello_world.py`) consist of a few lines:
     
     set_response(HttpResponse(status_code=200, content=content, content_type='text/html'))
 
-The above code executed in Syncano will return a valid HTML response with `Hello World!` message inside. 
-The `set_response` is a function which allows returning custom response (e.g. in JSON, CSV or HTML format) from the script. 
+The above code executed in Syncano will return a valid HTML response with the `Hello World!` message inside. 
+The `set_response` is a function which returns a custom response (e.g. in JSON, CSV or HTML format) from the script. 
 
 ## Custom Socket directory structure
 
@@ -101,11 +101,11 @@ of Custom Socket dependencies (currently of type `script`).
     
 2. There are two ways of installing a Custom Socket - one is using your local files and the second one is by using a URL.
 
-    To install Custom Socket from url do:
+    To install the Custom Socket from url do:
     
         syncano sockets install https://raw.githubusercontent.com/Syncano/custom-socket-hello-world/master/socket.yml --name hello_world
 
-    In such scenario - you do not even need to clone the repository to your local machine. The `--name` parameter and name here are needed - because under the hood, empty Custom Socket is created - and code fetching from repository is done asynchronously in the second step.
+    In this scenario - you do not even need to clone the repository to your local machine. The `--name` parameter and name here are needed - because under the hood, an empty Custom Socket is created - and fetching code from the repository is done asynchronously in the second step.
     
     To install Custom Socket from local files do:
     
