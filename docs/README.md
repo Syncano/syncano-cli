@@ -2,16 +2,16 @@
 
 ## Migrations
 
-Migration allow to transfer data from Parse to Syncano. Read the following carefully to understand possibilities and 
-limitations.
+Migration allows to transfer data from Parse to Syncano. Read the following guide carefully, to understand 
+what can transferred from Parse to Syncano, and what are the limitations of the process.
 
 [Migrations](migrations/docs.md)
 
 ## Custom Sockets
 
-Custom Sockets are powerful Syncano solution which allows to customize endpoints behaviour. Custom Sockets can be used
-to provide integration with other applications or to define some custom endpoints for eg.: password reset. Custom
-Sockets are build on the top of the others Syncano solution - like Script Endpoints. 
+Custom Sockets are a powerful Syncano feature, which allows you to create your own API. 
+They can be used to provide an integration with other applications (e.g. sending emails with SendGrid) or to define custom behaviour for your endpoints e.g. for password reset.
+Sockets are build on the top of other Syncano solution - like Script Endpoints. 
 
 [Custom Sockets](custom_sockets/docs.md)
 
