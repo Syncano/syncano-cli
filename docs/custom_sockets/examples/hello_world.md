@@ -2,20 +2,24 @@
 
 ## Abstract
 
-In this example the simple Custom Socket will be created. The idea is to create an endpoint which will return
+In this example we will create a simple Custom Socket. Idea here is to create an endpoint which will return
 a `Hello world` message. 
 
 ## Repository link
 
-The whole example can be found under: [Syncano/custom-socket-hello-world](https://github.com/Syncano/custom-socket-hello-world)
-This can be installed in Syncano instance using the install from url functionality in CLI. The url is: url here
+Whole example can be found under: [Syncano/custom-socket-hello-world](https://github.com/Syncano/custom-socket-hello-world)
+It's possible to install it to Syncano Instance using `install from url` functionality in CLI. The URL is:
+
+`https://github.com/Syncano/custom-socket-hello-world/blob/master/socket.yml`
 
 ## Prerequisites
 
-1. Syncano Account - Create one [here](https://www.syncano.io/). 
-2. GIT - for repository clone: `git clone git@github.com:Syncano/custom-socket-hello-world.git`. If you want to edit
-    files locally.
-3. Syncano [CLI tool](https://pypi.python.org/pypi/syncano-cli/0.5) in version 0.5 or higher.
+* Syncano Account - [Create one here](https://www.syncano.io/).  
+* GIT - If you want to edit files locally, clone our repository using: 
+```bash
+git clone git@github.com:Syncano/custom-socket-hello-world.git
+````
+* Syncano [CLI tool](https://pypi.python.org/pypi/syncano-cli/0.5) in version 0.5 or higher.
 
     > Note:
     > It is nice to use virtualenv to separate your tools: `sudo pip install virtualenv`
@@ -40,9 +44,13 @@ This can be installed in Syncano instance using the install from url functionali
         hello_world:
           runtime_name: python_library_v5.0
           file: scripts/hello_world.py
+          
+Above YAML file defines one Custom Socket with one endpoint: 
+* `hello_endpoint` for printing hello world on every HTTP method call.
 
-The above YAML definition will store definition of the new Custom Socket with name `hello_world`. It defines one endpoint:
-`hello_endpoint` with one dependency: `hello_world` script. In my favourite editor the project look as follows:
+There is also one `script` dependency defined, to `hello_world` script.
+
+In my favourite editor the project look as follows:
 
 ![](../images/project_struct.png)
 
@@ -65,41 +73,39 @@ The script (`scripts/hello_world.py`) consist of a few lines:
     
     set_response(HttpResponse(status_code=200, content=content, content_type='text/html'))
 
-The above code executed in Syncano will return a valid html response with `Hellow World!` message inside. 
-The `set_response` is a function which allow to return custom response from the script. 
+The above code executed in Syncano will return a valid HTML response with `Hello World!` message inside. 
+The `set_response` is a function which allows returning custom response (e.g. in JSON, CSV or HTML format) from the script. 
 
 ## Custom Socket directory structure
 
-As can be seen in the example above the basic structure of Custom Socket is:
+As can be seen in the example above, the basic structure of this Custom Socket is:
 
     .
     ├── scripts
     │   └── hello_world.py
     └── socket.yml
 
-The `socket.yml` file stores YAML definition of the Custom Socket, and under `scripts` directory there a definition
+`socket.yml` file stores YAML definition of the Custom Socket, and under `scripts` directory there is a definition
 of Custom Socket dependencies (currently of type `script`).
 
-## Pulling everything together
+## Putting everything together
 
 ### Steps:
 
-1. Assuming that you have Syncano CLI installed, do a login: `syncano login --instance-name your-instance-name`
+1. Assuming that you have Syncano CLI installed, log in using: `syncano login --instance-name your-instance-name`
     In my case it is:
     
         syncano login --instance-name patient-resonance-4283
 
-    Next you will see the prompt for `username` and `password`; Provide it. 
+    Next you will see a prompt for `username` and `password`; provide both and confirm with `enter`.
     
-2. There are two ways of installing Custom Socket - one is using your local files and the second is to use a url.
+2. There are two ways of installing a Custom Socket - one is using your local files and the second one is by using a URL.
 
     To install Custom Socket from url do:
     
         syncano sockets install https://raw.githubusercontent.com/Syncano/custom-socket-hello-world/master/socket.yml --name hello_world
 
-    In such scenario - you do not need even clone the repository to your local machine. The name here is needed - because
-    under the hood empty Custom Socket is created - and code fetch from repository is done asynchronously in second
-    step.
+    In such scenario - you do not even need to clone the repository to your local machine. The `--name` parameter and name here are needed - because under the hood, empty Custom Socket is created - and code fetching from repository is done asynchronously in the second step.
     
     To install Custom Socket from local files do:
     
@@ -113,7 +119,7 @@ of Custom Socket dependencies (currently of type `script`).
      
 3. Try a newly created Custom Socket:
 
-    To list a Custom Sockets, do:
+    To list Custom Sockets, do:
     
         syncano sockets list
 
@@ -124,10 +130,9 @@ of Custom Socket dependencies (currently of type `script`).
             name: hello_world
             status: ok
 
-    This mean that Custom Socket hello_world was created successfuly - the status is `ok`. In any other case you will see
-    here and `error` and detailed information in `info` - what was wrong.
+    This means that Custom Socket `hello_world` was created successfuly - the status is `ok`. In any other case you will see here an `error` and detailed information in `info` about what went wrong.
     
-    Now list the defined endpoints:
+    Now, list all defined endpoints:
     
         syncano sockets list endpoints
 
@@ -162,7 +167,7 @@ of Custom Socket dependencies (currently of type `script`).
 
     Lets see if output can be seen in the browser:
     Go to: `https://api.syncano.io/v1.1/instances/your-instance-name/endpoints/sockets/hello_world/hello_endpoint/?api_key=your_api_key`
-    We defined the endpoint to handle GET http method. 
+    We defined the endpoint to handle GET HTTP method. 
     
     In my case:
     
@@ -174,5 +179,5 @@ of Custom Socket dependencies (currently of type `script`).
 
 ## Summary
 
-Hope this will help. If you have any question or problems do no hesitate to contact me: sebastian.opalczynski@syncano.com
-Also I am available on the Syncano slack community: http://syncano-community.github.io/slack-invite/
+Hope this was helpful! If you have any question or issues, do no hesitate to contact me directly: sebastian.opalczynski@syncano.com
+I am also available on the [Syncano Slack community](http://syncano-community.github.io/slack-invite/). See you there!
