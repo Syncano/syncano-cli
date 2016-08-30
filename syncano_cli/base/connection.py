@@ -12,7 +12,7 @@ def create_connection(config):
     ACCOUNT_CONFIG.read(config)
     api_key = ACCOUNT_CONFIG.get('DEFAULT', 'key')
     connection_dict = {
-        'api_key': api_key
+        'api_key': api_key,
     }
     instance_name = ACCOUNT_CONFIG.get('DEFAULT', 'instance_name', None)
     if instance_name:
