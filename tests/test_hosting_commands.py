@@ -42,7 +42,7 @@ class HostingCommandsTest(BaseCLITest):
     def _get_list_output(self):
         result = self.runner.invoke(cli, args=[
             'hosting', 'list'
-        ])
+        ], obj={})
         return result
 
     def _publish_files(self):
