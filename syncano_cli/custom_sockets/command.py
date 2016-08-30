@@ -32,7 +32,7 @@ class SocketCommand(object):
     def delete(self, socket_name):
         custom_socket = CustomSocket.please.get(name=socket_name, instance_name=self.instance.name)
         custom_socket.delete()
-        click.echo("INFO: Custom Socket {} delted.".format(socket_name))
+        click.echo("INFO: Custom Socket {} deleted.".format(socket_name))
 
     def install_from_dir(self, dir_path):
         with open(os.path.join(dir_path, self.SOCKET_FILE_NAME)) as socket_file:
