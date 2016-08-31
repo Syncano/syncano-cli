@@ -17,7 +17,7 @@ def top_sockets():
 @click.pass_context
 @click.option('--config', help=u'Account configuration file.')
 @click.option('--instance-name', help=u'Instance name.')
-def sockets(ctx, config, instance_name, **kwargs):
+def sockets(ctx, config, instance_name):
     """
     Allow to create a custom socket.
     """

@@ -164,19 +164,31 @@ Syncano Hosting
 Syncano Hosting is a simple way to host your static files on Syncano servers. 
 The CLI supports it in the following way:
 
-::
+This command will list files for currently hosted website::
 
-    syncano hosting --list-files
-
-This command will list files for currently hosted website:
-
-::
-
-    syncano hosting --publish <base_dir>
+    syncano hosting list
 
 This command will publish all files inside *<base_dir>* to the default Syncano Hosting instance.
-When publishing the whole directory, the structure will be mapped on Syncano.
+When publishing the whole directory, the structure will be mapped on Syncano.::
 
+    syncano hosting publish <base_dir>
+
+This command will unpublish currently published hosting::
+
+    syncano hosting unpublish
+
+
+This command will permamently delete the hosting::
+
+    syncano hosting delete
+
+This command will delete the specified file::
+
+    syncano hosting delete hosting/file/path
+
+This command will update single file::
+
+    syncano hosting update hosting/file/path local/file/path
 
 Custom Sockets
 --------------
@@ -216,7 +228,7 @@ Create a template from an existing Custom Socket::
 
     syncano sockets template /path/to/out --socket socket_name
 
-Run endpoint defined in Custom Socket::
+Run endpoint defined in Custom Socket::s
 
     syncano sockets run socket_name/endpoint_name
 
