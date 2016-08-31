@@ -11,7 +11,13 @@ def create_connection(config):
     config = config or ACCOUNT_CONFIG_PATH
     ACCOUNT_CONFIG.read(config)
     api_key = ACCOUNT_CONFIG.get('DEFAULT', 'key')
-    return syncano.connect(api_key=api_key)
+    connection_dict = {
+        'api_key': api_key,
+    }
+    instance_name = ACCOUNT_CONFIG.get('DEFAULT', 'instance_name', None)
+    if instance_name:
+        connection_dict['instance_name'] = instance_name
+    return syncano.connect(**connection_dict)
 
 
 def get_instance_name(config, instance_name):
