@@ -7,7 +7,7 @@ Table of contents
 1.  `Build Status`_
 2.  `Installation`_
 3.  `Documentation`_
-4.  `Syncano sync`_.
+4.  `Syncano sync`_
 5.  `Syncano Parse migration tool`_
 6.  `Syncano Hosting`_
 7.  `Custom Sockets`_

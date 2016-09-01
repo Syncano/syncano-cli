@@ -21,7 +21,7 @@ https://github.com/Syncano/custom-socket-advanced-example/blob/master/socket.yml
 * GIT - If you want to edit files locally, clone our repository using: 
 
 ```bash
-git clone git@github.com:Syncano/custom-socket-advanced-example.git`
+git clone git@github.com:Syncano/custom-socket-advanced-example.git
 ```
 
 * Syncano [CLI tool](https://pypi.python.org/pypi/syncano-cli/0.5) in version 0.5 or higher.
