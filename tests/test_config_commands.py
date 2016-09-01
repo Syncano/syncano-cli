@@ -9,8 +9,8 @@ class ConfigCommandsTest(BaseCLITest):
         self._add_config('test', '123')
         result = self._list_config()
 
-        self.assertIn('test', result)
-        self.assertIn('123', result)
+        self.assertIn('test', result.output)
+        self.assertIn('123', result.output)
 
     def test_add_config_var(self):
         # test basic add;
@@ -18,8 +18,8 @@ class ConfigCommandsTest(BaseCLITest):
         self.assertIn('Variable `api-key` set to `981xx`.', result.output)
 
         result = self._list_config()
-        self.assertIn('api-key', result)
-        self.assertIn('981xx', result)
+        self.assertIn('api-key', result.output)
+        self.assertIn('981xx', result.output)
 
         # test if ERROR is displayed;
         result = self._add_config('api-key', '981xx')

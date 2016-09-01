@@ -109,7 +109,8 @@ There are also two `script` dependencies defined.
 Script above will send a request to Mailgun service - and this service will send an email to a user.
 It's worth noting the `CONFIG` variable - it's an Instance global config dictionary/map - you can define its content inside
 Syncano Dasboard under `Global Config` menu on the left, or using Syncano Libraries - more about it can be found 
-[in our docs](http://docs.syncano.io/docs/snippets-scripts#section-global-config-dictionary).
+[in our docs](http://docs.syncano.io/docs/snippets-scripts#section-global-config-dictionary) or using a CLI:
+`syncano config add mailgun_api_key 99xx11`
 
 ### scripts/get_stats.py
 
@@ -212,9 +213,12 @@ or in tree format:
 `send_mail.py` description for more details. My config looks like this:
 
         {"mailgun_api_key": "key-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"}
-        
- Of course you need to replace `key-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx` with your Mailgun API Key.
 
+    Of course you need to replace `key-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx` with your Mailgun API Key.
+
+    You can use CLI to add this config variable to your instance:
+ 
+        syncano config add mailgun_api_key key-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 5. Run the endpoint defined in your Custom Socket:
 
