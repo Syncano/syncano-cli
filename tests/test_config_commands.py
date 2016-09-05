@@ -26,12 +26,12 @@ class ConfigCommandsTest(BaseCLITest):
         self.assertIn('already in config', result.output)
 
         # test multiple add;
-        self._add_config('api-key-ui', '981xxy')
+        self._add_config('totally-new-name', 'new-value')
         result = self._list_config()
         self.assertIn('api-key', result.output)
         self.assertIn('981xx', result.output)
-        self.assertIn('api-key-ui', result.output)
-        self.assertIn('981xxy', result.output)
+        self.assertIn('totally-new-name', result.output)
+        self.assertIn('new-value', result.output)
 
     def test_modify_config_var(self):
         self._add_config('api-key-mod', '981xx')
