@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
 
 import os
+from yaml.parser import ParserError
 
 import click
+import requests
 import six
 import yaml
+
+import sys
 from syncano.models import CustomSocket, SocketEndpoint
 from syncano_cli.custom_sockets.formatters import SocketFormatter
 from syncano_cli.custom_sockets.templates.socket_template import SCRIPTS, SOCKET_YML
@@ -35,8 +39,11 @@ class SocketCommand(object):
         click.echo("INFO: Custom Socket {} deleted.".format(socket_name))
 
     def install_from_dir(self, dir_path):
+
         with open(os.path.join(dir_path, self.SOCKET_FILE_NAME)) as socket_file:
             yml_file = yaml.safe_load(socket_file)
+
+        self.set_up_config(yml_file)
 
         api_data = SocketFormatter.to_json(socket_yml=yml_file, directory=dir_path)
         api_data.update({'instance_name': self.instance.name})
@@ -44,6 +51,9 @@ class SocketCommand(object):
         click.echo('INFO: socket {} created.'.format(custom_socket.name))
 
     def install_from_url(self, url_path, name):
+        socket_yml = self.fetch_file(url_path)
+        self.set_up_config(socket_yml)
+
         CustomSocket(name=name).install_from_url(url=url_path, instance_name=self.instance.name)
         click.echo('INFO: Installing socket from url: do `syncano sockets list` to obtain the status.')
 
@@ -92,3 +102,31 @@ class SocketCommand(object):
         for script_name, script_source in six.iteritems(SCRIPTS):
             with open(os.path.join(destination, script_name), 'w+') as script_file:
                 script_file.write(script_source)
+
+    def set_up_config(self, socket_yml):
+        config = socket_yml['config']
+        instance_config = self.instance.get_config()
+
+        for config_var in config:
+            config_var_name = config_var['name']
+
+            if config_var_name not in instance_config:
+                prompt_str = 'Provide value for {}'.format(config_var_name)
+                if config_var.get('description', None):
+                    prompt_str = '{} ({})'.format(prompt_str, config_var['description'])
+                config_var_value = click.prompt(prompt_str)
+                instance_config[config_var_name] = config_var_value
+
+        self.instance.set_config(instance_config)
+
+    def fetch_file(self, url_path):
+        response = requests.get(url_path)
+        if response.status_code == 200:
+            try:
+                return yaml.safe_load(response.text)
+            except ParserError:
+                click.echo("ERROR: Can't parse yml file.")
+                sys.exit(1)
+
+        click.echo("ERROR: Can't fetch the file: {}.".format(url_path))
+        sys.exit(1)

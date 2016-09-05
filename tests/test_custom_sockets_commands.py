@@ -36,7 +36,7 @@ class CustomSocketCommandsTest(BaseCLITest):
         socket_base_path = '/tmp/socket_{}'.format('dir_install')
         self.runner.invoke(cli, args=['sockets', 'template', socket_base_path], obj={})
 
-        self.runner.invoke(cli, args=['sockets', 'install', socket_base_path], obj={})
+        self.runner.invoke(cli, args=['sockets', 'install', socket_base_path], input='xx-9876', obj={})
         time.sleep(2)  # wait for socket creation;
 
         result = self.runner.invoke(cli, args=['sockets', 'list'], obj={})
@@ -45,7 +45,7 @@ class CustomSocketCommandsTest(BaseCLITest):
     def test_url_install(self):
         path = 'https://raw.githubusercontent.com/Syncano/custom-socket-test/master/socket.yml'
 
-        self.runner.invoke(cli, args=['sockets', 'install', path, '--name', 'my_tweet1'], obj={})
+        self.runner.invoke(cli, args=['sockets', 'install', path, '--name', 'my_tweet1'], input='test\n', obj={})
         time.sleep(2)  # wait for socket creation;
         result = self.runner.invoke(cli, args=['sockets', 'list'], obj={})
         self.assertIn('my_tweet1', result.output)
