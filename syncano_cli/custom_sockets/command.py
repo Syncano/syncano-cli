@@ -9,6 +9,7 @@ import six
 import yaml
 from syncano.models import CustomSocket, SocketEndpoint
 from syncano_cli.custom_sockets.formatters import SocketFormatter
+from syncano_cli.custom_sockets.parsers import SocketConfigParser
 from syncano_cli.custom_sockets.templates.socket_template import SCRIPTS, SOCKET_YML
 from yaml.parser import ParserError
 
@@ -103,18 +104,12 @@ class SocketCommand(object):
                 script_file.write(script_source)
 
     def set_up_config(self, socket_yml):
-        config = socket_yml.get('config', [])
         instance_config = self.instance.get_config()
 
-        for config_var in config:
-            config_var_name = config_var['name']
-
-            if config_var_name not in instance_config:
-                prompt_str = 'Provide value for {}'.format(config_var_name)
-                if config_var.get('description', None):
-                    prompt_str = '{} ({})'.format(prompt_str, config_var['description'])
-                config_var_value = click.prompt(prompt_str)
-                instance_config[config_var_name] = config_var_value
+        socket_config = SocketConfigParser(socket_yml=socket_yml.get('config', []))
+        if socket_config.is_valid():
+            provided_config = socket_config.ask_for_config(instance_config)
+            instance_config.update(provided_config)
 
         self.instance.set_config(instance_config)
 
