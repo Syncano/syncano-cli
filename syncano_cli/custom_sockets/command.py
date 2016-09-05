@@ -110,8 +110,7 @@ class SocketCommand(object):
         if socket_config.is_valid():
             provided_config = socket_config.ask_for_config(instance_config)
             instance_config.update(provided_config)
-
-        self.instance.set_config(instance_config)
+            self.instance.set_config(instance_config)
 
     def fetch_file(self, url_path):
         response = requests.get(url_path)
