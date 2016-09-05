@@ -103,7 +103,7 @@ class SocketCommand(object):
                 script_file.write(script_source)
 
     def set_up_config(self, socket_yml):
-        config = socket_yml['config']
+        config = socket_yml.get('config', [])
         instance_config = self.instance.get_config()
 
         for config_var in config:
