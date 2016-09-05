@@ -1,17 +1,16 @@
 # -*- coding: utf-8 -*-
 
 import os
-from yaml.parser import ParserError
+import sys
 
 import click
 import requests
 import six
 import yaml
-
-import sys
 from syncano.models import CustomSocket, SocketEndpoint
 from syncano_cli.custom_sockets.formatters import SocketFormatter
 from syncano_cli.custom_sockets.templates.socket_template import SCRIPTS, SOCKET_YML
+from yaml.parser import ParserError
 
 
 class SocketCommand(object):
