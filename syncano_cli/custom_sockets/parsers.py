@@ -16,6 +16,8 @@ class SocketConfigParser(object):
                 click.echo("ERROR: variable name should be provided in config.")
                 sys.exit(1)
 
+        return True
+
     def ask_for_config(self, instance_config):
         provided_config = {}
         for config_var in self.config:

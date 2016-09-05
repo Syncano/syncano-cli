@@ -106,7 +106,7 @@ class SocketCommand(object):
     def set_up_config(self, socket_yml):
         instance_config = self.instance.get_config()
 
-        socket_config = SocketConfigParser(socket_yml=socket_yml.get('config', []))
+        socket_config = SocketConfigParser(socket_yml=socket_yml)
         if socket_config.is_valid():
             provided_config = socket_config.ask_for_config(instance_config)
             instance_config.update(provided_config)
