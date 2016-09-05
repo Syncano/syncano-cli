@@ -6,6 +6,7 @@ import sys
 import click
 from syncano.exceptions import SyncanoException
 from syncano_cli.commands import top_level
+from syncano_cli.config_commands.commands import top_config
 from syncano_cli.custom_sockets.commands import top_sockets
 from syncano_cli.execute.commands import top_execute
 from syncano_cli.hosting.commands import top_hosting
@@ -16,11 +17,12 @@ ACCOUNT_KEY = ''
 
 cli = click.CommandCollection(
     sources=[
-        top_level,
-        top_sync,
-        top_migrate,
+        top_config,
         top_execute,
+        top_level,
         top_hosting,
+        top_migrate,
+        top_sync,
         top_sockets,
     ])
 

@@ -1,8 +1,22 @@
 Syncano command line tool
 =========================
 
+Table of contents
+=================
+
+1.  `Build Status`_
+2.  `Installation`_
+3.  `Documentation`_
+4.  `Syncano sync`_
+5.  `Syncano Parse migration tool`_
+6.  `Syncano Hosting`_
+7.  `Custom Sockets`_
+8.  `Config`_
+9.  `Running scripts`_
+10.  `Issues`_
+
 Build Status
-------------
+============
 
 **Master**
 
@@ -15,9 +29,9 @@ Build Status
     :target: https://circleci.com/gh/Syncano/syncano-cli/tree/develop
 
 Installation
-------------
+============
 
-::
+To install Syncano CLI tool::
 
     pip install syncano-cli
 
@@ -41,9 +55,13 @@ If you want to override this setting for a specific command, use --instance-name
     syncano sync pull --instance-name new-instance-1234
 
 Documentation
--------------
+=============
 
 You can read detailed documentation `here <docs/README.md>`_.
+
+
+Syncano sync
+============
 
 Pulling your instance classes and scripts
 -----------------------------------------
@@ -90,7 +108,7 @@ If you only want to push changes from selected classes/scripts you can provide t
 with *-c/--class* or *-s/--script* options like in the pull example above.
 
 Synchronize changes in real-time
---------------------------------------
+--------------------------------
 
 There is an option to synchronize your project in real-time. When you change
 syncano.yml or the source code of a script described in *syncano.yml*, your changes
@@ -191,7 +209,7 @@ This command will update single file::
     syncano hosting update hosting/file/path local/file/path
 
 Custom Sockets
---------------
+==============
 
 This is a list of commands available for Custom Sockets. 
 If you want to know more about Custom Sockets, `read the detailed docs here <docs/custom_sockets/docs.md>`_.
@@ -244,6 +262,25 @@ Providing the instance name this way will override the default instance name
 defined during initial setup (*syncano login --instance-name my_instance*)
 
 
+Config
+======
+
+To display current instance config::
+
+    syncano config
+
+To add variable with name `name` and value `value` to the config::
+
+    syncano config add name value
+
+To modify existing config variable::
+
+    syncano config modify name value
+
+To delete existing config variable::
+
+    syncano config delete name
+
 Running scripts
 ===============
 
@@ -257,7 +294,7 @@ This command will allow you to execute any script (Script Endpoint) with optiona
 
 
 Issues
-========
+======
 
 1. If you encounter any problems, have some improvement ideas or just wanna talk,
    please write to me directly: sebastian.opalczynski@syncano.com;
