@@ -31,7 +31,7 @@ def sync(context, file, config, instance_name):
     """
     connection = create_connection(config, instance_name)
     context.obj['connection'] = connection
-    context.obj['instance'] = get_instance(instance_name, connection=connection)
+    context.obj['instance'] = get_instance(config, instance_name, connection=connection)
     context.obj['file'] = file
     context.obj['config'] = config
     context.obj['project'] = Project.from_config(context.obj['file'])
