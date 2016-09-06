@@ -4,7 +4,7 @@ from __future__ import print_function
 import time
 
 import click
-from syncano_cli.base.connection import create_connection
+from syncano_cli.base.connection import create_connection, get_instance
 from syncano_cli.sync.project import Project
 from watchdog.observers import Observer
 
@@ -31,6 +31,7 @@ def sync(context, file, config, instance_name):
     """
     connection = create_connection(config, instance_name)
     context.obj['connection'] = connection
+    context.obj['instance'] = get_instance(instance_name, connection=connection)
     context.obj['file'] = file
     context.obj['config'] = config
     context.obj['project'] = Project.from_config(context.obj['file'])
@@ -41,7 +42,7 @@ def sync(context, file, config, instance_name):
 @click.option('-s', '--script', help=u"Pull only this script from syncano", multiple=True)
 @click.option('-c', '--class', help=u"Pull only this class from syncano", multiple=True)
 @click.option('-a', '--all', is_flag=True, default=False, help=u"Force push all configuration")
-def push(context, script, all, instance_name, **kwargs):
+def push(context, script, all, **kwargs):
     """
     Push configuration changes to syncano.
     """
@@ -64,7 +65,7 @@ def pull(context, script, all, **kwargs):
     -a/--all flag.
     """
     klass = kwargs.pop('class')
-    context.obj['project'].update_from_instance(context.obj['connection'], all, klass, script)
+    context.obj['project'].update_from_instance(context.obj['instance'], all, klass, script)
     context.obj['project'].write(context.obj['file'])
 
 
@@ -93,4 +94,4 @@ def watch(context):
 
 
 def do_push(context, classes, scripts, all):
-    context.obj['project'].push_to_instance(context.obj['connection'], classes=classes, scripts=scripts, all=all)
+    context.obj['project'].push_to_instance(context.obj['instance'], classes=classes, scripts=scripts, all=all)

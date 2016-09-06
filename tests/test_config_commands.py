@@ -56,7 +56,7 @@ class ConfigCommandsTest(BaseCLITest):
 
         # test delete non existing;
         result = self.runner.invoke(cli, args=['config', 'delete', 'api-key-del-non'], obj={})
-        self.assertIn('variable `api-key-del-non` not found.', result.output)
+        self.assertIn('Variable `api-key-del-non` not found.', result.output)
 
     def _add_config(self, name, value):
         return self.runner.invoke(cli, args=['config', 'add', name, value], obj={})
