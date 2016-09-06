@@ -6,7 +6,7 @@ from syncano.exceptions import SyncanoException
 from syncano_cli.base.exceptions import (
     InstanceNotFoundException,
     MissingInstanceNameException,
-    WrongCredentialException
+    BadCredentialsException
 )
 from syncano_cli.config import ACCOUNT_CONFIG, ACCOUNT_CONFIG_PATH
 
@@ -33,7 +33,7 @@ def create_connection(config, instance_name=None):
     try:
         return syncano.connect(**connection_dict)
     except SyncanoException:
-        raise WrongCredentialException()
+        raise BadCredentialsException()
 
 
 def get_instance(config, instance_name, connection=None):
