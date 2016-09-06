@@ -3,11 +3,7 @@ from ConfigParser import NoOptionError, NoSectionError
 
 import syncano
 from syncano.exceptions import SyncanoException
-from syncano_cli.base.exceptions import (
-    InstanceNotFoundException,
-    MissingInstanceNameException,
-    BadCredentialsException
-)
+from syncano_cli.base.exceptions import BadCredentialsException, InstanceNotFoundException, MissingInstanceNameException
 from syncano_cli.config import ACCOUNT_CONFIG, ACCOUNT_CONFIG_PATH
 
 

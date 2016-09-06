@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 import os
-import sys
 
-import click
 import six
 import yaml
+from syncano_cli.custom_sockets.exceptions import BadYAMLDefinitionInEndpointsException, OneEndpointPerMethodException
 from syncano_cli.sync.scripts import ALLOWED_RUNTIMES
 
 
@@ -77,8 +76,7 @@ class SocketFormatter(object):
         calls = []
         keys = set(endpoint_data.keys())
         if keys.intersection(set(cls.HTTP_METHODS)) and keys.intersection(set(cls.ENDPOINT_TYPES)):
-            click.echo("ERROR: Specify one general endpoint or specify endpoints for each method.")
-            sys.exit(1)
+            raise BadYAMLDefinitionInEndpointsException()
 
         for type_or_method in keys:
             data = endpoint_data[type_or_method]
@@ -92,8 +90,7 @@ class SocketFormatter(object):
 
             elif type_or_method in cls.HTTP_METHODS:
                 if len(data) != 1:
-                    click.echo("ERROR: Only one endpoint per method allowed.")
-                    sys.exit(1)
+                    raise OneEndpointPerMethodException()
 
                 for call_type, name in six.iteritems(data):
                     calls.append({

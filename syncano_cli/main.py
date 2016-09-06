@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function
 
-import sys
-
 import click
 from syncano.exceptions import SyncanoException
+from syncano_cli.base.exceptions import CLIBaseException, SyncanoLibraryException
 from syncano_cli.commands import top_level
 from syncano_cli.config_commands.commands import top_config
 from syncano_cli.custom_sockets.commands import top_sockets
@@ -28,6 +27,7 @@ cli = click.CommandCollection(
 def main():
     try:
         cli(obj={})
-    except SyncanoException as error:
-        click.echo(error)
-        sys.exit(1)
+    except SyncanoException as e:
+        raise SyncanoLibraryException(e.reason)
+    except Exception as e:
+        raise CLIBaseException(e.message)

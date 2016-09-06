@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import os
-import sys
 
 import click
+from syncano_cli.hosting.exceptions import NoDefaultHostingFoundException, PathNotFoundException, UnicodeInPathException
 
 
 class HostingCommands(object):
@@ -66,17 +66,13 @@ class HostingCommands(object):
     def delete_path(self, domain, path=None):
         hosting = self._get_hosting(domain=domain)
         hosting_files = hosting.list_files()
-        is_deleted = False
+
         for hosting_file in hosting_files:
             if hosting_file.path == path:
-                is_deleted = True
                 hosting_file.delete()
-                break
-
-        if is_deleted:
-            click.echo('INFO: File `{}` deleted.'.format(path))
-            sys.exit(1)
-        click.echo('INFO: File `{}` not found.'.format(path))
+                click.echo('INFO: File `{}` deleted.'.format(path))
+                return
+        raise PathNotFoundException(format_args=[path])
 
     def update_single_file(self, domain, path, file):
         hosting = self._get_hosting(domain=domain)
@@ -100,17 +96,14 @@ class HostingCommands(object):
                 break
 
         if not to_return and not is_new:
-            click.echo(u'WARN: No default hosting found. Exit.')
-            sys.exit(1)
-
+            raise NoDefaultHostingFoundException()
         return to_return
 
     def _validate_path(self, file_path):
         try:
             file_path.decode('ascii')
         except UnicodeEncodeError:
-            click.echo(u'ERROR: Unicode characters in path are not supported. Check the files names.')
-            sys.exit(1)
+            raise UnicodeInPathException()
 
     def print_hosting_files(self, hosting_files):
         print('Hosting files:')

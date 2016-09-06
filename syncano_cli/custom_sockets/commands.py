@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 import json
-import sys
 
 import click
 from syncano_cli.base.connection import get_instance
 from syncano_cli.base.exceptions import JSONParseException
 from syncano_cli.custom_sockets.command import SocketCommand
-from syncano_cli.custom_sockets.exceptions import MissingRequestDataException
+from syncano_cli.custom_sockets.exceptions import MissingRequestDataException, SocketNameMissingException
 
 
 @click.group()
@@ -52,10 +51,8 @@ def install(ctx, source, name):
 
     if 'http' in source:
         if not name:
-            click.echo('ERROR: name should be specified: --name')
-            sys.exit(1)
+            raise SocketNameMissingException()
         socket_command.install_from_url(url_path=source, name=name)
-
     else:
         socket_command.install_from_dir(dir_path=source)
 

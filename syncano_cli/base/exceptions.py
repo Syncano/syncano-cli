@@ -14,6 +14,10 @@ class CLIBaseException(ClickException):
         super(CLIBaseException, self).__init__(message)
 
 
+class SyncanoLibraryException(CLIBaseException):
+    pass
+
+
 class JSONParseException(CLIBaseException):
     default_message = u'Invalid JSON data. Parse error.'
 
