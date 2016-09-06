@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from syncano_cli.config import ACCOUNT_CONFIG, ACCOUNT_CONFIG_PATH
 from syncano_cli.main import cli
 from tests.base import BaseCLITest, InstanceMixin, IntegrationTest
 
