@@ -16,7 +16,7 @@ def get_instance_name(config, instance_name):
     try:
         instance_name = instance_name or ACCOUNT_CONFIG.get('DEFAULT', 'instance_name')
     except (NoOptionError, NoSectionError):
-        raise MissingInstanceNameException()
+        raise MissingInstanceNameException(format_args=[instance_name])
     return instance_name
 
 
