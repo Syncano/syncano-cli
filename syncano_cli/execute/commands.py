@@ -18,12 +18,12 @@ def top_execute():
 @click.option('--instance-name', help=u'Instance name.')
 @click.argument('script_endpoint_name')
 @click.option('--payload', help=u'Script payload in JSON format.')
-def execute(instance_name, config, script_endpoint_name, payload):
+def execute(config, instance_name, script_endpoint_name, payload):
     """
     Execute script endpoint in given instance
     """
     instance = get_instance(config, instance_name)
-    se = instance.script_endpoints.get(instance_name, script_endpoint_name)
+    se = instance.script_endpoints.get(name=script_endpoint_name)
     try:
         data = json.loads((payload or '').strip() or '{}')
     except:
