@@ -7,12 +7,6 @@ from tests.base import BaseCLITest, InstanceMixin, IntegrationTest
 
 class SyncCommandsTest(BaseCLITest, InstanceMixin, IntegrationTest):
 
-    def test_login(self):
-        # tested through system variables;
-        self.runner.invoke(cli, args=['login'], obj={})
-        self.assert_config_variable_exists(ACCOUNT_CONFIG, 'DEFAULT', 'key')
-        self.assert_file_exists(ACCOUNT_CONFIG_PATH)
-
     def test_sync_pull_single_class(self):
         unique = '1'
         self.create_syncano_class(unique=unique)
