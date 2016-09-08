@@ -11,7 +11,9 @@ class InstancesCommandsTest(BaseCLITest):
         self.assertIn(self.instance.name, result.output)
 
     def test_details(self):
-        result = self._list_command()
+        result = self.runner.invoke(cli, args=[
+            'instances', 'details', self.instance.name
+        ], obj={})
         self.assertIn(self.instance.owner.email, result.output)
 
     def test_create_and_default_and_delete(self):
