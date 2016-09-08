@@ -31,7 +31,7 @@ class NotLoggedInException(CLIBaseException):
 
 
 class MissingInstanceNameException(CLIBaseException):
-    default_message = u'Instance name not specified: nor default, nor as an option.'
+    default_message = u'Instance name not specified.'
 
 
 class InstanceNotFoundException(CLIBaseException):
