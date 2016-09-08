@@ -13,8 +13,6 @@ class MigrateCommandsTest(InstanceMixin, IntegrationTest):
     @classmethod
     def setUpClass(cls):
         super(MigrateCommandsTest, cls).setUpClass()
-        # invoke login first:
-        cls.runner.invoke(cli, args=['login'], obj={})
         # and make setup;
         cls._set_up_configuration()
 
