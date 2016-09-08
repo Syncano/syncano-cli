@@ -82,6 +82,9 @@ class BaseCLITest(InstanceMixin, IntegrationTest):
     def assert_config_variable_exists(self, config, section, key):
         self.assertTrue(config.get(section, key))
 
+    def assert_config_variable_equal(self, config, section, key, value):
+        self.assertEqual(config.get(section, key), value)
+
     def assert_class_yml_file(self, unique):
         with open(self.yml_file) as syncano_yml:
             yml_content = yaml.safe_load(syncano_yml)
