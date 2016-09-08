@@ -34,7 +34,7 @@ class InstancesCommandsTest(BaseCLITest):
 
         self.runner.invoke(cli, args=[
             'instances', 'delete', instance_name,
-        ], obj={})
+        ], input='{}\n'.format(instance_name), obj={})
 
         result = self._list_command()
         self.assertNotIn(instance_name, result.output)
