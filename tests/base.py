@@ -73,7 +73,8 @@ class BaseCLITest(InstanceMixin, IntegrationTest):
 
     def tearDown(self):
         # remove the .syncano file
-        os.remove(ACCOUNT_CONFIG_PATH)
+        if os.path.isfile(ACCOUNT_CONFIG_PATH):
+            os.remove(ACCOUNT_CONFIG_PATH)
         self.assertFalse(os.path.isfile(ACCOUNT_CONFIG_PATH))
 
     def assert_file_exists(self, path):
