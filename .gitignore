@@ -63,3 +63,4 @@ syncano.yml
 scripts
 *.iml
 
+dev.py
