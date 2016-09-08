@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from syncano_cli.hosting.exceptions import NoDefaultHostingFoundException
 from syncano_cli.main import cli
 from tests.base import BaseCLITest
 
@@ -25,8 +26,8 @@ class HostingCommandsTest(BaseCLITest):
 
         # test hosting delete;
         self._delete_hosting()
-        result = self._get_list_output()
-        self.assertIn('No default hosting found. Exit.', result.output)
+        with self.assertRaises(NoDefaultHostingFoundException):
+            self._get_list_output()
 
         # recreate hosting;
         self._publish_files()
@@ -36,8 +37,8 @@ class HostingCommandsTest(BaseCLITest):
             'hosting', 'unpublish'
         ], obj={})
         self.assertIn('unpublished', result.output)
-        result = self._get_list_output()
-        self.assertIn('No default hosting found. Exit.', result.output)
+        with self.assertRaises(NoDefaultHostingFoundException):
+            self._get_list_output()
 
     def _get_list_output(self):
         result = self.runner.invoke(cli, args=[

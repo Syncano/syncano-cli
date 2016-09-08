@@ -3,6 +3,8 @@ import random
 import time
 
 from syncano.models import CustomSocket
+
+from syncano_cli.base.exceptions import InstanceNotFoundException
 from syncano_cli.main import cli
 from tests.base import BaseCLITest
 
@@ -115,7 +117,7 @@ class CustomSocketCommandsTest(BaseCLITest):
         self.assertIn('raz', result.output)
 
     def test_instance_override(self):
-        result = self.runner.invoke(cli, args=['sockets', '--instance-name', 'non-existing-instance-1234',
-                                               'run', '{}/{}'.format(self.custom_socket.name,
-                                                                     'custom_endpoint')], obj={})
-        self.assertIn(u'`non-existing-instance-1234` not found.\n', result.output)
+        with self.assertRaises(InstanceNotFoundException):
+            self.runner.invoke(cli, args=['sockets', '--instance-name', 'non-existing-instance-1234',
+                                          'run', '{}/{}'.format(self.custom_socket.name,
+                                                                'custom_endpoint')], obj={})
