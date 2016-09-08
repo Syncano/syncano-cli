@@ -47,6 +47,7 @@ def push(context, script, all, **kwargs):
     Push configuration changes to syncano.
     """
     klass = kwargs.pop('class')
+    print(script, all, klass)
     do_push(context, scripts=script, classes=klass, all=all)
 
 
@@ -94,4 +95,6 @@ def watch(context):
 
 
 def do_push(context, classes, scripts, all):
+    scripts = scripts or None
+    classes = classes or None
     context.obj['project'].push_to_instance(context.obj['instance'], classes=classes, scripts=scripts, all=all)

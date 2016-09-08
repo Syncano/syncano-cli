@@ -76,7 +76,7 @@ class Project(object):
                 pass
             last_sync = 0
 
-        if all or not scripts:
+        if all or scripts is None:
             scripts = self.scripts
         else:
             scripts = [s for s in self.scripts if s['label'] in scripts]
