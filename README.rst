@@ -7,13 +7,15 @@ Table of contents
 1.  `Build Status`_
 2.  `Installation`_
 3.  `Documentation`_
-4.  `Syncano sync`_
-5.  `Syncano Parse migration tool`_
-6.  `Syncano Hosting`_
-7.  `Custom Sockets`_
-8.  `Config`_
-9.  `Running scripts`_
-10.  `Issues`_
+4.  `Registration`_
+5.  `Instances`_
+6.  `Syncano sync`_
+7.  `Syncano Parse migration tool`_
+8.  `Syncano Hosting`_
+9.  `Custom Sockets`_
+10.  `Config`_
+11.  `Running scripts`_
+12.  `Issues`_
 
 Build Status
 ============
@@ -57,6 +59,83 @@ Documentation
 
 You can read detailed documentation `here <docs/README.md>`_.
 
+
+Registration
+============
+
+You can register into Syncano using CLI::
+
+    syncano register my_email@example.com
+
+You will be asked about password in prompt. Provide it. When you see the information about successful registration
+- you can start using CLI.
+
+The following options can be used (but this is not obligatory)::
+
+    --first-name        # this is your first name;
+    --last-name         # this is yout last name;
+    --invitation-key    # the invitation key if someone invite you to using Syncano;
+
+
+When registration is successful - the `api_key` will be set in CLI config - and it's ready to use. The next step should
+be - creating an instance - please see below.
+
+
+Instances
+=========
+
+**How CLI handles connection?**
+
+Almost each (except some `global` commands - like register) CLI command will send a request to the Syncano instance.
+To handle this properly - you can specify --instance-name when login (if you already have one). This instance will be
+used in all API calls then. You can check which instance is `default` by listing the instances::
+
+    syncano instances list
+
+In the output - if the instance is default - there will be a `(default)` string near the instance name.
+
+The instance name can be also overwritten on particular call::
+
+    syncano sockets --instance-name my_custom_instance list
+
+Eg.: if your default instance is `my_instance_name` and you run above command - the custom sockets from instance
+`my_custom_instance` will be displayed, and again::
+
+    syncano sockets list
+
+Will display custom sockets from `my_instance_name` - because it is set to be a default one.
+
+After a registration - there's no default instance set. So it's desired to create one and set it as default::
+
+    syncano instance create my_new_instance
+    syncano instance default my_new_instance
+
+It's worth to note that `instance_name` must be unique - but you will get appropriate message if you encounter such case.
+
+CLI provides an interface for managing instances. The commands are:
+
+- Instance create::
+
+    syncano instances create my_instance_name
+
+- Instance list::
+
+    syncano instances list
+
+- Instance delete::
+
+    syncano delete my_instance_name
+
+- Instance details::
+
+    syncano details my_instance_name
+
+- Set instance as default for using in CLI commands::
+
+    syncano default my_instance_name
+
+In delete and details argument `my_instance_name` - can be omitted, the default instance will be used.
+Deletion will ask you for confirmation - as deleting an instance is quite a big thing.
 
 Syncano sync
 ============
