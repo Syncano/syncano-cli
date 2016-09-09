@@ -73,7 +73,8 @@ class BaseCLITest(InstanceMixin, IntegrationTest):
 
     def tearDown(self):
         # remove the .syncano file
-        os.remove(ACCOUNT_CONFIG_PATH)
+        if os.path.isfile(ACCOUNT_CONFIG_PATH):
+            os.remove(ACCOUNT_CONFIG_PATH)
         self.assertFalse(os.path.isfile(ACCOUNT_CONFIG_PATH))
 
     def assert_file_exists(self, path):
@@ -81,6 +82,9 @@ class BaseCLITest(InstanceMixin, IntegrationTest):
 
     def assert_config_variable_exists(self, config, section, key):
         self.assertTrue(config.get(section, key))
+
+    def assert_config_variable_equal(self, config, section, key, value):
+        self.assertEqual(config.get(section, key), value)
 
     def assert_class_yml_file(self, unique):
         with open(self.yml_file) as syncano_yml:

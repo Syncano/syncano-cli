@@ -2,13 +2,11 @@
 import os
 
 import click
+from syncano_cli.base.command import BaseInstanceCommand
 from syncano_cli.hosting.exceptions import NoDefaultHostingFoundException, PathNotFoundException, UnicodeInPathException
 
 
-class HostingCommands(object):
-
-    def __init__(self, instance):
-        self.instance = instance
+class HostingCommands(BaseInstanceCommand):
 
     def list_hosting(self):
         return [

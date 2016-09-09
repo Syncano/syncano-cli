@@ -7,6 +7,7 @@ import requests
 import six
 import yaml
 from syncano.models import CustomSocket, SocketEndpoint
+from syncano_cli.base.command import BaseInstanceCommand
 from syncano_cli.custom_sockets.exceptions import (
     EndpointNotFoundException,
     SocketFileFetchException,
@@ -18,12 +19,9 @@ from syncano_cli.custom_sockets.templates.socket_template import SCRIPTS, SOCKET
 from yaml.parser import ParserError
 
 
-class SocketCommand(object):
+class SocketCommand(BaseInstanceCommand):
 
     SOCKET_FILE_NAME = 'socket.yml'
-
-    def __init__(self, instance):
-        self.instance = instance
 
     def list(self):
         sockets = [cs for cs in CustomSocket.please.all(instance_name=self.instance.name)]
