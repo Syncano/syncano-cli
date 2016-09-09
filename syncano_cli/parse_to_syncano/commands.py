@@ -7,8 +7,7 @@ from syncano_cli.parse_to_syncano.moses import check_configuration, force_config
 
 
 @click.group()
-@click.pass_context
-def top_migrate(context):
+def top_migrate():
     pass
 
 

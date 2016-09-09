@@ -118,4 +118,4 @@ class CustomSocketCommandsTest(BaseCLITest):
         result = self.runner.invoke(cli, args=['sockets', '--instance-name', 'non-existing-instance-1234',
                                                'run', '{}/{}'.format(self.custom_socket.name,
                                                                      'custom_endpoint')], obj={})
-        self.assertEqual(u'ERROR: non-existing-instance-1234 not found.\n', result.output)
+        self.assertIn(u'`non-existing-instance-1234` not found.\n', result.output)

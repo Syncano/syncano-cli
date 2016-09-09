@@ -41,18 +41,16 @@ First you need to login into your Syncano account
 
 ::
 
-    syncano login
+    syncano login --instance-name patient-resonance-4283
 
 It will ask you for your email and password. After successfully logging in your Account Key (admin key) 
 will be stored in *${HOME}/.syncano* file. You can also override an Account Key later with *--key* option.
 
-You can specify the default instance name that will be used in all consecutive CLI calls::
-
-    syncano login --instance-name patient-resonance-4283
+The instance name will be set as default and used in all CLI commands.
 
 If you want to override this setting for a specific command, use --instance-name eg::
 
-    syncano sync pull --instance-name new-instance-1234
+    syncano sync --instance-name new-instance-1234 pull
 
 Documentation
 =============
@@ -257,6 +255,10 @@ Run endpoint providing POST data::
 In all of the above cases you can override the Syncano instance being used::
 
     --instance-name my_instance_name
+
+eg.::
+
+    syncano sockets --instance-name my_instance_name run socket_name/my_endpoint_12 POST --data '{"one": 1}'
 
 Providing the instance name this way will override the default instance name
 defined during initial setup (*syncano login --instance-name my_instance*)

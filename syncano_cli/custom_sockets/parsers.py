@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
-import sys
-
 import click
+from syncano_cli.custom_sockets.exceptions import ConfigNameMissingException
 
 
 class SocketConfigParser(object):
@@ -13,9 +12,7 @@ class SocketConfigParser(object):
     def is_valid(self):
         for config_var in self.config:
             if not config_var.get('name'):
-                click.echo("ERROR: variable name should be provided in config.")
-                sys.exit(1)
-
+                raise ConfigNameMissingException()
         return True
 
     def ask_for_config(self, instance_config):

@@ -135,7 +135,7 @@ def push_scripts(instance, scripts, config_only=True):
             remote_script = instance.scripts.model(
                 label=s['label'],
                 runtime_name=s['runtime'],
-                instance_name=instance.instance_name,
+                instance_name=instance.name,
                 config={}
             )
         with open(s['script'], 'rb') as source:

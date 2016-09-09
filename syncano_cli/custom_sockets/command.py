@@ -1,13 +1,17 @@
 # -*- coding: utf-8 -*-
 
 import os
-import sys
 
 import click
 import requests
 import six
 import yaml
 from syncano.models import CustomSocket, SocketEndpoint
+from syncano_cli.custom_sockets.exceptions import (
+    EndpointNotFoundException,
+    SocketFileFetchException,
+    SocketYMLParseException
+)
 from syncano_cli.custom_sockets.formatters import SocketFormatter
 from syncano_cli.custom_sockets.parsers import SocketConfigParser
 from syncano_cli.custom_sockets.templates.socket_template import SCRIPTS, SOCKET_YML
@@ -59,14 +63,16 @@ class SocketCommand(object):
 
     def run(self, endpoint_name, method='GET', data=None):
         endpoints = SocketEndpoint.get_all_endpoints(instance_name=self.instance.name)
-        run_endpoint = None
+
         for endpoint in endpoints:
             if endpoint.name == endpoint_name:
                 run_endpoint = endpoint
                 break
+        else:
+            run_endpoint = None
 
         if not run_endpoint:
-            click.echo("ERROR: endpoint not found")
+            raise EndpointNotFoundException(format_args=[endpoint_name])
         return run_endpoint.run(method=method, data=data or {})
 
     def create_template(self, socket_name, destination):
@@ -118,8 +124,5 @@ class SocketCommand(object):
             try:
                 return yaml.safe_load(response.text)
             except ParserError:
-                click.echo("ERROR: Can't parse yml file.")
-                sys.exit(1)
-
-        click.echo("ERROR: Can't fetch the file: {}.".format(url_path))
-        sys.exit(1)
+                raise SocketYMLParseException()
+        raise SocketFileFetchException(format_args=[url_path])

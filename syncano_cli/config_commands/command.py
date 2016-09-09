@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
-import sys
-
 import click
 import six
+from syncano_cli.config_commands.exceptions import VariableInConfigException, VariableNotFoundException
 
 
 class ConfigCommand(object):
@@ -20,8 +19,7 @@ class ConfigCommand(object):
     def add(self, name, value):
         config = self.instance.get_config()
         if name in config:
-            click.echo('ERROR: `{}` already in config, use `syncano config modify` instead.'.format(name))
-            sys.exit(1)
+            raise VariableInConfigException(format_args=[name])
         config.update({name: value})
         self.instance.set_config(config)
         click.echo('Variable `{}` set to `{}`.'.format(name, value))
@@ -37,7 +35,6 @@ class ConfigCommand(object):
         if name in config:
             config.pop(name)
         else:
-            click.echo('ERROR: variable `{}` not found.'.format(name))
-            sys.exit(1)
+            raise VariableNotFoundException(format_args=[name])
         self.instance.set_config(config)
         click.echo('Variable `{}` removed.'.format(name))
