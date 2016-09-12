@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-import json
 
 import click
 from syncano_cli.base.connection import get_instance
-from syncano_cli.base.exceptions import JSONParseException
+from syncano_cli.base.data_parser import parse_input_data
 from syncano_cli.custom_sockets.command import SocketCommand
 from syncano_cli.custom_sockets.exceptions import MissingRequestDataException, SocketNameMissingException
 
@@ -89,18 +88,15 @@ def template(ctx, output_dir, socket):
 @sockets.command()
 @click.pass_context
 @click.argument('endpoint_name')
-@click.argument('method', default='GET')
-@click.option('--data', help='A JSON formatted data')
+@click.argument('method', default=u'GET')
+@click.option('-d', '--data', help=u'A data to be sent as payload: key=value', multiple=True)
 def run(ctx, endpoint_name, method, data):
     socket_command = ctx.obj['socket_command']
 
     if method in ['POST', 'PUT', 'PATCH'] and not data:
         raise MissingRequestDataException(format_args=[method])
 
-    try:
-        data = json.loads(data or '{}')
-    except (ValueError, TypeError):
-        raise JSONParseException()
+    data = parse_input_data(data)
 
     results = socket_command.run(endpoint_name, method=method, data=data)
     click.echo("{}".format(results))

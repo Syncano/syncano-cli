@@ -32,3 +32,7 @@ class NotLoggedInException(CLIBaseException):
 
 class InstanceNotFoundException(CLIBaseException):
     default_message = u'Instance `{}` not found.'
+
+
+class DataParseException(CLIBaseException):
+    default_message = u'Wrong data format: use -d key=value'
