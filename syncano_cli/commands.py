@@ -4,7 +4,7 @@ import os
 import click
 import syncano
 from syncano.exceptions import SyncanoException
-from syncano_cli.base.exceptions import BadCredentialsException, MissingInstanceNameException
+from syncano_cli.base.exceptions import BadCredentialsException
 from syncano_cli.config import ACCOUNT_CONFIG, ACCOUNT_CONFIG_PATH
 
 
@@ -28,13 +28,11 @@ def login(context, config, instance_name):
     password = os.environ.get('SYNCANO_PASSWORD') or click.prompt("password", hide_input=True).strip()
     connection = syncano.connect().connection()
 
-    if not instance_name:
-        raise MissingInstanceNameException()
-
     try:
         ACCOUNT_KEY = connection.authenticate(email=email, password=password)
         ACCOUNT_CONFIG.set('DEFAULT', 'key', ACCOUNT_KEY)
-        ACCOUNT_CONFIG.set('DEFAULT', 'instance_name', instance_name)
+        if instance_name:
+            ACCOUNT_CONFIG.set('DEFAULT', 'instance_name', instance_name)
         with open(context.obj['config'], 'wb') as fp:
             ACCOUNT_CONFIG.write(fp)
         click.echo("INFO: Login successful.")

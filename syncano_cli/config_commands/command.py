@@ -2,13 +2,11 @@
 
 import click
 import six
+from syncano_cli.base.command import BaseInstanceCommand
 from syncano_cli.config_commands.exceptions import VariableInConfigException, VariableNotFoundException
 
 
-class ConfigCommand(object):
-
-    def __init__(self, instance):
-        self.instance = instance
+class ConfigCommand(BaseInstanceCommand):
 
     def config_show(self):
         config = self.instance.get_config()
