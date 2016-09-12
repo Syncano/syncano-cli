@@ -30,9 +30,5 @@ class NotLoggedInException(CLIBaseException):
     default_message = u'Do a login first: `syncano login`.'
 
 
-class MissingInstanceNameException(CLIBaseException):
-    default_message = u'Instance name not specified.'
-
-
 class InstanceNotFoundException(CLIBaseException):
     default_message = u'Instance `{}` not found.'

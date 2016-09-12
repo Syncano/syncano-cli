@@ -30,7 +30,6 @@ def sockets(ctx, config, instance_name):
 @click.pass_context
 def list(ctx):
     socket_command = ctx.obj['socket_command']
-
     if ctx.invoked_subcommand is None:
         socket_command.list()
 
