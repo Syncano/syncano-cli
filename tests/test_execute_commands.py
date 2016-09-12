@@ -54,7 +54,7 @@ class ExecuteCommandsTest(BaseCLITest):
 
         result = self.runner.invoke(cli, args=[
             'execute', '{}_test_script_endpoint'.format(name_prefix),
-            '-d', "data='some nice string'"
+            '-d', 'data="some nice string"'
         ], obj={})
 
         self.assertEqual(result.output, 'some nice string\n')
