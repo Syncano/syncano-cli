@@ -267,7 +267,7 @@ or in tree format:
     
     Run:
     
-        syncano sockets run mailgun_integration/send_mail POST --data '{"subject": "CustomSocket MailGun test", "to_email": "FirstName LastName <your_email>", "email_body": "So nice to create Custom Sockets!"}'
+        syncano sockets run mailgun_integration/send_mail POST -d subject="CustomSocket MailGun test" -d to_email="FirstName LastName <your_email>" -d email_body="So nice to create Custom Sockets!"
 
     Do not forget to change e-mail address in JSON data.
     
