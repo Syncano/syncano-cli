@@ -2,6 +2,7 @@
 import os
 import random
 
+import syncano
 from syncano_cli.config import ACCOUNT_CONFIG, ACCOUNT_CONFIG_PATH
 from syncano_cli.main import cli
 from tests.base import BaseCLITest
@@ -21,3 +22,11 @@ class AccountCommandsTest(BaseCLITest):
 
         # check if api key is written in the config file;
         self.assert_config_variable_exists(ACCOUNT_CONFIG, 'DEFAULT', 'api_key')
+
+        # restore old connection in Syncano LIB;
+        self.connection = syncano.connect(
+            host=self.API_ROOT,
+            email=self.API_EMAIL,
+            password=self.API_PASSWORD,
+            api_key=self.API_KEY
+        )
