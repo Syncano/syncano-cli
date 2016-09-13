@@ -329,7 +329,7 @@ Run endpoint defined in Custom Socket::s
 
 Run endpoint providing POST data::
 
-    syncano sockets run socket_name/my_endpoint_12 POST --data '{"one": 1}'
+    syncano sockets run socket_name/my_endpoint_12 POST -d one=1
 
 In all of the above cases you can override the Syncano instance being used::
 
@@ -337,7 +337,7 @@ In all of the above cases you can override the Syncano instance being used::
 
 eg.::
 
-    syncano sockets --instance-name my_instance_name run socket_name/my_endpoint_12 POST --data '{"one": 1}'
+    syncano sockets --instance-name my_instance_name run socket_name/my_endpoint_12 POST -d one=1
 
 Providing the instance name this way will override the default instance name
 defined during initial setup (*syncano login --instance-name my_instance*)
@@ -371,7 +371,7 @@ This command will allow you to execute any script (Script Endpoint) with optiona
 
 ::
 
-    syncano execute <instance_name> <script_endpoint_name> --payload="<payload_in_JSON_format>"
+    syncano execute <instance_name> <script_endpoint_name> -d key=value
 
 
 Issues

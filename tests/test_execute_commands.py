@@ -54,10 +54,10 @@ class ExecuteCommandsTest(BaseCLITest):
 
         result = self.runner.invoke(cli, args=[
             'execute', '{}_test_script_endpoint'.format(name_prefix),
-            '--payload', '{"data": "some nice string"}'
+            '-d', 'data=some_nice_string'
         ], obj={})
 
-        self.assertEqual(result.output, 'some nice string\n')
+        self.assertEqual(result.output, 'some_nice_string\n')
 
     def test_script_endpoint_custom_response(self):
         name_prefix = 'custom_response'

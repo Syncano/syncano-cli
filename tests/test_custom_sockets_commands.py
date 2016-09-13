@@ -110,7 +110,7 @@ class CustomSocketCommandsTest(BaseCLITest):
         result = self.runner.invoke(cli, args=['sockets', 'run', '{}/{}'.format(
             self.custom_socket.name,
             'custom_endpoint'
-        ), 'POST', '--data', '{"raz": 1}'], obj={})
+        ), 'POST', '-d', 'raz=1'], obj={})
         self.assertIn('script{}'.format(self.suffix), result.output)
         self.assertIn('raz', result.output)
 

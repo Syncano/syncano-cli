@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-import json
 
 import click
 from syncano_cli.base.connection import get_instance
-from syncano_cli.base.exceptions import JSONParseException
+from syncano_cli.base.data_parser import parse_input_data
 
 from .utils import print_response
 
@@ -17,16 +16,13 @@ def top_execute():
 @click.option('--config', help=u'Account configuration file.')
 @click.option('--instance-name', help=u'Instance name.')
 @click.argument('script_endpoint_name')
-@click.option('--payload', help=u'Script payload in JSON format.')
-def execute(config, instance_name, script_endpoint_name, payload):
+@click.option('-d', '--data', help=u'A data to be sent as payload: key=value', multiple=True)
+def execute(config, instance_name, script_endpoint_name, data):
     """
     Execute script endpoint in given instance
     """
     instance = get_instance(config, instance_name)
     se = instance.script_endpoints.get(name=script_endpoint_name)
-    try:
-        data = json.loads((payload or '').strip() or '{}')
-    except:
-        raise JSONParseException()
+    data = parse_input_data(data)
     response = se.run(**data)
     print_response(response)
