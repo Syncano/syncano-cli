@@ -1,12 +1,8 @@
 # -*- coding: utf-8 -*-
-import json
-import sys
-from ConfigParser import NoOptionError
 
 import click
-from syncano.exceptions import SyncanoDoesNotExist
-from syncano_cli.base.connection import create_connection, get_instance_name
-from syncano_cli.config import ACCOUNT_CONFIG_PATH
+from syncano_cli.base.connection import get_instance
+from syncano_cli.base.data_parser import parse_input_data
 
 from .utils import print_response
 
@@ -20,26 +16,13 @@ def top_execute():
 @click.option('--config', help=u'Account configuration file.')
 @click.option('--instance-name', help=u'Instance name.')
 @click.argument('script_endpoint_name')
-@click.option('--payload', help=u'Script payload in JSON format.')
-def execute(config, instance_name, script_endpoint_name, payload):
+@click.option('-d', '--data', help=u'A data to be sent as payload: key=value', multiple=True)
+def execute(config, instance_name, script_endpoint_name, data):
     """
     Execute script endpoint in given instance
     """
-    config = config or ACCOUNT_CONFIG_PATH
-    instance_name = get_instance_name(config, instance_name)
-    try:
-        connection = create_connection(config)
-        instance = connection.Instance.please.get(instance_name)
-        se = instance.script_endpoints.get(instance_name, script_endpoint_name)
-        data = json.loads((payload or '').strip() or '{}')
-        response = se.run(**data)
-        print_response(response)
-    except NoOptionError:
-        click.echo(u'ERROR: Do a login first: syncano login.')
-        sys.exit(1)
-    except SyncanoDoesNotExist as e:
-        click.echo(u'ERROR: {}'.format(e))
-        sys.exit(1)
-    except ValueError as e:
-        click.echo(u'ERROR: Invalid payload format: {error}'.format(error=e))
-        sys.exit(1)
+    instance = get_instance(config, instance_name)
+    se = instance.script_endpoints.get(name=script_endpoint_name)
+    data = parse_input_data(data)
+    response = se.run(**data)
+    print_response(response)

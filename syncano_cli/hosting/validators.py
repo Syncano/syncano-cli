@@ -1,15 +1,13 @@
 # -*- coding: utf-8 -*-
 
 import os
-import sys
 
-import click
+from syncano_cli.hosting.exceptions import NotADirectoryException
 
 
 def validate_publish(directory):
     if not os.path.isdir(directory):
-        click.echo(u'ERROR: You should provide a project root directory here.')
-        sys.exit(1)
+        raise NotADirectoryException()
 
 
 def validate_domain(provided_domain=None):

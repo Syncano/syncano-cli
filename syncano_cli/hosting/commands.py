@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
-import sys
-
 import click
-from syncano_cli.base.connection import create_connection, get_instance_name
-from syncano_cli.config import ACCOUNT_CONFIG_PATH
+from click import Abort
+from syncano_cli.base.connection import get_instance
 from syncano_cli.hosting.command import HostingCommands
 from syncano_cli.hosting.validators import validate_domain, validate_publish
 
@@ -21,20 +19,9 @@ def hosting(ctx, config, instance_name):
     """
     Handle hosting and hosting files. Allow to publish static pages to the Syncano Hosting.
     """
-
-    config = config or ACCOUNT_CONFIG_PATH
-    instance_name = get_instance_name(config, instance_name)
-
-    try:
-        connection = create_connection(config)
-        instance = connection.Instance.please.get(name=instance_name)
-
-        hosting_commands = HostingCommands(instance)
-        ctx.obj['hosting_commands'] = hosting_commands
-
-    except Exception as e:
-        click.echo(u'ERROR: {}'.format(e))
-        sys.exit(1)
+    instance = get_instance(config, instance_name)
+    hosting_commands = HostingCommands(instance)
+    ctx.obj['hosting_commands'] = hosting_commands
 
 
 @hosting.command()
@@ -44,39 +31,24 @@ def publish(ctx, directory):
 
     validate_publish(directory)
     domain = validate_domain()  # prepared for user defined domains;
-
-    hosting_commands = ctx.obj['hosting_commands']
-    try:
-        hosting_commands.publish(domain=domain, base_dir=directory)
-    except Exception as e:
-        click.echo(u'ERROR: {}'.format(e))
-        sys.exit(1)
+    ctx.obj['hosting_commands'].publish(domain=domain, base_dir=directory)
 
 
 @hosting.command()
 @click.pass_context
 def unpublish(ctx):
     domain = validate_domain()
-    hosting_commands = ctx.obj['hosting_commands']
-    try:
-        hosting_commands.unpublish(domain=domain)
-    except Exception as e:
-        click.echo(u'ERROR: {}'.format(e))
-        sys.exit(1)
+    ctx.obj['hosting_commands'].unpublish(domain=domain)
 
 
 @hosting.command()
 @click.pass_context
 def list(ctx):
-    hosting_commands = ctx.obj['hosting_commands']
     domain = validate_domain()
-    try:
-        hosting_commands.print_hosting_files(
-            hosting_files=hosting_commands.list_hosting_files(domain)
-        )
-    except Exception as e:
-        click.echo(u'ERROR: {}'.format(e))
-        sys.exit(1)
+    hosting_commands = ctx.obj['hosting_commands']
+    hosting_commands.print_hosting_files(
+        hosting_files=hosting_commands.list_hosting_files(domain)
+    )
 
 
 @hosting.command()
@@ -87,19 +59,11 @@ def delete(ctx, path):
     hosting_commands = ctx.obj['hosting_commands']
     if not path:
         if click.confirm('Do you want to remove whole hosting?'):
-            try:
-                hosting_commands.delete_hosting(domain=domain, path=path)
-            except Exception as e:
-                click.echo(u'ERROR: {}'.format(e))
-                sys.exit(1)
+            hosting_commands.delete_hosting(domain=domain, path=path)
         else:
-            click.echo("INFO: Deleting aborted.")
+            raise Abort('Deleting aborted.')
     else:
-        try:
-            hosting_commands.delete_path(domain=domain, path=path)
-        except Exception as e:
-            click.echo(u'ERROR: {}'.format(e))
-            sys.exit(1)
+        hosting_commands.delete_path(domain=domain, path=path)
 
 
 @hosting.command()
@@ -108,9 +72,4 @@ def delete(ctx, path):
 @click.argument('file')
 def update(ctx, path, file):
     domain = validate_domain()
-    hosting_commands = ctx.obj['hosting_commands']
-    try:
-        hosting_commands.update_single_file(domain=domain, path=path, file=file)
-    except Exception as e:
-        click.echo(u'ERROR: {}'.format(e))
-        sys.exit(1)
+    ctx.obj['hosting_commands'].update_single_file(domain=domain, path=path, file=file)

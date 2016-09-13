@@ -1,8 +1,24 @@
 Syncano command line tool
 =========================
 
+Table of contents
+=================
+
+1.  `Build Status`_
+2.  `Installation`_
+3.  `Documentation`_
+4.  `Registration`_
+5.  `Instances`_
+6.  `Syncano sync`_
+7.  `Syncano Parse migration tool`_
+8.  `Syncano Hosting`_
+9.  `Custom Sockets`_
+10.  `Config`_
+11.  `Running scripts`_
+12.  `Issues`_
+
 Build Status
-------------
+============
 
 **Master**
 
@@ -15,9 +31,9 @@ Build Status
     :target: https://circleci.com/gh/Syncano/syncano-cli/tree/develop
 
 Installation
-------------
+============
 
-::
+To install Syncano CLI tool::
 
     pip install syncano-cli
 
@@ -27,23 +43,102 @@ First you need to login into your Syncano account
 
 ::
 
-    syncano login
+    syncano login --instance-name patient-resonance-4283
 
 It will ask you for your email and password. After successfully logging in your Account Key (admin key) 
 will be stored in *${HOME}/.syncano* file. You can also override an Account Key later with *--key* option.
 
-You can specify the default instance name that will be used in all consecutive CLI calls::
-
-    syncano login --instance-name patient-resonance-4283
+The instance name will be set as default and used in all CLI commands.
 
 If you want to override this setting for a specific command, use --instance-name eg::
 
-    syncano sync pull --instance-name new-instance-1234
+    syncano sync --instance-name new-instance-1234 pull
 
 Documentation
--------------
+=============
 
 You can read detailed documentation `here <docs/README.md>`_.
+
+
+Registration
+============
+
+You can register into Syncano using CLI::
+
+    syncano register my_email@example.com
+
+You will be asked about password in prompt. Provide it. When you see the information about successful registration
+- you can start using CLI.
+
+The following options can be used (but this is not obligatory)::
+
+    --first-name        # this is your first name;
+    --last-name         # this is yout last name;
+    --invitation-key    # the invitation key if someone invite you to using Syncano;
+
+
+When registration is successful - the `api_key` will be set in CLI config - and it's ready to use. The next step should
+be - creating an instance - please see below.
+
+
+Instances
+=========
+
+**How CLI handles connection?**
+
+Almost each (except some `global` commands - like register) CLI command will send a request to the Syncano instance.
+To handle this properly - you can specify --instance-name when login (if you already have one). This instance will be
+used in all API calls then. You can check which instance is `default` by listing the instances::
+
+    syncano instances list
+
+In the output - if the instance is default - there will be a `(default)` string near the instance name.
+
+The instance name can be also overwritten on particular call::
+
+    syncano sockets --instance-name my_custom_instance list
+
+Eg.: if your default instance is `my_instance_name` and you run above command - the custom sockets from instance
+`my_custom_instance` will be displayed, and again::
+
+    syncano sockets list
+
+Will display custom sockets from `my_instance_name` - because it is set to be a default one.
+
+After a registration - there's no default instance set. So it's desired to create one and set it as default::
+
+    syncano instance create my_new_instance
+    syncano instance default my_new_instance
+
+It's worth to note that `instance_name` must be unique - but you will get appropriate message if you encounter such case.
+
+CLI provides an interface for managing instances. The commands are:
+
+- Instance create::
+
+    syncano instances create my_instance_name
+
+- Instance list::
+
+    syncano instances list
+
+- Instance delete::
+
+    syncano delete my_instance_name
+
+- Instance details::
+
+    syncano details my_instance_name
+
+- Set instance as default for using in CLI commands::
+
+    syncano default my_instance_name
+
+In delete and details argument `my_instance_name` - can be omitted, the default instance will be used.
+Deletion will ask you for confirmation - as deleting an instance is quite a big thing.
+
+Syncano sync
+============
 
 Pulling your instance classes and scripts
 -----------------------------------------
@@ -90,7 +185,7 @@ If you only want to push changes from selected classes/scripts you can provide t
 with *-c/--class* or *-s/--script* options like in the pull example above.
 
 Synchronize changes in real-time
---------------------------------------
+--------------------------------
 
 There is an option to synchronize your project in real-time. When you change
 syncano.yml or the source code of a script described in *syncano.yml*, your changes
@@ -191,7 +286,7 @@ This command will update single file::
     syncano hosting update hosting/file/path local/file/path
 
 Custom Sockets
---------------
+==============
 
 This is a list of commands available for Custom Sockets. 
 If you want to know more about Custom Sockets, `read the detailed docs here <docs/custom_sockets/docs.md>`_.
@@ -234,15 +329,38 @@ Run endpoint defined in Custom Socket::s
 
 Run endpoint providing POST data::
 
-    syncano sockets run socket_name/my_endpoint_12 POST --data '{"one": 1}'
+    syncano sockets run socket_name/my_endpoint_12 POST -d one=1
 
 In all of the above cases you can override the Syncano instance being used::
 
     --instance-name my_instance_name
 
+eg.::
+
+    syncano sockets --instance-name my_instance_name run socket_name/my_endpoint_12 POST -d one=1
+
 Providing the instance name this way will override the default instance name
 defined during initial setup (*syncano login --instance-name my_instance*)
 
+
+Config
+======
+
+To display current instance config::
+
+    syncano config
+
+To add variable with name `name` and value `value` to the config::
+
+    syncano config add name value
+
+To modify existing config variable::
+
+    syncano config modify name value
+
+To delete existing config variable::
+
+    syncano config delete name
 
 Running scripts
 ===============
@@ -253,11 +371,11 @@ This command will allow you to execute any script (Script Endpoint) with optiona
 
 ::
 
-    syncano execute <instance_name> <script_endpoint_name> --payload="<payload_in_JSON_format>"
+    syncano execute <instance_name> <script_endpoint_name> -d key=value
 
 
 Issues
-========
+======
 
 1. If you encounter any problems, have some improvement ideas or just wanna talk,
    please write to me directly: sebastian.opalczynski@syncano.com;

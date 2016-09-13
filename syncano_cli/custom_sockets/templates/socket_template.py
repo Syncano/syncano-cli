@@ -7,6 +7,9 @@ author:
 icon:
   name: icon-name
   color: ffee11
+config:
+  - name: custom_api_key
+    description: an Api Key for third party service
 description: Some custom integration
 endpoints:
   custom_endpoint:
