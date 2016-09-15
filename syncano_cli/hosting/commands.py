@@ -31,7 +31,11 @@ def publish(ctx, directory):
 
     validate_publish(directory)
     domain = validate_domain()  # prepared for user defined domains;
-    ctx.obj['hosting_commands'].publish(domain=domain, base_dir=directory)
+    hosting_commands = ctx.obj['hosting_commands']
+    hosting_commands.publish(domain=domain, base_dir=directory)
+    click.echo("INFO: Your site published. Go to: https://{}.syncano.site".format(
+        hosting_commands.instance.name)
+    )
 
 
 @hosting.command()
@@ -61,7 +65,7 @@ def delete(ctx, path):
         if click.confirm('Do you want to remove whole hosting?'):
             hosting_commands.delete_hosting(domain=domain, path=path)
         else:
-            raise Abort('Deleting aborted.')
+            raise Abort()
     else:
         hosting_commands.delete_path(domain=domain, path=path)
 
