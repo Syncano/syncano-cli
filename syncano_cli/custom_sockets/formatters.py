@@ -5,7 +5,7 @@ from collections import defaultdict
 
 import six
 import yaml
-from syncano_cli.custom_sockets.exceptions import BadYAMLDefinitionInEndpointsException, OneEndpointPerMethodException
+from syncano_cli.custom_sockets.exceptions import BadYAMLDefinitionInEndpointsException
 from syncano_cli.sync.scripts import ALLOWED_RUNTIMES
 
 
@@ -129,8 +129,6 @@ class SocketFormatter(object):
                             'methods': [type_or_method],
                             'name': name
                         })
-                if len(calls) != 1:
-                    raise OneEndpointPerMethodException()
         return calls
 
     @classmethod
