@@ -87,6 +87,8 @@ class SocketFormatter(object):
         for data_key, data in six.iteritems(endpoint_data):
             if data_key in cls.HTTP_METHODS:
                 for metadata_key, inner_data in six.iteritems(data):
+                    if metadata_key in cls.ENDPOINT_TYPES:
+                        continue
                     if metadata_key == 'parameters':
                         metadata[metadata_key][data_key] = inner_data
                     else:
