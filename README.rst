@@ -53,6 +53,10 @@ The instance name will be set as default and used in all CLI commands.
 If you want to override this setting for a specific command, use --instance-name eg::
 
     syncano sync --instance-name new-instance-1234 pull
+    
+If you need to change default instance name, used for all future commands, use::
+
+    syncano default name_of_new_default_instance
 
 Documentation
 =============
