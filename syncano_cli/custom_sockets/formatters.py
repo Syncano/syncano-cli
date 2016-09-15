@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
+import json
 import os
+from collections import defaultdict
 
 import six
 import yaml
@@ -68,8 +70,38 @@ class SocketFormatter(object):
 
         for name, endpoint_data in six.iteritems(endpoints):
             api_endpoints[name] = {'calls': cls._get_calls(endpoint_data)}
+            api_endpoints[name].update({'metadata': cls._get_metadata(endpoint_data)})
 
         return api_endpoints
+
+    @classmethod
+    def _process_response_example(cls, metadata_key, inner_data):
+        if metadata_key not in cls.ENDPOINT_TYPES:
+            if metadata_key == 'response':
+                if 'example' in inner_data:
+                    inner_data['example'] = json.loads(inner_data['example'])
+
+    @classmethod
+    def _get_metadata(cls, endpoint_data):
+        metadata = defaultdict(dict)
+        for data_key, data in six.iteritems(endpoint_data):
+            if data_key in cls.HTTP_METHODS:
+                for metadata_key, inner_data in six.iteritems(data):
+                    if metadata_key == 'parameters':
+                        metadata[metadata_key][data_key] = inner_data
+                    else:
+                        cls._process_response_example(metadata_key, inner_data)
+                        metadata[metadata_key] = inner_data
+
+            elif data_key not in cls.ENDPOINT_TYPES:
+                if data_key == 'parameters':
+                    metadata[metadata_key]['*'] = inner_data
+                else:
+                    cls._process_response_example(data_key, data)
+                    metadata[metadata_key] = inner_data
+                metadata[data_key] = data
+
+        return metadata
 
     @classmethod
     def _get_calls(cls, endpoint_data):
@@ -89,16 +121,16 @@ class SocketFormatter(object):
                 })
 
             elif type_or_method in cls.HTTP_METHODS:
-                if len(data) != 1:
-                    raise OneEndpointPerMethodException()
-
                 for call_type, name in six.iteritems(data):
-                    calls.append({
-                        'type': call_type,
-                        'methods': [type_or_method],
-                        'name': name
-                    })
 
+                    if call_type in cls.ENDPOINT_TYPES:
+                        calls.append({
+                            'type': call_type,
+                            'methods': [type_or_method],
+                            'name': name
+                        })
+                if len(calls) != 1:
+                    raise OneEndpointPerMethodException()
         return calls
 
     @classmethod
@@ -112,7 +144,7 @@ class SocketFormatter(object):
                         'type': cls.DEPENDENCY_TYPES[dependencies_type],
                         'runtime_name': data['runtime_name'],
                         'name': dependency_name,
-                        'source': cls._get_source(data['file'], directory)
+                        'source': cls._get_source(data['file'], directory),
                     })
         return api_dependencies
 
