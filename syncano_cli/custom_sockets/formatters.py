@@ -169,10 +169,6 @@ class SocketFormatter(object):
 
     @classmethod
     def _yml_process_metadata(cls, endpoint_data):
-        metadata = endpoint_data['metadata']
-        if 'response' in metadata and 'example' in metadata['response']:
-            t = json.dumps(metadata['response']['example'], indent=4)
-            metadata['response']['example'] = metadata['response']['example']
         return endpoint_data['metadata']
 
     @classmethod
