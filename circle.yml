@@ -6,6 +6,8 @@ dependencies:
   pre:
     - pip install -U setuptools
     - pip install -r requirements-tests.txt
+  post:
+    - pyenv local 3.4.3 2.7.6
 
 test:
   override:
