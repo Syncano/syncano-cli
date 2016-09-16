@@ -18,7 +18,7 @@ def print_response(response):
 
 def _print_result(result):
     try:
-        if isinstance(type, six.string_types):
+        if isinstance(result, six.string_types):
             output = json.loads(result)
         else:
             output = result
