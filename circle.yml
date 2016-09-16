@@ -5,14 +5,13 @@ machine:
 dependencies:
   pre:
     - pip install -U setuptools
+    - pip install -r requirements_tests.txt
+  post:
+    - pyenv local 3.4.3 2.7.6
 
 test:
   override:
-    - pip install -r requirements-tests.txt
-    - flake8 .
-    - isort --recursive --check-only .
-    - python setup.py check -s --restructuredtext
-    - python setup.py test
+    - tox
 
 deployment:
   production:
