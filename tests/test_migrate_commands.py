@@ -32,7 +32,8 @@ class MigrateCommandsTest(InstanceMixin, IntegrationTest):
         result = self.runner.invoke(cli, args=['migrate', 'configure'], obj={})
         self.assertIn('PARSE_MASTER_KEY', result.output)
 
-        result = self.runner.invoke(cli, args=['migrate', 'configure', '--force'], input='xxx\n', obj={})
+        result = self.runner.invoke(cli, args=['migrate', 'configure', '--force'], input='xxx\nxxx\nxxx\nxxx\n',
+                                    obj={})
         self.assertIn('PARSE_MASTER_KEY', result.output)
 
         result = self.runner.invoke(cli, args=['migrate', 'configure', '--current'], obj={})
