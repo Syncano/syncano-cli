@@ -5,7 +5,7 @@ from syncano_cli.parse_to_syncano.config import CONFIG_VARIABLES_NAMES
 
 
 def force_config_value(config, config_var_name, section='P2S'):
-    config_var = click.prompt('{}: '.format(config_var_name))
+    config_var = click.prompt('{}'.format(config_var_name))
     if not config.has_section(section):
         config.add_section(section)
     config.set(section, config_var_name, config_var)
