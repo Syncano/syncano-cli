@@ -79,9 +79,9 @@ class SocketFormatter(object):
         if metadata_key not in cls.ENDPOINT_TYPES:
             if metadata_key == 'response':
                 if 'example' in inner_data:
-                    if isinstance(inner_data, dict):
-                        inner_data['example'] = inner_data
-                    if isinstance(inner_data, six.string_types):
+                    if isinstance(inner_data['example'], dict):
+                        inner_data['example'] = inner_data['example']
+                    elif isinstance(inner_data['example'], six.string_types):
                         try:
                             inner_data['example'] = json.loads(inner_data['example'])
                         except (TypeError, ValueError):
