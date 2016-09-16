@@ -2,6 +2,7 @@
 from __future__ import print_function
 
 import json
+import six
 
 
 def print_response(response):
@@ -16,7 +17,7 @@ def print_response(response):
 
 def _print_result(result):
     try:
-        if type(result) in [str, unicode]:
+        if isinstance(type, six.string_types):
             output = json.loads(result)
         else:
             output = result

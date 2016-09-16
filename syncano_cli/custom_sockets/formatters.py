@@ -79,7 +79,13 @@ class SocketFormatter(object):
         if metadata_key not in cls.ENDPOINT_TYPES:
             if metadata_key == 'response':
                 if 'example' in inner_data:
-                    inner_data['example'] = json.loads(inner_data['example'])
+                    if isinstance(inner_data, dict):
+                        inner_data['example'] = inner_data
+                    if isinstance(inner_data, six.string_types):
+                        try:
+                            inner_data['example'] = json.loads(inner_data['example'])
+                        except (TypeError, ValueError):
+                            inner_data['example'] = inner_data['example']
 
     @classmethod
     def _get_metadata(cls, endpoint_data):
@@ -97,10 +103,10 @@ class SocketFormatter(object):
 
             elif data_key not in cls.ENDPOINT_TYPES:
                 if data_key == 'parameters':
-                    metadata[metadata_key]['*'] = inner_data
+                    metadata[data_key]['*'] = data
                 else:
                     cls._process_response_example(data_key, data)
-                    metadata[metadata_key] = inner_data
+                    metadata[data_key] = data
                 metadata[data_key] = data
 
         return metadata
@@ -158,7 +164,16 @@ class SocketFormatter(object):
         yml_endpoints = {}
         for endpoint_name, endpoint_data in six.iteritems(endpoints):
             yml_endpoints[endpoint_name] = cls._yml_process_calls(endpoint_data['calls'])
+            yml_endpoints.update(cls._yml_process_metadata(endpoint_data))
         return yml_endpoints
+
+    @classmethod
+    def _yml_process_metadata(cls, endpoint_data):
+        metadata = endpoint_data['metadata']
+        if 'response' in metadata and 'example' in metadata['response']:
+            t = json.dumps(metadata['response']['example'], indent=4)
+            metadata['response']['example'] = metadata['response']['example']
+        return endpoint_data['metadata']
 
     @classmethod
     def _yml_process_calls(cls, data_calls):
