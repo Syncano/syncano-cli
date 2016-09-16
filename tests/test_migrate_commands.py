@@ -41,7 +41,7 @@ class MigrateCommandsTest(InstanceMixin, IntegrationTest):
 
     def test_parse(self):
         result = self.runner.invoke(cli, args=['migrate', 'parse'], input='N\n', obj={})
-        self.assertIn('Aborted!', result.output)
+        self.assertIn('Transfer aborted.', result.output)
 
     @mock.patch('syncano_cli.parse_to_syncano.parse.connection.ParseConnection.request')
     @mock.patch('syncano_cli.parse_to_syncano.migrations.transfer.SyncanoTransfer.process_relations',
