@@ -11,7 +11,6 @@ else:
     raise ImportError()
 
 
-
 class InstanceCommands(BaseConnectionCommand):
 
     def list(self):

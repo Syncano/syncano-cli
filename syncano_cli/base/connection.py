@@ -13,7 +13,6 @@ else:
     raise ImportError()
 
 
-
 def get_instance_name(config, instance_name):
     ACCOUNT_CONFIG.read(config)
     try:
