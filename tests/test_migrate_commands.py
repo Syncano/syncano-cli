@@ -40,7 +40,7 @@ class MigrateCommandsTest(InstanceMixin, IntegrationTest):
         self.assertIn('PARSE_MASTER_KEY', result.output)
 
     def test_parse(self):
-        result = self.runner.invoke(cli, args=['migrate', 'parse'], obj={})
+        result = self.runner.invoke(cli, args=['migrate', 'parse'], input='N\n', obj={})
         self.assertIn('Aborted!', result.output)
 
     @mock.patch('syncano_cli.parse_to_syncano.parse.connection.ParseConnection.request')
@@ -55,7 +55,7 @@ class MigrateCommandsTest(InstanceMixin, IntegrationTest):
             request_mock.return_value = json.loads(f.read())
 
         self.assertFalse(request_mock.called)
-        self.runner.invoke(cli, args=['migrate', 'parse'], obj={}, input='Y')
+        self.runner.invoke(cli, args=['migrate', 'parse'], obj={}, input='y\n')
         self.assertTrue(request_mock.called)
 
         syncano_class = self.instance.classes.get(name='test_class_1234')
