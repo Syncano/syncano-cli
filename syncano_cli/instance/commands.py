@@ -18,7 +18,9 @@ def top_instance():
 @click.option('--instance-name', help=u'Instance name.')
 def instances(ctx, config, instance_name):
     """
-    Handle hosting and hosting files. Allow to publish static pages to the Syncano Hosting.
+    Mangage your Instances. Instance is an equivalent of a project or a set of data.
+    It contains information about Sockets, Data Classes, Data Objects and more.
+    You can own and/or belong to multiple instances.
     """
     connection = create_connection(config, instance_name)
     instance_commands = InstanceCommands(connection)

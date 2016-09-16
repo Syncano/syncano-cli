@@ -23,7 +23,7 @@ def top_sync():
 @click.option('--instance-name', help=u'Instance name.')
 def sync(context, file, config, instance_name):
     """
-    Command for syncing data - classes and scripts
+    Sync your scripts and data classes.
     :param context:
     :param file: file which will be used for syncing
     :param config: the config path - the cli config will be stored there

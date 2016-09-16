@@ -18,7 +18,7 @@ def top_sockets():
 @click.option('--instance-name', help=u'Instance name.')
 def sockets(ctx, config, instance_name):
     """
-    Allow to create a custom socket.
+    Create and manage custom sockets.
     """
     instance = get_instance(config, instance_name)
     socket_command = SocketCommand(instance=instance)
