@@ -9,6 +9,7 @@ dependencies:
 
 test:
   override:
+    - python setup.py check -s --restructuredtext
     - tox
 
 deployment:
