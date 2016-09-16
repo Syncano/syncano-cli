@@ -1,8 +1,15 @@
 # -*- coding: utf-8 -*-
-from ConfigParser import NoOptionError
-
+import six
 from syncano_cli.base.command import BaseConnectionCommand
 from syncano_cli.config import ACCOUNT_CONFIG
+
+if six.PY2:
+    from ConfigParser import NoOptionError
+elif six.PY3:
+    from configparser import NoOptionError
+else:
+    raise ImportError()
+
 
 
 class InstanceCommands(BaseConnectionCommand):

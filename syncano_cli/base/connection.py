@@ -1,10 +1,17 @@
 # -*- coding: utf-8 -*-
-from ConfigParser import NoOptionError, NoSectionError
-
+import six
 import syncano
 from syncano.exceptions import SyncanoException
 from syncano_cli.base.exceptions import BadCredentialsException, InstanceNotFoundException
 from syncano_cli.config import ACCOUNT_CONFIG, ACCOUNT_CONFIG_PATH
+
+if six.PY2:
+    from ConfigParser import NoOptionError, NoSectionError
+elif six.PY3:
+    from configparser import NoOptionError, NoSectionError
+else:
+    raise ImportError()
+
 
 
 def get_instance_name(config, instance_name):

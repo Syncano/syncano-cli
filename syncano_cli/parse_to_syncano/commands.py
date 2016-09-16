@@ -32,14 +32,14 @@ def parse(context):
     check_configuration(config, silent=True)
     application_id = config.get('P2S', 'PARSE_APPLICATION_ID')
     instance_name = config.get('P2S', 'SYNCANO_INSTANCE_NAME')
-    confirmation = raw_input(
+    confirmation = click.confirm(
         'Are you sure you want to copy your data from Parse application ({application_id})'
         ' to the Syncano Instance ({instance_name})? Y/N [Y]: '.format(
             application_id=application_id,
             instance_name=instance_name)
-    ) or 'Y'
+    )
 
-    if confirmation not in ['Y', 'YES', 'y', 'yes']:
+    if not confirmation:
         click.echo('INFO: Transfer aborted.')
         return
 
