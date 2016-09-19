@@ -33,8 +33,10 @@ class MigrateCommandsTest(InstanceMixin, IntegrationTest):
         result = self.runner.invoke(cli, args=['migrate', 'configure'], obj={})
         self.assertIn('PARSE_MASTER_KEY', result.output)
 
-        result = self.runner.invoke(cli, args=['migrate', 'configure', '--force'], input='xxx\nxxx\nxxx\nxxx\n',
-                                    obj={})
+        result = self.runner.invoke(cli, args=['migrate', 'configure', '--force'], input='xxx\nxxx\n{}\n{}\n'.format(
+            self.instance.name,
+            ACCOUNT_CONFIG.get("DEFAULT", "key")
+        ), obj={})
         self.assertIn('PARSE_MASTER_KEY', result.output)
 
         result = self.runner.invoke(cli, args=['migrate', 'configure', '--current'], obj={})
