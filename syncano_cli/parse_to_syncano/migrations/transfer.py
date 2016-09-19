@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-import six
-
 import click
+import six
 from syncano.exceptions import SyncanoException
 from syncano.models import APNSDevice, GCMDevice, Object
 from syncano_cli.parse_to_syncano.config import PARSE_PAGINATION_LIMIT, SYNCANO_BATCH_SIZE
