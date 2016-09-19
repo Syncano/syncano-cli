@@ -42,7 +42,7 @@ class HostingCommands(BaseInstanceCommand):
                 self._validate_path(file_path)
 
                 sys_path = os.path.join(folder, single_file)
-                with open(sys_path, 'rb') as upload_file:
+                with open(sys_path, 'rt') as upload_file:
                     click.echo(u'INFO: Uploading file: {}'.format(file_path))
                     getattr(hosting, upload_method_name)(path=file_path, file=upload_file)
 

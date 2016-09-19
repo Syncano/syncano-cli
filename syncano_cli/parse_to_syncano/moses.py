@@ -23,7 +23,7 @@ def check_config_value(config, config_var_name, silent, section='P2S'):
 
 
 def write_config_to_file(config):
-    with open(ACCOUNT_CONFIG_PATH, 'wb') as config_file:
+    with open(ACCOUNT_CONFIG_PATH, 'wt') as config_file:
         config.write(config_file)
 
 

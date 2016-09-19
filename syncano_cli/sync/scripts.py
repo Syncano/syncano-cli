@@ -83,7 +83,7 @@ def pull_scripts(instance, include):
 
         path = os.path.join('scripts', filename)
 
-        with open(path, 'wb') as script_file:
+        with open(path, 'wt') as script_file:
             script_file.write(script.source)
 
         script_info = {
@@ -138,7 +138,7 @@ def push_scripts(instance, scripts, config_only=True):
                 instance_name=instance.name,
                 config={}
             )
-        with open(s['script'], 'rb') as source:
+        with open(s['script'], 'rt') as source:
             remote_script.source = source.read()
 
         config = s.get('config', {})

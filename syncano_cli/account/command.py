@@ -20,5 +20,5 @@ class AccountCommands(object):
         )
 
         ACCOUNT_CONFIG.set('DEFAULT', 'api_key', api_key)
-        with open(self.config_path, 'wb') as fp:
+        with open(self.config_path, 'wt') as fp:
             ACCOUNT_CONFIG.write(fp)

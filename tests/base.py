@@ -126,7 +126,7 @@ class BaseCLITest(InstanceMixin, IntegrationTest):
         )
 
     def modify_yml_file(self, key, object, operation='update'):
-        with open(self.yml_file, 'rb') as f:
+        with open(self.yml_file, 'rt') as f:
             yml_syncano = yaml.safe_load(f)
         if operation == 'update':
             yml_syncano[key].update(object)
@@ -135,7 +135,7 @@ class BaseCLITest(InstanceMixin, IntegrationTest):
         else:
             raise Exception('not supported operation')
 
-        with open(self.yml_file, 'wb') as f:
+        with open(self.yml_file, 'wt') as f:
             f.write(yaml.safe_dump(yml_syncano, default_flow_style=False))
 
     def create_syncano_class(self, unique):
