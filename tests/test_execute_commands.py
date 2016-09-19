@@ -57,7 +57,7 @@ class ExecuteCommandsTest(BaseCLITest):
             '-d', 'data=some_nice_string'
         ], obj={})
 
-        self.assertEqual(result.output, 'some_nice_string\n')
+        self.assertIn('some_nice_string\n', result.output)
 
     def test_script_endpoint_custom_response(self):
         name_prefix = 'custom_response'
@@ -78,4 +78,4 @@ class ExecuteCommandsTest(BaseCLITest):
             'execute', '{}_test_script_endpoint'.format(name_prefix)
         ], obj={})
 
-        self.assertEqual(result.output, """{\n    "test": "amazing thing"\n}\n""")
+        self.assertIn("""{\n    "test": "amazing thing"\n}\n""", result.output)
