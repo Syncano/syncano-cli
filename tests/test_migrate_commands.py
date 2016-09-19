@@ -82,7 +82,7 @@ class MigrateCommandsTest(InstanceMixin, IntegrationTest):
         request_mock.side_effect = [classes, objects, {'results': []}, parse_installations]
 
         self.assertFalse(request_mock.called)
-        self.runner.invoke(cli, args=['migrate', 'parse'], obj={}, input='Y')
+        self.runner.invoke(cli, args=['migrate', 'parse'], obj={}, input='y\n')
         self.assertTrue(request_mock.called)
 
         objects_list = self.instance.classes.get(name='test_class_1234').objects.all()
