@@ -126,7 +126,7 @@ class BaseCLITest(InstanceMixin, IntegrationTest):
         )
 
     def modify_yml_file(self, key, object, operation='update'):
-        with open(self.yml_file, 'rt') as f:
+        with open(self.yml_file, 'rb') as f:
             yml_syncano = yaml.safe_load(f)
         if operation == 'update':
             yml_syncano[key].update(object)

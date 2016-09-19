@@ -139,7 +139,7 @@ def push_scripts(instance, scripts, config_only=True):
                 instance_name=instance.name,
                 config={}
             )
-        with open(s['script'], 'rt') as source:
+        with open(s['script'], 'rb') as source:
             remote_script.source = source.read()
 
         config = s.get('config', {})

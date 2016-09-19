@@ -22,7 +22,7 @@ class Project(object):
     @classmethod
     def from_config(cls, config):
         try:
-            with open(config, 'rt') as fp:
+            with open(config, 'rb') as fp:
                 cfg = yaml.safe_load(fp)
             cfg['timestamp'] = os.path.getmtime(config)
         except IOError:

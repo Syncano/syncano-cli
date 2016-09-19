@@ -90,9 +90,9 @@ class ClassProcessor(object):
         elif value['__type'] == ParseFieldTypeE.FILE:
             file_data = requests.get(value['url'])
             file_path = '/tmp/{}'.format(value['name'])
-            with open(file_path, 'w+') as file_d:
+            with open(file_path, 'wb+') as file_d:
                 file_d.write(file_data.content)
-            file_descriptor = open(file_path, 'r')
+            file_descriptor = open(file_path, 'rb')
             files[key] = file_descriptor
         elif value['__type'] == ParseFieldTypeE.GEO_POINT:
             processed_object[key.lower()] = {'longitude': value['longitude'], 'latitude': value['latitude']}

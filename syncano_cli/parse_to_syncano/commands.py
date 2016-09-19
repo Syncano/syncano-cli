@@ -34,7 +34,7 @@ def parse(context):
     instance_name = config.get('P2S', 'SYNCANO_INSTANCE_NAME')
     confirmation = click.confirm(
         'Are you sure you want to copy your data from Parse application ({application_id})'
-        ' to the Syncano Instance ({instance_name})? Y/N [Y]: '.format(
+        ' to the Syncano Instance ({instance_name})?: '.format(
             application_id=application_id,
             instance_name=instance_name)
     )

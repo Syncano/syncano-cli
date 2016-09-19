@@ -106,6 +106,7 @@ class MigrateCommandsTest(InstanceMixin, IntegrationTest):
         channels_class = self.instance.classes.get(name=DEVICE_CHANNELS_CLASS_NAME)
         self.assertEqual(len([channel_cl for channel_cl in channels_class.objects.all()]), 2)
 
+    @classmethod
     def tearDownClass(cls):
         cls.connection.connection().api_key = cls.old_key
         super(MigrateCommandsTest, cls).tearDownClass()
