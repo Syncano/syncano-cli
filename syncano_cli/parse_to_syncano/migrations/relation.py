@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import six
-
 from syncano.models import Object
 from syncano_cli.parse_to_syncano.config import PARSE_PAGINATION_LIMIT
 from syncano_cli.parse_to_syncano.migrations.aggregation import data_aggregate

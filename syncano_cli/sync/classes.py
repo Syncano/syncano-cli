@@ -2,9 +2,9 @@
 from __future__ import print_function, unicode_literals
 
 import re
-import six
 
 import click
+import six
 
 ALLOWED_TYPES = {"array", "boolean", "datetime", "file", "float", "geopoint",
                  "integer", "object", "reference", "relation", "string",

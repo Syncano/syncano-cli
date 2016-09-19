@@ -6,6 +6,7 @@ import re
 from collections import defaultdict
 
 import click
+import six
 from syncano.exceptions import SyncanoRequestError
 
 ALLOWED_RUNTIMES = {

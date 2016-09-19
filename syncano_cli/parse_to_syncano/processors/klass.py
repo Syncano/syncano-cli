@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import json
-import six
 
 import click
 import requests
+import six
 from syncano_cli.parse_to_syncano.migrations.aggregation import ClassAggregate
 from syncano_cli.parse_to_syncano.parse.constants import ParseFieldTypeE
 

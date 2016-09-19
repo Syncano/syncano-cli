@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import six
-
 from syncano.exceptions import SyncanoException
 from syncano.models import Class
 
