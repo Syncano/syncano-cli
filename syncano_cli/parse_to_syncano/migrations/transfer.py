@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import six
+
 import click
 from syncano.exceptions import SyncanoException
 from syncano.models import APNSDevice, GCMDevice, Object
@@ -158,11 +160,14 @@ class SyncanoTransfer(ParseConnectionMixin, SyncanoConnectionMixin, PaginationMi
                 show_pos=True) as parse_ids:
             for parse_id in parse_ids:
                 files, syncano_class_name, parse_class_name = self.file_descriptors[parse_id]
-                Object.please.update(
+                object_to_update = Object(
                     class_name=syncano_class_name,
                     id=self.data.reference_map[parse_class_name][parse_id],
-                    files=files
                 )
+
+                for file_name, object_file in six.iteritems(files):
+                    setattr(object_to_update, file_name, object_file)
+                object_to_update.save()
 
     def get_class(self, instance, class_name):
         s_class = self.syncano_classes.get(class_name)
