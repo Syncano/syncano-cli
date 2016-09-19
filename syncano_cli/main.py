@@ -34,4 +34,4 @@ def main():
     except SyncanoException as e:
         raise SyncanoLibraryException(e.reason)
     except Exception as e:
-        raise CLIBaseException(e.message)
+        raise CLIBaseException(e)

@@ -16,6 +16,9 @@ class AccountCommandsTest(BaseCLITest):
             os.remove(ACCOUNT_CONFIG_PATH)
         self.assertFalse(os.path.isfile(ACCOUNT_CONFIG_PATH))
 
+        # old api key;
+        old_key = self.connection.connection().api_key
+
         # make register;
         email = 'syncano.bot+977999{}@syncano.com'.format(random.randint(100000, 50000000))
         self.runner.invoke(cli, args=['accounts', 'register', email], input='test1234\ntest1234', obj={})
@@ -23,10 +26,5 @@ class AccountCommandsTest(BaseCLITest):
         # check if api key is written in the config file;
         self.assert_config_variable_exists(ACCOUNT_CONFIG, 'DEFAULT', 'api_key')
 
-        # restore old connection in Syncano LIB;
-        self.connection = syncano.connect(
-            host=self.API_ROOT,
-            email=self.API_EMAIL,
-            password=self.API_PASSWORD,
-            api_key=self.API_KEY
-        )
+        # restore old connection in Syncano LIB; To remove instance in tearDown;
+        self.connection.connection().api_key = old_key

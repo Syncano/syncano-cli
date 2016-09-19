@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import six
+
 from syncano.exceptions import SyncanoException
 from syncano.models import Class
 
@@ -21,7 +23,7 @@ class DeviceProcessor(object):
 
     @classmethod
     def find_user(cls, parse_installation):
-        for field_name, field_value in parse_installation.iteritems():
+        for field_name, field_value in six.iteritems(parse_installation):
             if isinstance(field_value, dict) and field_value[u'className'] == u'_User':
                 return True, field_value['objectId']
         return False, None

@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import six
+
 from syncano.models import Object
 from syncano_cli.parse_to_syncano.config import PARSE_PAGINATION_LIMIT
 from syncano_cli.parse_to_syncano.migrations.aggregation import data_aggregate
@@ -16,7 +18,7 @@ class ClassRelationProcessor(ParseConnectionMixin, PaginationMixin):
 
     def process_class(self, instance):
         for relation in self.relations:
-            for field_name, relation_meta in relation.iteritems():
+            for field_name, relation_meta in six.iteritems(relation):
                 target_name = relation_meta['targetClass']
                 self._find_and_update_relations_objects(
                     field_name=field_name,
@@ -26,9 +28,9 @@ class ClassRelationProcessor(ParseConnectionMixin, PaginationMixin):
 
     def _find_and_update_relations_objects(self, field_name, target_name, instance):
         # get the parse classes now;
-        for parse_class_name, objects_id_map in self.reference_map.iteritems():
+        for parse_class_name, objects_id_map in six.iteritems(self.reference_map):
             if self.class_name == ClassProcessor.normalize_class_name(parse_class_name):
-                for parse_id, syncano_id in objects_id_map.iteritems():
+                for parse_id, syncano_id in six.iteritems(objects_id_map):
                     self._find_relations_for_object(
                         parse_class_name=parse_class_name,
                         target_name=target_name,

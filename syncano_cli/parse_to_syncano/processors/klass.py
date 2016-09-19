@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import json
+import six
 
 import click
 import requests
@@ -65,7 +66,7 @@ class ClassProcessor(object):
         syncano_fields = ClassProcessor.get_fields(parse_object.keys())
         processed_object = {}
         files = {}
-        for key, value in parse_object.iteritems():
+        for key, value in six.iteritems(parse_object):
             if isinstance(value, dict):
                 if '__type' in value:
                     if value['__type'] == ParseFieldTypeE.RELATION:
@@ -126,7 +127,7 @@ class ClassProcessor(object):
         class_name = cls.normalize_class_name(parse_schema['className'])
         schema = []
         relations = []
-        for field, field_meta in parse_schema['fields'].iteritems():
+        for field, field_meta in six.iteritems(parse_schema['fields']):
             if field not in fields_to_skip:
                 type = field_meta['type']
                 new_type = ClassProcessor.map[type]

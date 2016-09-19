@@ -192,7 +192,7 @@ def validate_script(script):
             'on file extension'.format(**script)
         )
 
-        for k, v in ALLOWED_RUNTIMES.iteritems():
+        for k, v in six.iteritems(ALLOWED_RUNTIMES):
             if v == ext:
                 script['runtime'] = runtime = k
                 click.echo(
