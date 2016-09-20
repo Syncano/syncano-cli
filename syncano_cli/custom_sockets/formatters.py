@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import json
 import os
 from collections import defaultdict
 
@@ -75,19 +74,6 @@ class SocketFormatter(object):
         return api_endpoints
 
     @classmethod
-    def _process_response_example(cls, metadata_key, inner_data):
-        if metadata_key not in cls.ENDPOINT_TYPES:
-            if metadata_key == 'response':
-                if 'example' in inner_data:
-                    if isinstance(inner_data['example'], dict):
-                        inner_data['example'] = inner_data['example']
-                    elif isinstance(inner_data['example'], six.string_types):
-                        try:
-                            inner_data['example'] = json.loads(inner_data['example'])
-                        except (TypeError, ValueError):
-                            inner_data['example'] = inner_data['example']
-
-    @classmethod
     def _get_metadata(cls, endpoint_data):
         metadata = defaultdict(dict)
         for data_key, data in six.iteritems(endpoint_data):
@@ -98,14 +84,12 @@ class SocketFormatter(object):
                     if metadata_key == 'parameters':
                         metadata[metadata_key][data_key] = inner_data
                     else:
-                        cls._process_response_example(metadata_key, inner_data)
                         metadata[metadata_key] = inner_data
 
             elif data_key not in cls.ENDPOINT_TYPES:
                 if data_key == 'parameters':
                     metadata[data_key]['*'] = data
                 else:
-                    cls._process_response_example(data_key, data)
                     metadata[data_key] = data
                 metadata[data_key] = data
 
