@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
+import click
 from syncano_cli.config import ACCOUNT_CONFIG_PATH
 from syncano_cli.parse_to_syncano.config import CONFIG_VARIABLES_NAMES
 
 
 def force_config_value(config, config_var_name, section='P2S'):
-    config_var = raw_input('{}: '.format(config_var_name))
+    config_var = click.prompt('{}'.format(config_var_name))
     if not config.has_section(section):
         config.add_section(section)
     config.set(section, config_var_name, config_var)
@@ -22,7 +23,7 @@ def check_config_value(config, config_var_name, silent, section='P2S'):
 
 
 def write_config_to_file(config):
-    with open(ACCOUNT_CONFIG_PATH, 'wb') as config_file:
+    with open(ACCOUNT_CONFIG_PATH, 'wt') as config_file:
         config.write(config_file)
 
 

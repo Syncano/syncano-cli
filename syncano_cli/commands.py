@@ -33,7 +33,7 @@ def login(context, config, instance_name):
         ACCOUNT_CONFIG.set('DEFAULT', 'key', ACCOUNT_KEY)
         if instance_name:
             ACCOUNT_CONFIG.set('DEFAULT', 'instance_name', instance_name)
-        with open(context.obj['config'], 'wb') as fp:
+        with open(context.obj['config'], 'wt') as fp:
             ACCOUNT_CONFIG.write(fp)
         click.echo("INFO: Login successful.")
     except SyncanoException:

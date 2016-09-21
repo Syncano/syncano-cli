@@ -2,6 +2,7 @@
 from __future__ import print_function
 
 import click
+from click import ClickException
 from syncano.exceptions import SyncanoException
 from syncano_cli.account.commands import top_account
 from syncano_cli.base.exceptions import CLIBaseException, SyncanoLibraryException
@@ -33,5 +34,7 @@ def main():
         cli(obj={})
     except SyncanoException as e:
         raise SyncanoLibraryException(e.reason)
-    except Exception as e:
-        raise CLIBaseException(e.message)
+    except ClickException:
+        raise CLIBaseException('CLI exception.')
+    else:
+        raise

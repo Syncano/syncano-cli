@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+import re
 
 import click
 from syncano_cli.base.command import BaseInstanceCommand
@@ -7,6 +8,8 @@ from syncano_cli.hosting.exceptions import NoDefaultHostingFoundException, PathN
 
 
 class HostingCommands(BaseInstanceCommand):
+
+    VALID_PATH_REGEX = re.compile(r'^(?!/)([a-zA-Z0-9\-\._]+/{0,1})+(?<!/)\Z')
 
     def list_hosting(self):
         return [
@@ -98,9 +101,7 @@ class HostingCommands(BaseInstanceCommand):
         return to_return
 
     def _validate_path(self, file_path):
-        try:
-            file_path.decode('ascii')
-        except UnicodeEncodeError:
+        if not self.VALID_PATH_REGEX.match(file_path):
             raise UnicodeInPathException()
 
     def print_hosting_files(self, hosting_files):

@@ -16,6 +16,7 @@ class MigrateCommandsTest(InstanceMixin, IntegrationTest):
         # do a login first;
         cls.runner.invoke(cli, args=['login', '--instance-name', cls.instance.name], obj={})
         # and make setup;
+        cls.old_key = cls.connection.connection().api_key
         cls._set_up_configuration()
 
     @classmethod
@@ -32,15 +33,18 @@ class MigrateCommandsTest(InstanceMixin, IntegrationTest):
         result = self.runner.invoke(cli, args=['migrate', 'configure'], obj={})
         self.assertIn('PARSE_MASTER_KEY', result.output)
 
-        result = self.runner.invoke(cli, args=['migrate', 'configure', '--force'], obj={})
+        result = self.runner.invoke(cli, args=['migrate', 'configure', '--force'], input='xxx\nxxx\n{}\n{}\n'.format(
+            ACCOUNT_CONFIG.get("DEFAULT", "key"),
+            self.instance.name,
+        ), obj={})
         self.assertIn('PARSE_MASTER_KEY', result.output)
 
         result = self.runner.invoke(cli, args=['migrate', 'configure', '--current'], obj={})
         self.assertIn('PARSE_MASTER_KEY', result.output)
 
     def test_parse(self):
-        result = self.runner.invoke(cli, args=['migrate', 'parse'], obj={})
-        self.assertIn('Aborted!', result.output)
+        result = self.runner.invoke(cli, args=['migrate', 'parse'], input='N\n', obj={})
+        self.assertIn('Transfer aborted.', result.output)
 
     @mock.patch('syncano_cli.parse_to_syncano.parse.connection.ParseConnection.request')
     @mock.patch('syncano_cli.parse_to_syncano.migrations.transfer.SyncanoTransfer.process_relations',
@@ -54,7 +58,7 @@ class MigrateCommandsTest(InstanceMixin, IntegrationTest):
             request_mock.return_value = json.loads(f.read())
 
         self.assertFalse(request_mock.called)
-        self.runner.invoke(cli, args=['migrate', 'parse'], obj={}, input='Y')
+        self.runner.invoke(cli, args=['migrate', 'parse'], obj={}, input='y\n')
         self.assertTrue(request_mock.called)
 
         syncano_class = self.instance.classes.get(name='test_class_1234')
@@ -81,7 +85,7 @@ class MigrateCommandsTest(InstanceMixin, IntegrationTest):
         request_mock.side_effect = [classes, objects, {'results': []}, parse_installations]
 
         self.assertFalse(request_mock.called)
-        self.runner.invoke(cli, args=['migrate', 'parse'], obj={}, input='Y')
+        self.runner.invoke(cli, args=['migrate', 'parse'], obj={}, input='y\n')
         self.assertTrue(request_mock.called)
 
         objects_list = self.instance.classes.get(name='test_class_1234').objects.all()
@@ -103,3 +107,8 @@ class MigrateCommandsTest(InstanceMixin, IntegrationTest):
 
         channels_class = self.instance.classes.get(name=DEVICE_CHANNELS_CLASS_NAME)
         self.assertEqual(len([channel_cl for channel_cl in channels_class.objects.all()]), 2)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.connection.connection().api_key = cls.old_key
+        super(MigrateCommandsTest, cls).tearDownClass()

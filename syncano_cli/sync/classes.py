@@ -4,6 +4,7 @@ from __future__ import print_function, unicode_literals
 import re
 
 import click
+import six
 
 ALLOWED_TYPES = {"array", "boolean", "datetime", "file", "float", "geopoint",
                  "integer", "object", "reference", "relation", "string",
@@ -100,7 +101,7 @@ def pull_classes(instance, include, update_dict=None):
 
 def push_classes(instance, class_dict):
     click.echo('INFO: Pushing classes.')
-    for name, config in class_dict.iteritems():
+    for name, config in six.iteritems(class_dict):
         click.echo('INFO: Pushing class {0}'.format(name))
         try:
             klass = instance.classes.get(name=name)
@@ -109,7 +110,7 @@ def push_classes(instance, class_dict):
             klass = instance.classes.model(name=name)
             click.echo('INFO: Class {0} not found. Creating new one'.format(name))
         schema = []
-        for name, field_config in config['fields'].iteritems():
+        for name, field_config in six.iteritems(config['fields']):
             field = {'name': name}
             field.update(schema_str_to_field(field_config))
             schema.append(field)
@@ -128,7 +129,7 @@ def validate_class(class_dict):
     if not isinstance(fields, dict):
         raise ValueError('Fields should be a dictionary.')
 
-    for name, spec in fields.iteritems():
+    for name, spec in six.iteritems(fields):
         try:
             schema_str_to_field(spec)
         except ValueError as e:
@@ -142,7 +143,7 @@ def validate_class(class_dict):
 
 
 def validate_classes(classes_dict):
-    for name, spec in classes_dict.iteritems():
+    for name, spec in six.iteritems(classes_dict):
         validate_class(spec)
 
         for field, field_spec in spec['fields'].items():

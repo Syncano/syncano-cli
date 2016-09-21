@@ -108,7 +108,7 @@ def template(context):
         if not confirm:
             raise Abort()
 
-    with open(context.obj['file'], 'wb') as fp:
+    with open(context.obj['file'], 'wt') as fp:
         fp.write(syncano_yml)
     click.echo("INFO: Template syncano.yml file created.")
 

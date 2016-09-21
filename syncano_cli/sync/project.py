@@ -32,14 +32,14 @@ class Project(object):
         return project
 
     def write(self, config):
-        with open(config, 'wb') as fp:
+        with open(config, 'wt') as fp:
             fp.write(yaml.safe_dump({
                 'classes': self.classes,
                 'scripts': self.scripts
             }, default_flow_style=False))
 
     def write_json(self, config):
-        with open(config, 'wb') as fp:
+        with open(config, 'wt') as fp:
             json.dump({
                 'classes': self.classes,
                 'scripts': self.scripts
@@ -72,7 +72,7 @@ class Project(object):
         try:
             last_sync = os.path.getmtime('.sync')
         except OSError:
-            with open('.sync', 'wb'):  # touch file
+            with open('.sync', 'wt'):  # touch file
                 pass
             last_sync = 0
 
