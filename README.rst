@@ -263,11 +263,11 @@ Syncano Hosting
 Syncano Hosting is a simple way to host your static files on Syncano servers. 
 The CLI supports it in the following way:
 
-This command will list files for currently defined hostings in the instance::
+This command will list currently defined hostings in the instance::
 
     syncano hosting list
 
-This command will list files for currently hosted website (in `default` hosting)::
+This command will list files for currently hosted website (for `default` hosting)::
 
     syncano hosting list files
 
