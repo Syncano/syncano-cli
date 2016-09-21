@@ -263,18 +263,18 @@ Syncano Hosting
 Syncano Hosting is a simple way to host your static files on Syncano servers. 
 The CLI supports it in the following way:
 
-This command will list files for currently hosted website::
+This command will list files for currently defined hostings in the instance::
 
     syncano hosting list
+
+This command will list files for currently hosted website (in `default` hosting)::
+
+    syncano hosting list files
 
 This command will publish all files inside *<base_dir>* to the default Syncano Hosting instance.
 When publishing the whole directory, the structure will be mapped on Syncano.::
 
     syncano hosting publish <base_dir>
-
-This command will unpublish currently published hosting::
-
-    syncano hosting unpublish
 
 
 This command will permamently delete the hosting::
@@ -288,6 +288,14 @@ This command will delete the specified file::
 This command will update single file::
 
     syncano hosting update hosting/file/path local/file/path
+
+For each of the above command you can specify the domain to change just after hosting command, example::
+
+    syncano hosting --domain staging publish <base_dir>
+
+Will create a new hosting which will be available under: `<instance_name>--staging.syncano.site`
+If this hosting is also a default one, it will be available under: `<instance_name>.syncano.site`.
+
 
 Custom Sockets
 ==============
