@@ -13,7 +13,7 @@ class HostingCommandsTest(BaseCLITest):
         self.assertIn('css/page.css', result.output)
 
         # test single file deletion;
-        self._delete_single_file('css/page.css')
+        self._delete_single_file('css/page.css', domain=domain)
         result = self._get_list_files_output(domain=domain)
         self.assertNotIn('css/page.css', result.output)
 
