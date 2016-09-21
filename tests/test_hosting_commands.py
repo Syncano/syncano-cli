@@ -69,5 +69,5 @@ class HostingCommandsTest(BaseCLITest):
     @classmethod
     def _extend_args(cls, args, domain):
         if domain:
-            args.insert(1, '--domains')
+            args.insert(1, '--domain')
             args.insert(2, domain)
