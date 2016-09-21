@@ -26,7 +26,7 @@ class HostingCommandsTest(BaseCLITest):
         # test hosting delete;
         self._delete_hosting(domain=domain)
         result = self._get_list_files_output(domain=domain)
-        self.assertIn('Hosting with domain `default` - not found. Exit.', result.output)
+        self.assertIn('Hosting with domain `{}` - not found. Exit.'.format(domain or 'default'), result.output)
 
         # recreate hosting;
         self._publish_files(domain=domain)
