@@ -42,7 +42,7 @@ class ExecuteCommandsTest(BaseCLITest):
             'execute', '{}_test_script_endpoint'.format(name_prefix)
         ], obj={})
 
-        self.assertEqual(result.output, '12\n')
+        self.assertIn('12\n', result.output)
 
     def test_script_endpoint_with_payload(self):
         name_prefix = 'payload_response'

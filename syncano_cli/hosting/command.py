@@ -4,17 +4,30 @@ import re
 
 import click
 from syncano_cli.base.command import BaseInstanceCommand
-from syncano_cli.hosting.exceptions import NoDefaultHostingFoundException, PathNotFoundException, UnicodeInPathException
+from syncano_cli.hosting.exceptions import NoHostingFoundException, PathNotFoundException, UnicodeInPathException
 
 
 class HostingCommands(BaseInstanceCommand):
 
     VALID_PATH_REGEX = re.compile(r'^(?!/)([a-zA-Z0-9\-\._]+/{0,1})+(?<!/)\Z')
 
-    def list_hosting(self):
+    def list_hostings(self):
         return [
             (hosting.label, hosting.domains) for hosting in self.instance.hostings.all()
         ]
+
+    def print_hostings(self, hostings):
+        click.echo('Defined hostings:')
+        self._print_separator()
+        click.echo('{0:30}{1:20}'.format('Label', 'Domains'))
+        self._print_separator()
+        for label, domains in hostings:
+            click.echo(
+                '{0:30}{1:20}'.format(
+                    label,
+                    ', '.join(domains)
+                )
+            )
 
     def list_hosting_files(self, domain):
         hosting = self._get_hosting(domain=domain)
@@ -58,7 +71,7 @@ class HostingCommands(BaseInstanceCommand):
         hosting.save()
         click.echo('INFO: Hosting `{}` unpublished.'.format(hosting.label))
 
-    def delete_hosting(self, domain, path=None):
+    def delete_hosting(self, domain):
         hosting = self._get_hosting(domain=domain)
         deleted_label = hosting.label
         hosting.delete()
@@ -97,7 +110,7 @@ class HostingCommands(BaseInstanceCommand):
                 break
 
         if not to_return and not is_new:
-            raise NoDefaultHostingFoundException()
+            raise NoHostingFoundException(format_args=[domain])
         return to_return
 
     def _validate_path(self, file_path):
@@ -105,11 +118,11 @@ class HostingCommands(BaseInstanceCommand):
             raise UnicodeInPathException()
 
     def print_hosting_files(self, hosting_files):
-        print('Hosting files:')
+        click.echo('Hosting files:')
         self._print_separator()
         for hosting_file in hosting_files:
-            print(hosting_file.path)
+            click.echo(hosting_file.path)
 
     @staticmethod
     def _print_separator():
-        print(79 * '-')
+        click.echo(79 * '-')
