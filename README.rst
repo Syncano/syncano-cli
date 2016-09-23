@@ -335,7 +335,7 @@ Create a template from an existing Custom Socket::
 
     syncano sockets template /path/to/out --socket socket_name
 
-Run endpoint defined in Custom Socket::s
+Run endpoint defined in Custom Socket::
 
     syncano sockets run socket_name/endpoint_name
 

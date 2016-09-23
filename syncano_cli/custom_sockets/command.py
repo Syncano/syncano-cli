@@ -45,18 +45,18 @@ class SocketCommand(BaseInstanceCommand):
         with open(os.path.join(dir_path, self.SOCKET_FILE_NAME)) as socket_file:
             yml_file = yaml.safe_load(socket_file)
 
-        self.set_up_config(yml_file)
+        config = self.set_up_config(yml_file)
 
         api_data = SocketFormatter.to_json(socket_yml=yml_file, directory=dir_path)
         api_data.update({'instance_name': self.instance.name})
+        api_data.update({'config': config})
         custom_socket = CustomSocket.please.create(**api_data)
         click.echo('INFO: socket {} created.'.format(custom_socket.name))
 
     def install_from_url(self, url_path, name):
         socket_yml = self.fetch_file(url_path)
-        self.set_up_config(socket_yml)
-
-        CustomSocket(name=name).install_from_url(url=url_path, instance_name=self.instance.name)
+        config = self.set_up_config(socket_yml)
+        CustomSocket(name=name).install_from_url(url=url_path, instance_name=self.instance.name, config=config)
         click.echo('INFO: Installing socket from url: do `syncano sockets list` to obtain the status.')
 
     def run(self, endpoint_name, method='GET', data=None):
@@ -108,13 +108,9 @@ class SocketCommand(BaseInstanceCommand):
                 script_file.write(script_source)
 
     def set_up_config(self, socket_yml):
-        instance_config = self.instance.get_config()
-
         socket_config = SocketConfigParser(socket_yml=socket_yml)
         if socket_config.is_valid():
-            provided_config = socket_config.ask_for_config(instance_config)
-            instance_config.update(provided_config)
-            self.instance.set_config(instance_config)
+            return socket_config.ask_for_config()
 
     def fetch_file(self, url_path):
         response = requests.get(url_path)

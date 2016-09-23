@@ -19,8 +19,8 @@ class SocketFileFetchException(CLIBaseException):
     default_message = u'Can not fetch the file: {}.'
 
 
-class ConfigNameMissingException(CLIBaseException):
-    default_message = u'Variable name should be provided in config.'
+class BadConfigFormatException(CLIBaseException):
+    default_message = u'Bad config format.'
 
 
 class BadYAMLDefinitionInEndpointsException(CLIBaseException):
