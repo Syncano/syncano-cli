@@ -32,6 +32,20 @@ dependencies:
     custom_script_2:
       runtime_name: python_library_v5.0
       file: scripts/custom_script_2.py
+
+  classes:
+    country:
+      schema:
+        - name: name
+          type: string
+        - name: topLevelDomain
+          type: string
+        - name: capital
+          type: string
+        - name: alpha2Code
+          type: string
+        - name: alpha3Code
+          type: string
 """
 
 SCRIPTS = {
