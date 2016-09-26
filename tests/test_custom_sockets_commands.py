@@ -52,6 +52,12 @@ class CustomSocketCommandsTest(BaseCLITest):
         self.runner.invoke(cli, args=['sockets', 'install', path, '--name', socket_name],
                            input='testyx\ntestx\n', obj={})
         time.sleep(2)  # wait for socket creation;
+
+        # check config;
+        result = self.runner.invoke(cli, args=['sockets', 'config', '{}'.format(socket_name)], obj={})
+        self.assertIn('testyx', result.output)
+        self.assertIn('testx', result.output)
+
         result = self.runner.invoke(cli, args=['sockets', 'list'], obj={})
         self.assertIn('my_tweet1', result.output)
         self.assertNotIn('error', result.output)
@@ -59,11 +65,6 @@ class CustomSocketCommandsTest(BaseCLITest):
         self.runner.invoke(cli, args=['sockets', 'delete', 'my_tweet1'], obj={})
         result = self.runner.invoke(cli, args=['sockets', 'list'], obj={})
         self.assertNotIn('my_tweet1', result.output)
-
-        # check config;
-        result = self.runner.invoke(cli, args=['sockets', 'config', '{}'.format(socket_name)], obj={})
-        self.assertIn('testyx', result.output)
-        self.assertIn('testx', result.output)
 
     def test_template_from_socket(self):
         socket_base_path = '/tmp/socket_from_socket'
