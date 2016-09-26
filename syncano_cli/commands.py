@@ -19,8 +19,7 @@ def top_level():
 @click.option('--instance-name', help=u'Default instance name.')
 def login(context, config, instance_name):
     """
-    Log in to syncano using email and password and store ACCOUNT_KEY
-    in configuration file.
+    Log in to syncano using email and password.
     """
     config = config or ACCOUNT_CONFIG_PATH
     context.obj['config'] = config

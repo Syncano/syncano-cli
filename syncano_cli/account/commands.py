@@ -12,9 +12,7 @@ def top_account():
 @click.pass_context
 @click.option('--config', help=u'Account configuration file.')
 def accounts(ctx, config):
-    """
-    Handle Syncano account functionality;
-    """
+    """Handle Syncano account functionality."""
     account_commands = AccountCommands(config_path=config or ACCOUNT_CONFIG_PATH)
     ctx.obj['account_commands'] = account_commands
 

@@ -33,7 +33,7 @@ class InstanceCommands(BaseConnectionCommand):
         with open(config_path, 'wt') as fp:
             ACCOUNT_CONFIG.write(fp)
 
-    def create(self, instance_name, description):
+    def create(self, instance_name, description=None):
         kwargs = {
             'name': instance_name
         }
