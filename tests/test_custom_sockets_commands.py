@@ -55,7 +55,6 @@ class CustomSocketCommandsTest(BaseCLITest):
 
         # check config;
         result = self.runner.invoke(cli, args=['sockets', 'config', '{}'.format(socket_name)], obj={})
-        self.assertIn('testyx', result.output)
         self.assertIn('testx', result.output)
 
         result = self.runner.invoke(cli, args=['sockets', 'list'], obj={})
