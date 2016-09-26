@@ -323,6 +323,10 @@ Display chosen Custom Socket details::
 
     syncano sockets details socket_name
 
+Display Custom Socket config (with name: `socket_name`)::
+
+    syncano sockets config socket_name
+
 Delete a Custom Socket::
 
     syncano sockets delete socket_name
@@ -335,13 +339,14 @@ Create a template from an existing Custom Socket::
 
     syncano sockets template /path/to/out --socket socket_name
 
-Run endpoint defined in Custom Socket::s
+Run endpoint defined in Custom Socket::
 
     syncano sockets run socket_name/endpoint_name
 
 Run endpoint providing POST data::
 
     syncano sockets run socket_name/my_endpoint_12 POST -d one=1
+
 
 In all of the above cases you can override the Syncano instance being used::
 

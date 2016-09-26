@@ -8,12 +8,24 @@ from syncano_cli.custom_sockets.exceptions import BadYAMLDefinitionInEndpointsEx
 from syncano_cli.sync.scripts import ALLOWED_RUNTIMES
 
 
+class DependencyTypeE():
+    CLASS = 'class'
+    SCRIPT = 'script'
+
+
 class SocketFormatter(object):
 
     SOCKET_FIELDS = ['name', 'description', 'endpoints', 'dependencies']
     HTTP_METHODS = ['GET', 'POST', 'DELETE', 'PUT', 'PATCH']
     ENDPOINT_TYPES = ['script']
-    DEPENDENCY_TYPES = {'scripts': 'script'}
+    DEPENDENCY_TYPES = {'scripts': DependencyTypeE.SCRIPT, 'classes': DependencyTypeE.CLASS}
+
+    @classmethod
+    def get_dependency_handlers(cls):
+        handlers = {}
+        for yml_name, dependency_type in six.iteritems(cls.DEPENDENCY_TYPES):
+            handlers[dependency_type] = getattr(cls, 'get_{}_dependency'.format(dependency_type))
+        return handlers
 
     @classmethod
     def to_yml(cls, socket_object):
@@ -126,17 +138,41 @@ class SocketFormatter(object):
     @classmethod
     def _json_process_dependencies(cls, dependencies, directory):
         api_dependencies = []
-
+        dependency_handlers = cls.get_dependency_handlers()
         for dependencies_type, dependency in six.iteritems(dependencies):
             if dependencies_type in cls.DEPENDENCY_TYPES:
                 for dependency_name, data in six.iteritems(dependency):
-                    api_dependencies.append({
-                        'type': cls.DEPENDENCY_TYPES[dependencies_type],
-                        'runtime_name': data['runtime_name'],
+                    dependency_type = cls.DEPENDENCY_TYPES[dependencies_type]
+                    base_dependency_data = {
                         'name': dependency_name,
-                        'source': cls._get_source(data['file'], directory),
-                    })
+                        'type': dependency_type
+                    }
+                    typed_dependency_data = dependency_handlers[dependency_type](data, directory=directory)
+                    typed_dependency_data.update(base_dependency_data)
+                    api_dependencies.append(typed_dependency_data)
         return api_dependencies
+
+    @classmethod
+    def get_script_dependency(cls, data, **kwargs):
+        """
+        Note: when definig new depenency processors use following pattern:
+        get_{name}_dependency -> where {name} is one of the defined in DepedencyTypeE
+        this allows to easily extend dependency handling;
+        :param data:
+        :param directory:
+        :return:
+        """
+        directory = kwargs.get('directory')
+        return {
+            'runtime_name': data['runtime_name'],
+            'source': cls._get_source(data['file'], directory),
+        }
+
+    @classmethod
+    def get_class_dependency(cls, data, **kwargs):
+        return {
+            'schema': data['schema']
+        }
 
     @classmethod
     def _get_source(cls, file_name, directory):
