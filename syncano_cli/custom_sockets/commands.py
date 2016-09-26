@@ -66,6 +66,14 @@ def details(ctx, socket_name):
 @sockets.command()
 @click.pass_context
 @click.argument('socket_name')
+def config(ctx, socket_name):
+    socket_command = ctx.obj['socket_command']
+    socket_command.config(socket_name=socket_name)
+
+
+@sockets.command()
+@click.pass_context
+@click.argument('socket_name')
 def delete(ctx, socket_name):
     socket_command = ctx.obj['socket_command']
     socket_command.delete(socket_name=socket_name)

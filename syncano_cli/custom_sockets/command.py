@@ -31,6 +31,12 @@ class SocketCommand(BaseInstanceCommand):
         cs = CustomSocket.please.get(name=socket_name, instance_name=self.instance.name)
         click.echo(SocketFormatter.format_socket_details(cs))
 
+    def config(self, socket_name):
+        cs = CustomSocket.please.get(name=socket_name, instance_name=self.instance.name)
+        click.echo('Config for socket `{}`'.format(cs.name))
+        for name, value in six.iteritems(cs.config):
+            click.echo('{:20}: {}'.format(name, value))
+
     def list_endpoints(self):
         endpoints = SocketEndpoint.get_all_endpoints(instance_name=self.instance.name)
         click.echo(SocketFormatter.format_endpoints_list(socket_endpoints=endpoints))
