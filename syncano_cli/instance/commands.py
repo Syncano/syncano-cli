@@ -20,7 +20,7 @@ def instances(ctx, config, instance_name):
     """
     Manage your Instances. Instance is an equivalent of a project or a set of data.
     It contains information about Sockets, Data Classes, Data Objects and more.
-    You can own and/or belong to multiple instances.
+    You can own and/or belong to multiple Instances.
     """
     connection = create_connection(config, instance_name)
     instance_commands = InstanceCommands(connection)
