@@ -6,7 +6,7 @@ README = open(os.path.join(os.path.dirname(__file__), 'README.rst')).read()
 
 setup(
     name='syncano-cli',
-    version='0.7',
+    version='0.8',
     description='Syncano command line utilities',
     long_description=README,
     author='Marcin Swiderski, Sebastian Opalczynski',

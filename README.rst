@@ -135,8 +135,8 @@ Will display custom sockets from `my_instance_name` - because it is set to be a 
 
 After a registration - there's no default instance set. So it's desired to create one and set it as default::
 
-    syncano instance create my_new_instance
-    syncano instance default my_new_instance
+    syncano instances create my_new_instance
+    syncano instances default my_new_instance
 
 It's worth to note that `instance_name` must be unique - but you will get appropriate message if you encounter such case.
 
