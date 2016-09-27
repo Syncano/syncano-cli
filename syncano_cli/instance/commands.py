@@ -18,9 +18,9 @@ def top_instance():
 @click.option('--instance-name', help=u'Instance name.')
 def instances(ctx, config, instance_name):
     """
-    Mangage your Instances. Instance is an equivalent of a project or a set of data.
+    Manage your Instances. Instance is an equivalent of a project or a set of data.
     It contains information about Sockets, Data Classes, Data Objects and more.
-    You can own and/or belong to multiple instances.
+    You can own and/or belong to multiple Instances.
     """
     connection = create_connection(config, instance_name)
     instance_commands = InstanceCommands(connection)
@@ -52,7 +52,7 @@ def details(ctx, instance_name):
 def delete(ctx, instance_name):
     instance_name = get_instance_name(ctx.obj['config'], instance_name)  # default one if no provided;
     confirmed_name = click.prompt('Are you sure that you want to delete '
-                                  'instance {}? Type instance name again'.format(instance_name))
+                                  'Instance {}? Type instance name again'.format(instance_name))
     if confirmed_name == instance_name:
         ctx.obj['instance_commands'].delete(instance_name)
     else:

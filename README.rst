@@ -58,6 +58,30 @@ If you need to change default instance name, used for all future commands, use::
 
     syncano default name_of_new_default_instance
 
+
+If you do not have an Syncano account use `syncano init` command::
+
+    syncano init
+
+And follow the steps. CLI will ask you about `email` and `password`, it will also create an Instance for you.
+After `syncano init` you can start with getting the list of your Instances::
+
+    syncano instances list
+
+
+To obtain a help, type::
+
+    syncano --help
+
+To display a help for specific command, type::
+
+    syncano instances --help
+
+And::
+
+    syncano instances list --help
+
+
 Documentation
 =============
 

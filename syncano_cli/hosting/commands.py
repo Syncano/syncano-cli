@@ -30,19 +30,24 @@ def hosting(ctx, config, instance_name, domain):
 @click.pass_context
 @click.argument('directory')
 def publish(ctx, directory,):
-
     validate_publish(directory)
     domain = ctx.obj['domain']
     domain = validate_domain(domain)  # prepared for user defined domains;
     hosting_commands = ctx.obj['hosting_commands']
     hosting_commands.publish(domain=domain, base_dir=directory)
-    click.echo(
-        "INFO: Your site published. If default, go to: https://{instance_name}--{domain}.syncano.site. "
-        "Otherwise, go to: https://{instance_name}.syncano.site".format(
-            hosting_commands.instance.name,
-            domain=domain
+    if domain == 'default':
+        click.echo(
+            "INFO: Your site published. Go to: https://{instance_name}.syncano.site.".format(
+                instance_name=hosting_commands.instance.name,
+            )
         )
-    )
+    else:
+        click.echo(
+            "INFO: Your site published. Go to: https://{instance_name}--{domain}.syncano.site.".format(
+                instance_name=hosting_commands.instance.name,
+                domain=domain
+            )
+        )
 
 
 @hosting.group(invoke_without_command=True)
