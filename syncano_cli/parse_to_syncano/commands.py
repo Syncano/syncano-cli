@@ -16,7 +16,7 @@ def top_migrate():
 @click.option('--config', help=u'Account configuration file.')
 def migrate(context, config):
     """
-    Command for transfer data to Syncano
+    Migrate Parse data to Syncano
     """
     config = config or ACCOUNT_CONFIG_PATH
     context.obj['config'] = config
@@ -26,20 +26,20 @@ def migrate(context, config):
 @click.pass_context
 def parse(context):
     """
-        Synchronize the parse data object with syncano data objects;
+        Synchronize the Parse data objects with Syncano data objects;
         """
     config = read_config(config_path=context.obj['config'])
     check_configuration(config, silent=True)
     application_id = config.get('P2S', 'PARSE_APPLICATION_ID')
     instance_name = config.get('P2S', 'SYNCANO_INSTANCE_NAME')
-    confirmation = raw_input(
+    confirmation = click.confirm(
         'Are you sure you want to copy your data from Parse application ({application_id})'
-        ' to the Syncano Instance ({instance_name})? Y/N [Y]: '.format(
+        ' to the Syncano Instance ({instance_name})?: '.format(
             application_id=application_id,
             instance_name=instance_name)
-    ) or 'Y'
+    )
 
-    if confirmation not in ['Y', 'YES', 'y', 'yes']:
+    if not confirmation:
         click.echo('INFO: Transfer aborted.')
         return
 
@@ -53,7 +53,7 @@ def parse(context):
 @click.option('--force', is_flag=True, default=False, help="Force to overwrite previous config.")
 def configure(context, current, force):
     """
-    Configure the data needed for connection to the parse and syncano;
+    Configure the data needed for connection between Parse and Syncano;
     """
     config = read_config(config_path=context.obj['config'])
     if current:

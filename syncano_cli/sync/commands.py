@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function
 
+import os
 import time
 
 import click
+from click import Abort
 from syncano_cli.base.connection import create_connection, get_instance
 from syncano_cli.sync.project import Project
+from syncano_cli.sync.templates.syncano_yml import syncano_yml
 from watchdog.observers import Observer
 
 from .watch import ProjectEventHandler
@@ -23,7 +26,7 @@ def top_sync():
 @click.option('--instance-name', help=u'Instance name.')
 def sync(context, file, config, instance_name):
     """
-    Command for syncing data - classes and scripts
+    Sync your scripts and data classes.
     :param context:
     :param file: file which will be used for syncing
     :param config: the config path - the cli config will be stored there
@@ -92,6 +95,22 @@ def watch(context):
     except KeyboardInterrupt:
         observer.stop()
     observer.join()
+
+
+@sync.command()
+@click.pass_context
+def template(context):
+    """
+    Creates sample project file;
+    """
+    if os.path.isfile(context.obj['file']):
+        confirm = click.confirm(u'Are you sure you want to overwrite syncano.yml file with template?')
+        if not confirm:
+            raise Abort()
+
+    with open(context.obj['file'], 'wt') as fp:
+        fp.write(syncano_yml)
+    click.echo("INFO: Template syncano.yml file created.")
 
 
 def do_push(context, classes, scripts, all):

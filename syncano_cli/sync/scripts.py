@@ -6,6 +6,7 @@ import re
 from collections import defaultdict
 
 import click
+import six
 from syncano.exceptions import SyncanoRequestError
 
 ALLOWED_RUNTIMES = {
@@ -83,7 +84,7 @@ def pull_scripts(instance, include):
 
         path = os.path.join('scripts', filename)
 
-        with open(path, 'wb') as script_file:
+        with open(path, 'wt') as script_file:
             script_file.write(script.source)
 
         script_info = {
@@ -192,7 +193,7 @@ def validate_script(script):
             'on file extension'.format(**script)
         )
 
-        for k, v in ALLOWED_RUNTIMES.iteritems():
+        for k, v in six.iteritems(ALLOWED_RUNTIMES):
             if v == ext:
                 script['runtime'] = runtime = k
                 click.echo(

@@ -11,8 +11,8 @@ class UnicodeInPathException(CLIBaseException):
     default_message = u'Unicode characters in path are not supported. Check the files names.'
 
 
-class NoDefaultHostingFoundException(CLIBaseException):
-    default_message = u'No default hosting found. Exit.'
+class NoHostingFoundException(CLIBaseException):
+    default_message = u'Hosting with domain `{}` - not found. Exit.'
 
 
 class NotADirectoryException(CLIBaseException):

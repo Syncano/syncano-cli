@@ -53,6 +53,34 @@ The instance name will be set as default and used in all CLI commands.
 If you want to override this setting for a specific command, use --instance-name eg::
 
     syncano sync --instance-name new-instance-1234 pull
+    
+If you need to change default instance name, used for all future commands, use::
+
+    syncano default name_of_new_default_instance
+
+
+If you do not have an Syncano account use `syncano init` command::
+
+    syncano init
+
+And follow the steps. CLI will ask you about `email` and `password`, it will also create an Instance for you.
+After `syncano init` you can start with getting the list of your Instances::
+
+    syncano instances list
+
+
+To obtain a help, type::
+
+    syncano --help
+
+To display a help for specific command, type::
+
+    syncano instances --help
+
+And::
+
+    syncano instances list --help
+
 
 Documentation
 =============
@@ -107,8 +135,8 @@ Will display custom sockets from `my_instance_name` - because it is set to be a 
 
 After a registration - there's no default instance set. So it's desired to create one and set it as default::
 
-    syncano instance create my_new_instance
-    syncano instance default my_new_instance
+    syncano instances create my_new_instance
+    syncano instances default my_new_instance
 
 It's worth to note that `instance_name` must be unique - but you will get appropriate message if you encounter such case.
 
@@ -259,18 +287,18 @@ Syncano Hosting
 Syncano Hosting is a simple way to host your static files on Syncano servers. 
 The CLI supports it in the following way:
 
-This command will list files for currently hosted website::
+This command will list currently defined hostings in the instance::
 
     syncano hosting list
+
+This command will list files for currently hosted website (for `default` hosting)::
+
+    syncano hosting list files
 
 This command will publish all files inside *<base_dir>* to the default Syncano Hosting instance.
 When publishing the whole directory, the structure will be mapped on Syncano.::
 
     syncano hosting publish <base_dir>
-
-This command will unpublish currently published hosting::
-
-    syncano hosting unpublish
 
 
 This command will permamently delete the hosting::
@@ -284,6 +312,14 @@ This command will delete the specified file::
 This command will update single file::
 
     syncano hosting update hosting/file/path local/file/path
+
+For each of the above command you can specify the domain to change just after hosting command, example::
+
+    syncano hosting --domain staging publish <base_dir>
+
+Will create a new hosting which will be available under: `<instance_name>--staging.syncano.site`
+If this hosting is also a default one, it will be available under: `<instance_name>.syncano.site`.
+
 
 Custom Sockets
 ==============
@@ -311,6 +347,10 @@ Display chosen Custom Socket details::
 
     syncano sockets details socket_name
 
+Display Custom Socket config (with name: `socket_name`)::
+
+    syncano sockets config socket_name
+
 Delete a Custom Socket::
 
     syncano sockets delete socket_name
@@ -323,13 +363,14 @@ Create a template from an existing Custom Socket::
 
     syncano sockets template /path/to/out --socket socket_name
 
-Run endpoint defined in Custom Socket::s
+Run endpoint defined in Custom Socket::
 
     syncano sockets run socket_name/endpoint_name
 
 Run endpoint providing POST data::
 
     syncano sockets run socket_name/my_endpoint_12 POST -d one=1
+
 
 In all of the above cases you can override the Syncano instance being used::
 

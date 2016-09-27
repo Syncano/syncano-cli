@@ -23,11 +23,11 @@ class JSONParseException(CLIBaseException):
 
 
 class BadCredentialsException(CLIBaseException):
-    default_message = u'Wrong credential provided when login.'
+    default_message = u'Wrong login credentials provided.'
 
 
 class NotLoggedInException(CLIBaseException):
-    default_message = u'Do a login first: `syncano login`.'
+    default_message = u'Please log in to your account: `syncano login`.'
 
 
 class InstanceNotFoundException(CLIBaseException):

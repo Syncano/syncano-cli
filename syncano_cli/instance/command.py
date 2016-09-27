@@ -1,8 +1,14 @@
 # -*- coding: utf-8 -*-
-from ConfigParser import NoOptionError
-
+import six
 from syncano_cli.base.command import BaseConnectionCommand
 from syncano_cli.config import ACCOUNT_CONFIG
+
+if six.PY2:
+    from ConfigParser import NoOptionError
+elif six.PY3:
+    from configparser import NoOptionError
+else:
+    raise ImportError()
 
 
 class InstanceCommands(BaseConnectionCommand):
@@ -24,10 +30,10 @@ class InstanceCommands(BaseConnectionCommand):
     @classmethod
     def set_default(cls, instance_name, config_path):
         ACCOUNT_CONFIG.set('DEFAULT', 'instance_name', instance_name)
-        with open(config_path, 'wb') as fp:
+        with open(config_path, 'wt') as fp:
             ACCOUNT_CONFIG.write(fp)
 
-    def create(self, instance_name, description):
+    def create(self, instance_name, description=None):
         kwargs = {
             'name': instance_name
         }
@@ -46,7 +52,7 @@ Metadata: {instance.metadata}"""
 
     @classmethod
     def format_list(cls, instances, default_instance_name):
-        list_template = """Available instances:{}"""
+        list_template = """Available Instances:{}"""
         lines = ''
 
         def get_name_label(name, default_instance_name):
@@ -56,7 +62,7 @@ Metadata: {instance.metadata}"""
 
         for instance in instances:
             lines += u"\n\t- {name}: {description}".format(
-                description=instance.description or u'N/A',
+                description=instance.description or u'no description',
                 name=get_name_label(instance.name, default_instance_name)
             )
 

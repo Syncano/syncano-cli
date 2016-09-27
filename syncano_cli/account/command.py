@@ -10,7 +10,7 @@ class AccountCommands(object):
         self.connection = syncano.connect()
         self.config_path = config_path
 
-    def register(self, email, password, first_name, last_name, invitation_key):
+    def register(self, email, password, first_name=None, last_name=None, invitation_key=None):
         api_key = self.connection.connection().register(
             email=email,
             password=password,
@@ -19,6 +19,6 @@ class AccountCommands(object):
             invitation_key=invitation_key
         )
 
-        ACCOUNT_CONFIG.set('DEFAULT', 'api_key', api_key)
-        with open(self.config_path, 'wb') as fp:
+        ACCOUNT_CONFIG.set('DEFAULT', 'key', api_key)
+        with open(self.config_path, 'wt') as fp:
             ACCOUNT_CONFIG.write(fp)
