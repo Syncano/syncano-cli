@@ -39,8 +39,8 @@ class HostingCommands(BaseInstanceCommand):
         hosting = self._get_hosting(domain=domain, is_new=True)
         upload_method_name = 'update_file'
         if not hosting:
-            # create a new hosting if no default is present;
-            hosting = self.create_hosting(label='Default hosting', domain=domain)
+            # create a new Hosting Socket if no default is present;
+            hosting = self.create_hosting(label='Default Hosting Socket', domain=domain)
             upload_method_name = 'upload_file'
 
         for folder, subs, files in os.walk(base_dir):
@@ -64,12 +64,6 @@ class HostingCommands(BaseInstanceCommand):
 
                 uploaded_files.append(file_path)
         return uploaded_files
-
-    def unpublish(self, domain):
-        hosting = self._get_hosting(domain=domain)
-        hosting.domains = ['unpublished']
-        hosting.save()
-        click.echo('INFO: Hosting `{}` unpublished.'.format(hosting.label))
 
     def delete_hosting(self, domain):
         hosting = self._get_hosting(domain=domain)
