@@ -14,7 +14,7 @@ Table of contents
 8.  `Syncano Hosting`_
 9.  `Custom Sockets`_
 10.  `Config`_
-11.  `Running scripts`_
+11.  `Running Scripts`_
 12.  `Issues`_
 
 Build Status
@@ -403,10 +403,10 @@ To delete existing config variable::
 
     syncano config delete name
 
-Running scripts
+Running Scripts
 ===============
 
-This command will allow you to execute any script (Script Endpoint) with optional payload and read the output.
+This command will allow you to execute any Script Endpoint with optional payload and read the output.
 
 **Usage:**
 

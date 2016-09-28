@@ -42,8 +42,8 @@ def filename_for_script(script):
 
 def pull_scripts(instance, include):
     """
-    Pull scripts from Instance and store them in scripts directory.
-    If scripts is empty list all scripts are pulled, otherwise script
+    Pull Scripts from Instance and store them in scripts directory.
+    If Scripts is empty list all Scripts are pulled, otherwise Script
     label has to be in a list. Script labels are changed to be compatibile with
     file names. All whitespaces, slashes and backslashes are replaced with '_'.
     """
@@ -52,7 +52,7 @@ def pull_scripts(instance, include):
     seen_labels = set()
 
     if not os.path.exists('scripts'):
-        click.echo("INFO: Creating scripts directory")
+        click.echo("INFO: Creating Scripts directory")
         os.makedirs('scripts')
 
     script_endpoints = defaultdict(list)
@@ -65,7 +65,7 @@ def pull_scripts(instance, include):
             continue
 
         if script.label in seen_labels:
-            raise ValueError('There is more than 1 script with label {0.label}'
+            raise ValueError('There is more than 1 Script with label {0.label}'
                              .format(script))
         seen_labels.add(script.label)
 
@@ -73,13 +73,13 @@ def pull_scripts(instance, include):
 
         if filename in seen_names:
             click.echo("WARN: Script {0.label}({0.id}) label clashes with"
-                       " script {1.label}({1.id}). Skipping."
+                       " Script {1.label}({1.id}). Skipping."
                        .format(script, seen_names[filename]))
             continue
         seen_names[filename] = script
 
         if filename != script.label:
-            click.echo('WARN: Saving script "{0}" as "{1}"'.format(script.label,
+            click.echo('WARN: Saving Script "{0}" as "{1}"'.format(script.label,
                                                                    filename))
 
         path = os.path.join('scripts', filename)
@@ -109,8 +109,8 @@ def push_scripts(instance, scripts, config_only=True):
         - scripts - a list of dictionaries containing configurations for
                     scripts
     """
-    click.echo('INFO: Pushing scripts')
-    click.echo('INFO: Pulling remote scripts')
+    click.echo('INFO: Pushing Scripts')
+    click.echo('INFO: Pulling remote Scripts')
 
     endpoints = {}
     remote_scripts_mapping = defaultdict(list)
@@ -123,12 +123,12 @@ def push_scripts(instance, scripts, config_only=True):
         existing_endpoints[endpoint.script].append(endpoint.name)
         endpoints[endpoint.name] = endpoint
 
-    click.echo('INFO: Pushing local scripts')
+    click.echo('INFO: Pushing local Scripts')
     for s in scripts:
         if s['label'] in remote_scripts_mapping:
             remote_count = len(remote_scripts_mapping[s['label']])
             if remote_count > 1:
-                click.error('ERROR: You have {0} scripts with label {1} on'
+                click.error('ERROR: You have {0} Scripts with label {1} on'
                             ' syncano. Skipping'.format(remote_count, s['label']))
                 continue
             remote_script = remote_scripts_mapping[s['label']][0]
@@ -145,7 +145,7 @@ def push_scripts(instance, scripts, config_only=True):
         config = s.get('config', {})
         remote_script.config.update(config)
 
-        click.echo('INFO: Pushing script {label}'.format(**s))
+        click.echo('INFO: Pushing Script {label}'.format(**s))
         remote_script.save()
 
         existing_set = {name for name in existing_endpoints[remote_script.id]}
@@ -166,30 +166,30 @@ def push_scripts(instance, scripts, config_only=True):
                 endpoint.save()
             except SyncanoRequestError as e:
                 raise ValueError(
-                    'Error when saving endpoint "{0}" for script "{1}": {2}.'
+                    'Error when saving endpoint "{0}" for Script "{1}": {2}.'
                     .format(name, remote_script.label, e.message)
                 )
 
 
 def validate_script(script):
     if not script.get('label'):
-        raise ValueError('You have to provide script label.')
+        raise ValueError('You have to provide Script label.')
 
-    source = script.get('script')
+    source = script.get('Script')
     if source is None:
-        raise ValueError('You have to provide script source for script '
+        raise ValueError('You have to provide Script source for script '
                          '"{label}"'.format(**script))
 
     if not os.path.exists(source):
         raise ValueError(
-            'Could not find script "{source}" file'.format(**script)
+            'Could not find Script "{source}" file'.format(**script)
         )
 
     runtime = script.get('runtime')
     if not runtime:
         ext = os.path.splitext(source)[1]
         click.echo(
-            'WARN: Runtime for script {label} not provided. Guessing runtime basing'
+            'WARN: Runtime for Script {label} not provided. Guessing runtime basing'
             'on file extension'.format(**script)
         )
 
@@ -197,7 +197,7 @@ def validate_script(script):
             if v == ext:
                 script['runtime'] = runtime = k
                 click.echo(
-                    'WARN: Using runtime {runtime} for script {label}'.format(
+                    'WARN: Using runtime {runtime} for Script {label}'.format(
                         **script
                     )
                 )

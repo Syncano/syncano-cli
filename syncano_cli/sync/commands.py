@@ -26,7 +26,7 @@ def top_sync():
 @click.option('--instance-name', help=u'Instance name.')
 def sync(context, file, config, instance_name):
     """
-    Sync your scripts and data classes.
+    Sync your Scripts and data Classes.
     :param context:
     :param file: file which will be used for syncing
     :param config: the config path - the cli config will be stored there
@@ -60,7 +60,7 @@ def push(context, script, all, **kwargs):
 def pull(context, script, all, **kwargs):
     """
     Pull configuration from syncano and store it in current directory.
-    Updates syncano.yml configuration file, and places scripts in scripts
+    Updates syncano.yml configuration file, and places Scripts in scripts
     directory.
     When syncano.yml file exists. It will pull only objects defined in
     configuration file. If you want to pull all objects from syncano use
@@ -76,7 +76,7 @@ def pull(context, script, all, **kwargs):
 def watch(context):
     """
     Push configuration to syncano. After that  watch for changes in
-    syncano.yml file and scripts and push changed items to syncano.
+    syncano.yml file and Scripts and push changed items to syncano.
     """
     context.obj['classes'] = None
     context.obj['scripts'] = None
