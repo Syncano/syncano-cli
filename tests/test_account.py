@@ -25,5 +25,5 @@ class AccountCommandsTest(BaseCLITest):
         # check if api key is written in the config file;
         self.assert_config_variable_exists(ACCOUNT_CONFIG, 'DEFAULT', 'key')
 
-        # restore old connection in Syncano LIB; To remove instance in tearDown;
+        # restore old connection in Syncano LIB; To remove Instance in tearDown;
         self.connection.connection().api_key = old_key

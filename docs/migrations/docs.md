@@ -117,7 +117,7 @@ Your Parse Master Key - which is required by this tool - is stored locally on yo
 
 Each time the transfer is run - data will be duplicated. It's because Syncano does not support the unique constraint - and
 thus it's impossible to check if object with particular Parse ID is already present in the Syncano Data Objects. Before
-re-running the data import process, it's a good idea to remove your instance or already trasferred classes, or use a new one in our tool configuration.
+re-running the data import process, it's a good idea to remove your Instance or already trasferred classes, or use a new one in our tool configuration.
 
 Syncano credentials are stored in `.syncano` file under your home directory, and are used **ONLY** for communication
 with Syncano services.

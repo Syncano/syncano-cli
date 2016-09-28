@@ -42,7 +42,7 @@ def filename_for_script(script):
 
 def pull_scripts(instance, include):
     """
-    Pull scripts from instance and store them in scripts directory.
+    Pull scripts from Instance and store them in scripts directory.
     If scripts is empty list all scripts are pulled, otherwise script
     label has to be in a list. Script labels are changed to be compatibile with
     file names. All whitespaces, slashes and backslashes are replaced with '_'.
@@ -104,8 +104,8 @@ def pull_scripts(instance, include):
 
 def push_scripts(instance, scripts, config_only=True):
     """
-    Push selected scripts to instance.
-        - instance - instance object to push scripts to
+    Push selected scripts to Instance.
+        - instance - Instance object to push scripts to
         - scripts - a list of dictionaries containing configurations for
                     scripts
     """

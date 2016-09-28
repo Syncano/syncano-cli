@@ -47,7 +47,7 @@ class Project(object):
 
     def update_from_instance(self, instance, all=False, classes=None,
                              scripts=None):
-        """Updates project data from instances"""
+        """Updates project data from Instances"""
         click.echo("INFO: Pulling instance data from syncano")
         prev_classes = self.classes
         classes = classes or self.classes.keys()

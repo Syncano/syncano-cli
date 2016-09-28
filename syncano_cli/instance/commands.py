@@ -52,10 +52,10 @@ def details(ctx, instance_name):
 @click.pass_context
 @click.argument('instance_name', required=False)
 def delete(ctx, instance_name):
-    """Delete the instance. Command will prompt you for permission."""
+    """Delete the Instance. Command will prompt you for permission."""
     instance_name = get_instance_name(ctx.obj['config'], instance_name)  # default one if no provided;
     confirmed_name = click.prompt('Are you sure that you want to delete '
-                                  'Instance {}? Type instance name again'.format(instance_name))
+                                  'Instance {}? Type Instance name again'.format(instance_name))
     if confirmed_name == instance_name:
         ctx.obj['instance_commands'].delete(instance_name)
     else:
