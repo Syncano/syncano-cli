@@ -139,8 +139,8 @@ which will be called when the endpoint is requested.
               - name: alpha3Code
                 type: string
                 
-    This simple mean that Custom Socket requires a class `country` to work properly. Under the hood - Syncano Platform
-    will check if this class exists (if not - create it) and ensure that all required files defined in `schema` are present.
+    This simple mean that Custom Socket requires a Class `country` to work properly. Under the hood - Syncano Platform
+    will check if this Class exists (if not - create it) and ensure that all required files defined in `schema` are present.
         
 
 

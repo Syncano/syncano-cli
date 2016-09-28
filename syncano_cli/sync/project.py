@@ -60,7 +60,7 @@ class Project(object):
 
         state = ("Not changed", "Added", "Removed", "Updated")
         if self.classes and all:
-            click.echo("INFO: Stats for classes")
+            click.echo("INFO: Stats for Classes")
             for info, classes in zip(state, compare_dicts(self.classes, prev_classes)):
                 if classes:
                     click.echo('INFO: %s : %s', info, ','.join(classes))

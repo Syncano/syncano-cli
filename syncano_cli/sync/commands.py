@@ -42,8 +42,8 @@ def sync(context, file, config, instance_name):
 
 @sync.command()
 @click.pass_context
-@click.option('-s', '--script', help=u"Pull only this script from syncano", multiple=True)
-@click.option('-c', '--class', help=u"Pull only this class from syncano", multiple=True)
+@click.option('-s', '--script', help=u"Pull only this Script from syncano", multiple=True)
+@click.option('-c', '--class', help=u"Pull only this Class from syncano", multiple=True)
 @click.option('-a', '--all', is_flag=True, default=False, help=u"Force push all configuration")
 def push(context, script, all, **kwargs):
     """Push configuration changes to syncano."""
@@ -54,8 +54,8 @@ def push(context, script, all, **kwargs):
 
 @sync.command()
 @click.pass_context
-@click.option('-s', '--script', help=u"Pull only this script from syncano", multiple=True)
-@click.option('-c', '--class', help=u"Pull only this class from syncano", multiple=True)
+@click.option('-s', '--script', help=u"Pull only this Script from syncano", multiple=True)
+@click.option('-c', '--class', help=u"Pull only this Class from syncano", multiple=True)
 @click.option('-a', '--all', is_flag=True, default=False, help=u"Force push all configuration")
 def pull(context, script, all, **kwargs):
     """

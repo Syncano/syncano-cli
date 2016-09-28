@@ -168,7 +168,7 @@ Deletion will ask you for confirmation - as deleting an Instance is quite a big 
 Syncano sync
 ============
 
-Pulling your Instance classes and scripts
+Pulling your Instance Classes and Scripts
 -----------------------------------------
 
 In order to pull your Instance configuration, execute
@@ -190,7 +190,7 @@ script labels. Keep in mind that script labels in Syncano are not unique, and
 this tool cannot yet handle this kind of situation when pulling a Script from Syncano.
 
 Classes and Scripts configuration is stored in *syncano.yml* file. If this file already 
-exists, only classes and scripts stored in this file will be pulled and updated. 
+exists, only Classes and Scripts stored in this file will be pulled and updated.
 If you want to pull the whole Instance you can use *-a/--all* switch flag.
 
 Pushing your changes
@@ -209,7 +209,7 @@ If *syncano.yml* has changed, it will try to push all data to Syncano. Otherwise
 it will just push the source code files for scripts that were changed. 
 If you want to force push all changes you can use *-a/--all* option.
 
-If you only want to push changes from selected classes/scripts you can provide them
+If you only want to push changes from selected Classes/Scripts you can provide them
 with *-c/--class* or *-s/--script* options like in the pull example above.
 
 Synchronize changes in real-time
@@ -235,7 +235,7 @@ This tool will help you to move your data from Parse to Syncano.
 
 **Usage:**
 
-Currently supports only transferring data. This tool takes the Parse schemas and transforms them to Syncano classes.
+Currently supports only transferring data. This tool takes the Parse schemas and transforms them to Syncano Classes.
 The next step is to move all of the data between Parse and Syncano. The last step is rebuilding the relations between
 objects.
 

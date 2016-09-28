@@ -43,7 +43,7 @@ class SyncCommandsTest(BaseCLITest, InstanceMixin, IntegrationTest):
             '--class', 'test_class{unique}'.format(unique=unique),
         ], obj={})
 
-        # check if class was created;
+        # check if Class was created;
         new_class_syncano = self.get_syncano_class(unique)
         self.assertTrue(new_class_syncano)
 
