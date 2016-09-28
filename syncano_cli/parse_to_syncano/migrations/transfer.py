@@ -76,7 +76,7 @@ class SyncanoTransfer(ParseConnectionMixin, SyncanoConnectionMixin, PaginationMi
                 try:
                     instance.classes.create(name=class_to_process.syncano_name, schema=class_to_process.syncano_schema)
                 except Exception as e:
-                    click.echo('\nWARN: Class already defined ({}) in this instance ({}). Using existing Class.'.format(
+                    click.echo('\nWARN: Class already defined ({}) in this Instance ({}). Using existing Class.'.format(
                         class_to_process.syncano_name, instance.name)
                     )
                     click.echo('WARN: {}'.format(e))

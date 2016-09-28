@@ -12,7 +12,7 @@ def top_account():
 @click.pass_context
 @click.option('--config', help=u'Account configuration file.')
 def accounts(ctx, config):
-    """Handle Syncano account functionality."""
+    """Handle Syncano Account functionality."""
     account_commands = AccountCommands(config_path=config or ACCOUNT_CONFIG_PATH)
     ctx.obj['account_commands'] = account_commands
 
@@ -25,7 +25,7 @@ def accounts(ctx, config):
 @click.option('--last-name', help=u'Last name of the user.')
 @click.option('--invitation-key', help=u'Invitation key.')
 def register(ctx, email, password, first_name, last_name, invitation_key):
-    """Allows to regiter new Syncano account. Email and password are obligatory."""
+    """Allows to register new Syncano Account. Email and password are obligatory."""
     ctx.obj['account_commands'].register(
         email=email,
         password=password,
