@@ -15,9 +15,7 @@ def top_migrate():
 @click.pass_context
 @click.option('--config', help=u'Account configuration file.')
 def migrate(context, config):
-    """
-    Migrate Parse data to Syncano
-    """
+    """Migrate Parse data to Syncano."""
     config = config or ACCOUNT_CONFIG_PATH
     context.obj['config'] = config
 
@@ -25,9 +23,7 @@ def migrate(context, config):
 @migrate.command()
 @click.pass_context
 def parse(context):
-    """
-        Synchronize the Parse data objects with Syncano data objects;
-        """
+    """Synchronize the Parse data objects with Syncano data objects."""
     config = read_config(config_path=context.obj['config'])
     check_configuration(config, silent=True)
     application_id = config.get('P2S', 'PARSE_APPLICATION_ID')
@@ -52,9 +48,7 @@ def parse(context):
 @click.option('--current', is_flag=True, default=False, help="Show current configuration.")
 @click.option('--force', is_flag=True, default=False, help="Force to overwrite previous config.")
 def configure(context, current, force):
-    """
-    Configure the data needed for connection between Parse and Syncano;
-    """
+    """Configure the data needed for connection between Parse and Syncano."""
     config = read_config(config_path=context.obj['config'])
     if current:
         print_configuration(config)

@@ -17,9 +17,7 @@ def top_hosting():
 @click.option('--instance-name', help=u'Instance name.')
 @click.option('--domain', default='default')
 def hosting(ctx, config, instance_name, domain):
-    """
-    Handle hosting and hosting files. Allow to publish static pages to the Syncano Hosting.
-    """
+    """Handle hosting and hosting files. Allow to publish static pages to the Syncano Hosting."""
     instance = get_instance(config, instance_name)
     hosting_commands = HostingCommands(instance)
     ctx.obj['hosting_commands'] = hosting_commands
@@ -29,7 +27,8 @@ def hosting(ctx, config, instance_name, domain):
 @hosting.command()
 @click.pass_context
 @click.argument('directory')
-def publish(ctx, directory,):
+def publish(ctx, directory):
+    """Allow to publish local files to the Syncano Hosting."""
     validate_publish(directory)
     domain = ctx.obj['domain']
     domain = validate_domain(domain)  # prepared for user defined domains;
@@ -53,6 +52,7 @@ def publish(ctx, directory,):
 @hosting.group(invoke_without_command=True)
 @click.pass_context
 def list(ctx):
+    """List all defined Hosting Sockets in Syncano."""
     if ctx.invoked_subcommand is None:
         hosting_commands = ctx.obj['hosting_commands']
         hosting_commands.print_hostings(
@@ -63,6 +63,7 @@ def list(ctx):
 @list.command()
 @click.pass_context
 def files(ctx):
+    """List all files in given Hosting Socket."""
     domain = ctx.obj['domain']
     domain = validate_domain(domain)
     hosting_commands = ctx.obj['hosting_commands']
@@ -75,6 +76,7 @@ def files(ctx):
 @click.pass_context
 @click.argument('path', required=False)
 def delete(ctx, path):
+    """Delete the Hosting Socket."""
     domain = ctx.obj['domain']
     domain = validate_domain(domain)
     hosting_commands = ctx.obj['hosting_commands']
@@ -92,6 +94,7 @@ def delete(ctx, path):
 @click.argument('path')
 @click.argument('file')
 def update(ctx, path, file):
+    """Update single file in given Hosting Socket."""
     domain = ctx.obj['domain']
     domain = validate_domain(domain)
     ctx.obj['hosting_commands'].update_single_file(domain=domain, path=path, file=file)

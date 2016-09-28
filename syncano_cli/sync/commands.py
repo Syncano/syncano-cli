@@ -46,9 +46,7 @@ def sync(context, file, config, instance_name):
 @click.option('-c', '--class', help=u"Pull only this class from syncano", multiple=True)
 @click.option('-a', '--all', is_flag=True, default=False, help=u"Force push all configuration")
 def push(context, script, all, **kwargs):
-    """
-    Push configuration changes to syncano.
-    """
+    """Push configuration changes to syncano."""
     klass = kwargs.pop('class')
     print(script, all, klass)
     do_push(context, scripts=script, classes=klass, all=all)
@@ -100,9 +98,7 @@ def watch(context):
 @sync.command()
 @click.pass_context
 def template(context):
-    """
-    Creates sample project file;
-    """
+    """Creates sample project file."""
     if os.path.isfile(context.obj['file']):
         confirm = click.confirm(u'Are you sure you want to overwrite syncano.yml file with template?')
         if not confirm:

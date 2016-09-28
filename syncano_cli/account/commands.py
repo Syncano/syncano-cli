@@ -25,6 +25,7 @@ def accounts(ctx, config):
 @click.option('--last-name', help=u'Last name of the user.')
 @click.option('--invitation-key', help=u'Invitation key.')
 def register(ctx, email, password, first_name, last_name, invitation_key):
+    """Allows to regiter new Syncano account. Email and password are obligatory."""
     ctx.obj['account_commands'].register(
         email=email,
         password=password,
