@@ -175,7 +175,7 @@ def validate_script(script):
     if not script.get('label'):
         raise ValueError('You have to provide Script label.')
 
-    source = script.get('Script')
+    source = script.get('script')
     if source is None:
         raise ValueError('You have to provide Script source for script '
                          '"{label}"'.format(**script))
