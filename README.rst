@@ -126,12 +126,12 @@ The Instance name can be also overwritten on particular call::
 
     syncano sockets --instance-name my_custom_instance list
 
-Eg.: if your default Instance is `my_instance_name` and you run above command - the custom sockets from instance
+Eg.: if your default Instance is `my_instance_name` and you run above command - the Custom Sockets from instance
 `my_custom_instance` will be displayed, and again::
 
     syncano sockets list
 
-Will display custom sockets from `my_instance_name` - because it is set to be a default one.
+Will display Custom Sockets from `my_instance_name` - because it is set to be a default one.
 
 After a registration - there's no default Instance set. So it's desired to create one and set it as default::
 

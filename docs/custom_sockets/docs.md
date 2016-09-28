@@ -58,7 +58,7 @@
 ### YAML file structure explanation
 
 * `name` is the name of your new Custom Socket - this should be unique;
-* `description` is a description of your Custom Socket - it allows you to easily identify what your custom socket does;
+* `description` is a description of your Custom Socket - it allows you to easily identify what your Custom Socket does;
 * `author` is metadata information about the Custom Socket author; Under the hood: all fields that are not 
     * `name`, 
     * `description`, 
@@ -67,7 +67,7 @@
     * can be found in `metadata` field on Custom Socket in Syncano Dasboard.
 * `icon` is metadata information about your Custom Socket - it stores the icon name used and its color (used in Syncano Dashboard)
 * `endpoints` - definition of the endpoints in a Custom Socket; Currently supported endpoints can be only of `script` type.
-* `config` - stores the metadata about custom socket configuration; constants are config variables that are passed one-to-one
+* `config` - stores the metadata about Custom Socket configuration; constants are config variables that are passed one-to-one
   from yaml file definitions; the `prompt` config section - this variables will be requested from user during installation.
 
     Consider this example:

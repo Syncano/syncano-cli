@@ -17,7 +17,7 @@ def top_sockets():
 @click.option('--config', help=u'Account configuration file.')
 @click.option('--instance-name', help=u'Instance name.')
 def sockets(ctx, config, instance_name):
-    """Create and manage custom sockets."""
+    """Create and manage Custom Sockets."""
     instance = get_instance(config, instance_name)
     socket_command = SocketCommand(instance=instance)
     ctx.obj['socket_command'] = socket_command
