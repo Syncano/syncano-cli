@@ -69,7 +69,7 @@ class MigrateCommandsTest(InstanceMixin, IntegrationTest):
 
     @mock.patch('syncano_cli.parse_to_syncano.parse.connection.ParseConnection.request')
     def test_object_migrations(self, request_mock):
-        # create classes first;
+        # create Classes first;
         with open('tests/json_migrate_mocks/schema.json', 'r+') as f:
             classes = json.loads(f.read())
 
@@ -79,9 +79,9 @@ class MigrateCommandsTest(InstanceMixin, IntegrationTest):
         with open('tests/json_migrate_mocks/installations.json', 'r+') as f:
             parse_installations = json.loads(f.read())
 
-        # remove blu_bla class from classes;
+        # remove blu_bla Class from Classes;
         classes['results'] = classes['results'][1:]
-        # class schemas, objects, break the objects fetch, installations
+        # Class schemas, objects, break the objects fetch, installations
         request_mock.side_effect = [classes, objects, {'results': []}, parse_installations]
 
         self.assertFalse(request_mock.called)

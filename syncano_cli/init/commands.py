@@ -18,7 +18,7 @@ def top_init():
 @click.option('--email', prompt=True)
 @click.option('--password', prompt=True, hide_input=True, confirmation_prompt=True)
 def init(ctx, config, email, password):
-    """Register new user and create first instance."""
+    """Register new user and create first Instance."""
     # register new account;
     account_command = AccountCommands(config_path=config)
     account_command.register(

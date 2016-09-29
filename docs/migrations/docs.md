@@ -4,39 +4,39 @@
 
 The provided tool uses both Syncano and Parse API. How does it work?
 
-1. Parse schemas are fetched and transferred to Syncano as classes. All field types are supported.
-2. Data is transferred for each schema/class. This can be divided into following steps:
+1. Parse schemas are fetched and transferred to Syncano as Classes. All field types are supported.
+2. Data is transferred for each schema/Class. This can be divided into following steps:
 
-   1. The call to the Parse API is made - to obtain 1000 objects of particular class;
+   1. The call to the Parse API is made - to obtain 1000 objects of particular Class;
    2. The conversion is made - the Object from Parse is transformed to the Syncano Data Object;
    3. The batch API call is made to the Syncano API - with 50 elements (API limitations);
    4. All the object relations are restored. 
 
 Ad iv) This is the most challenging task. During the first and second step, all the information about relations are saved. The map of references are built -- which binds Parse objects with Syncano Data Objects -- and based on that the relations are restored. It's a time consuming process due to Parse API limitations and Syncano throttling functionality. More information on that can be found in the [data transfer](#data-transfer) section below.
 
-### Schemas to classes transfer
+### Schemas to Classes transfer
 
 **Name normalization**
 
-For each Parse schema, the Syncano Class schema is created. The class name and name of all fields are normalized. 
-The normalization process usually just makes a lowercase name. So when you transfer schema from Parse, where class name name is `SomeOutstandingClass`, in Syncano it will be called: `someoutstandingclass`. 
+For each Parse schema, the Syncano Class schema is created. The Class name and name of all fields are normalized. 
+The normalization process usually just makes a lowercase name. So when you transfer schema from Parse, where Class name name is `SomeOutstandingClass`, in Syncano it will be called: `someoutstandingclass`. 
 The same applies to the fields. 
 
 There are some exceptions. If Parse schema name starts from an underscore: `_<class_name>`, the name will be changed to `internal_<class_name>`. That's because Syncano does not support names which start with an underscore.
 
 **Created at and updated at**
 
-Syncano classes have two special fields `created_at` and `updated_at`, which store the dates indicating when object was created and last updated. The Parse has fields `createdAt` and `updatedAt` - which are used for the same purpose. 
+Syncano Classes have two special fields `created_at` and `updated_at`, which store the dates indicating when object was created and last updated. The Parse has fields `createdAt` and `updatedAt` - which are used for the same purpose. 
 
 Syncano `created_at` and `updated_at` fields are read-only, so it's impossible to transfer there values from Parse.
-To resolve this, two additional fields are created on Syncano class: `original_createdat` and `original_updatedat` - 
+To resolve this, two additional fields are created on Syncano Class: `original_createdat` and `original_updatedat` - 
 which have filter and order index added to them and can be used to find and sort data easily. 
 These fields store the original creation and update date from Parse (but update date will **NOT** be updated automatically next time). 
 
 **objectId field**
 
 Syncano and Parse use different methods of object identification. Syncano uses integer ID field, Parse uses string ID field. 
-That means that simple one-to-one conversion isn't possible. When creating the Syncano schema, additional 'objectid' field is made, which stores the Parse string ID. This field has a filter index added to it, so can be used for filtering data in the Syncano class.
+That means that simple one-to-one conversion isn't possible. When creating the Syncano schema, additional 'objectid' field is made, which stores the Parse string ID. This field has a filter index added to it, so can be used for filtering data in the Syncano Class.
 
 **ACL**
 
@@ -65,13 +65,13 @@ class ClassProcessor(object):
 
 ### Data transfer
 
-When Parse schemas are transferred as Syncano classes - the data migration process start. 
+When Parse schemas are transferred as Syncano Classes - the data migration process start. 
 
-Class by class is processed: 
+Class by Class is processed: 
 * get the 1000 objects from Parse (max value of `limit` parameter)
 * translate Parse objects to Syncano objects (and make a batch call with 10 Syncano Data Object, to avoid throttling); 
  
-During this process for each class the reference map is made. This reference map stores the class name and connects Parse Object ID with Syncano Object ID. 
+During this process for each Class the reference map is made. This reference map stores the class name and connects Parse Object ID with Syncano Object ID. 
 
 It is possible that this structure will use a lot of your local machine memory.
  
@@ -117,7 +117,7 @@ Your Parse Master Key - which is required by this tool - is stored locally on yo
 
 Each time the transfer is run - data will be duplicated. It's because Syncano does not support the unique constraint - and
 thus it's impossible to check if object with particular Parse ID is already present in the Syncano Data Objects. Before
-re-running the data import process, it's a good idea to remove your instance or already trasferred classes, or use a new one in our tool configuration.
+re-running the data import process, it's a good idea to remove your Instance or already trasferred Classes, or use a new one in our tool configuration.
 
 Syncano credentials are stored in `.syncano` file under your home directory, and are used **ONLY** for communication
 with Syncano services.

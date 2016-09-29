@@ -23,8 +23,7 @@ class SyncCommandsTest(BaseCLITest, InstanceMixin, IntegrationTest):
         self.create_syncano_class(unique=unique)
 
         self.runner.invoke(cli, args=[
-            'sync', 'pull',
-            '--class', 'test_class{unique}'.format(unique=unique),
+            'sync', 'pull', '--all',
         ], obj={})
 
         self.assert_file_exists(self.yml_file)
@@ -43,7 +42,7 @@ class SyncCommandsTest(BaseCLITest, InstanceMixin, IntegrationTest):
             '--class', 'test_class{unique}'.format(unique=unique),
         ], obj={})
 
-        # check if class was created;
+        # check if Class was created;
         new_class_syncano = self.get_syncano_class(unique)
         self.assertTrue(new_class_syncano)
 

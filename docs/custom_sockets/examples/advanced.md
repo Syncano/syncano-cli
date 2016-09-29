@@ -11,7 +11,7 @@ We will implement two endpoints inside the Custom Socket - one for sending email
 ## Repository link
 
 The whole example can be found under: [Syncano/custom-socket-advanced-example](https://github.com/Syncano/custom-socket-advanced-example).
-It can be installed to your Syncano instance using the `install from url` functionality in the CLI. The url is: 
+It can be installed to your Syncano Instance using the `install from url` functionality in the CLI. The url is: 
 
 https://github.com/Syncano/custom-socket-advanced-example/blob/master/socket.yml
 
@@ -216,7 +216,7 @@ or in tree format:
 
     Of course you need to replace `key-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx` with your Mailgun API Key.
 
-    You can use CLI to add this config variable to your instance:
+    You can use CLI to add this config variable to your Instance:
  
         syncano config add mailgun_api_key key-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 

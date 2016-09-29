@@ -118,9 +118,9 @@ class ClassProcessor(object):
     @classmethod
     def create_schema(cls, parse_schema):
         """
-        Return syncano schema for a class;
+        Return syncano schema for a Class;
         :param parse_schema: the schema from parse;
-        :return: tha class name and the schema used in Syncano;
+        :return: the Class name and the schema used in Syncano;
         """
 
         fields_to_skip = ['ACL']  # TODO: handle ACL later on
@@ -184,9 +184,9 @@ class ClassProcessor(object):
     @classmethod
     def show_class_name(cls, klass):
         """
-        Displays class name in click progress bar.
-        :param klass: the class name;
-        :return: Formatted class name;
+        Displays Class name in click progress bar.
+        :param klass: the Class name;
+        :return: Formatted Class name;
         """
         if klass is not None:
             if isinstance(klass, ClassAggregate):

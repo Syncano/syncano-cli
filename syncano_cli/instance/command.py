@@ -52,7 +52,7 @@ Metadata: {instance.metadata}"""
 
     @classmethod
     def format_list(cls, instances, default_instance_name):
-        list_template = """Available Instances:{}"""
+        list_template = """Available Instances: {}"""
         lines = ''
 
         def get_name_label(name, default_instance_name):

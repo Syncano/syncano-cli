@@ -23,12 +23,12 @@ class HostingCommandsTest(BaseCLITest):
         result = self.runner.invoke(cli, args=args, obj={})
         self.assertIn('css/page.css', result.output)
 
-        # test hosting delete;
+        # test Hosting Socket delete;
         self._delete_hosting(domain=domain)
         result = self._get_list_files_output(domain=domain)
         self.assertIn('Hosting with domain `{}` - not found. Exit.'.format(domain or 'default'), result.output)
 
-        # recreate hosting;
+        # recreate Hosting Socket;
         self._publish_files(domain=domain)
 
     def test_hosting_commands(self):

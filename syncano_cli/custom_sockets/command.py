@@ -57,13 +57,13 @@ class SocketCommand(BaseInstanceCommand):
         api_data.update({'instance_name': self.instance.name})
         api_data.update({'config': config})
         custom_socket = CustomSocket.please.create(**api_data)
-        click.echo('INFO: socket {} created.'.format(custom_socket.name))
+        click.echo('INFO: Custom Socket {} created.'.format(custom_socket.name))
 
     def install_from_url(self, url_path, name):
         socket_yml = self.fetch_file(url_path)
         config = self.set_up_config(socket_yml)
         CustomSocket(name=name).install_from_url(url=url_path, instance_name=self.instance.name, config=config)
-        click.echo('INFO: Installing socket from url: do `syncano sockets list` to obtain the status.')
+        click.echo('INFO: Installing Custom Socket from url: do `syncano sockets list` to obtain the status.')
 
     def run(self, endpoint_name, method='GET', data=None):
         endpoints = SocketEndpoint.get_all_endpoints(instance_name=self.instance.name)
@@ -97,7 +97,7 @@ class SocketCommand(BaseInstanceCommand):
         for file_meta in scripts:
             with open(os.path.join(destination, 'scripts/{}'.format(file_meta['file_name'])), 'w+') as script_file:
                 script_file.write(file_meta['source'])
-        click.echo('INFO: template created in {}.'.format(destination))
+        click.echo('INFO: Custom Socket template created in {}.'.format(destination))
 
     def create_template_from_local_template(self, destination):
         if not os.path.isdir(destination):

@@ -30,7 +30,7 @@ class SyncanoTransfer(ParseConnectionMixin, SyncanoConnectionMixin, PaginationMi
         if self.relations:
             with click.progressbar(
                     self.relations,
-                    label='Transferring relations for classes',
+                    label='Transferring relations for Classes',
                     show_pos=True,
                     item_show_func=ClassProcessor.show_class_name) as classes:
                 for class_name, class_relations in classes:
@@ -69,14 +69,14 @@ class SyncanoTransfer(ParseConnectionMixin, SyncanoConnectionMixin, PaginationMi
         sorted_classes = self.data.sort_classes()
         with click.progressbar(
                 sorted_classes,
-                label='Transferring class schemas',
+                label='Transferring Class schemas',
                 show_pos=True,
                 item_show_func=ClassProcessor.show_class_name) as classes:
             for class_to_process in classes:
                 try:
                     instance.classes.create(name=class_to_process.syncano_name, schema=class_to_process.syncano_schema)
                 except Exception as e:
-                    click.echo('\nWARN: Class already defined ({}) in this instance ({}). Using existing class.'.format(
+                    click.echo('\nWARN: Class already defined ({}) in this Instance ({}). Using existing Class.'.format(
                         class_to_process.syncano_name, instance.name)
                     )
                     click.echo('WARN: {}'.format(e))

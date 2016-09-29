@@ -189,7 +189,7 @@ class SocketFormatter(object):
 
     @classmethod
     def _yml_process_metadata(cls, endpoint_data):
-        return endpoint_data.get('metadata', {})  # some old custom sockets do not have this field;
+        return endpoint_data.get('metadata', {})  # some old Custom Sockets do not have this field;
 
     @classmethod
     def _yml_process_calls(cls, data_calls):

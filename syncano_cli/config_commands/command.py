@@ -10,7 +10,7 @@ class ConfigCommand(BaseInstanceCommand):
 
     def config_show(self):
         config = self.instance.get_config()
-        click.echo('Config for instance {}'.format(self.instance.name))
+        click.echo('Config for Instance {}'.format(self.instance.name))
         for name, value in six.iteritems(config):
             click.echo('{:20}: {}'.format(name, value))
 

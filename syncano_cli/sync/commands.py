@@ -26,7 +26,7 @@ def top_sync():
 @click.option('--instance-name', help=u'Instance name.')
 def sync(context, file, config, instance_name):
     """
-    Sync your scripts and data classes.
+    Sync your Scripts and data Classes.
     :param context:
     :param file: file which will be used for syncing
     :param config: the config path - the cli config will be stored there
@@ -42,13 +42,11 @@ def sync(context, file, config, instance_name):
 
 @sync.command()
 @click.pass_context
-@click.option('-s', '--script', help=u"Pull only this script from syncano", multiple=True)
-@click.option('-c', '--class', help=u"Pull only this class from syncano", multiple=True)
+@click.option('-s', '--script', help=u"Pull only this Script from syncano", multiple=True)
+@click.option('-c', '--class', help=u"Pull only this Class from syncano", multiple=True)
 @click.option('-a', '--all', is_flag=True, default=False, help=u"Force push all configuration")
 def push(context, script, all, **kwargs):
-    """
-    Push configuration changes to syncano.
-    """
+    """Push configuration changes to syncano."""
     klass = kwargs.pop('class')
     print(script, all, klass)
     do_push(context, scripts=script, classes=klass, all=all)
@@ -56,13 +54,13 @@ def push(context, script, all, **kwargs):
 
 @sync.command()
 @click.pass_context
-@click.option('-s', '--script', help=u"Pull only this script from syncano", multiple=True)
-@click.option('-c', '--class', help=u"Pull only this class from syncano", multiple=True)
+@click.option('-s', '--script', help=u"Pull only this Script from syncano", multiple=True)
+@click.option('-c', '--class', help=u"Pull only this Class from syncano", multiple=True)
 @click.option('-a', '--all', is_flag=True, default=False, help=u"Force push all configuration")
 def pull(context, script, all, **kwargs):
     """
     Pull configuration from syncano and store it in current directory.
-    Updates syncano.yml configuration file, and places scripts in scripts
+    Updates syncano.yml configuration file, and places Scripts in scripts
     directory.
     When syncano.yml file exists. It will pull only objects defined in
     configuration file. If you want to pull all objects from syncano use
@@ -78,7 +76,7 @@ def pull(context, script, all, **kwargs):
 def watch(context):
     """
     Push configuration to syncano. After that  watch for changes in
-    syncano.yml file and scripts and push changed items to syncano.
+    syncano.yml file and Scripts and push changed items to syncano.
     """
     context.obj['classes'] = None
     context.obj['scripts'] = None
@@ -100,9 +98,7 @@ def watch(context):
 @sync.command()
 @click.pass_context
 def template(context):
-    """
-    Creates sample project file;
-    """
+    """Creates sample project file."""
     if os.path.isfile(context.obj['file']):
         confirm = click.confirm(u'Are you sure you want to overwrite syncano.yml file with template?')
         if not confirm:

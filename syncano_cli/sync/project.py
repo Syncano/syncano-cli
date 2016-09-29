@@ -47,7 +47,7 @@ class Project(object):
 
     def update_from_instance(self, instance, all=False, classes=None,
                              scripts=None):
-        """Updates project data from instances"""
+        """Updates project data from Instances"""
         click.echo("INFO: Pulling instance data from syncano")
         prev_classes = self.classes
         classes = classes or self.classes.keys()
@@ -60,10 +60,10 @@ class Project(object):
 
         state = ("Not changed", "Added", "Removed", "Updated")
         if self.classes and all:
-            click.echo("INFO: Stats for classes")
+            click.echo("INFO: Stats for Classes")
             for info, classes in zip(state, compare_dicts(self.classes, prev_classes)):
                 if classes:
-                    click.echo('INFO: %s : %s', info, ','.join(classes))
+                    click.echo('INFO: {} : {}'.format(info, ','.join(classes)))
 
         click.echo("INFO: Finished pulling instance data from syncano")
 

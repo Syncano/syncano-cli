@@ -14,7 +14,7 @@ Table of contents
 8.  `Syncano Hosting`_
 9.  `Custom Sockets`_
 10.  `Config`_
-11.  `Running scripts`_
+11.  `Running Scripts`_
 12.  `Issues`_
 
 Build Status
@@ -48,13 +48,13 @@ First you need to login into your Syncano account
 It will ask you for your email and password. After successfully logging in your Account Key (admin key) 
 will be stored in *${HOME}/.syncano* file. You can also override an Account Key later with *--key* option.
 
-The instance name will be set as default and used in all CLI commands.
+The Instance name will be set as default and used in all CLI commands.
 
 If you want to override this setting for a specific command, use --instance-name eg::
 
     syncano sync --instance-name new-instance-1234 pull
     
-If you need to change default instance name, used for all future commands, use::
+If you need to change default Instance name, used for all future commands, use::
 
     syncano default name_of_new_default_instance
 
@@ -106,7 +106,7 @@ The following options can be used (but this is not obligatory)::
 
 
 When registration is successful - the `api_key` will be set in CLI config - and it's ready to use. The next step should
-be - creating an instance - please see below.
+be - creating an Instance - please see below.
 
 
 Instances
@@ -114,33 +114,33 @@ Instances
 
 **How CLI handles connection?**
 
-Almost each (except some `global` commands - like register) CLI command will send a request to the Syncano instance.
-To handle this properly - you can specify --instance-name when login (if you already have one). This instance will be
-used in all API calls then. You can check which instance is `default` by listing the instances::
+Almost each (except some `global` commands - like register) CLI command will send a request to the Syncano Instance.
+To handle this properly - you can specify --instance-name when login (if you already have one). This Instance will be
+used in all API calls then. You can check which Instance is `default` by listing the instances::
 
     syncano instances list
 
-In the output - if the instance is default - there will be a `(default)` string near the instance name.
+In the output - if the Instance is default - there will be a `(default)` string near the instance name.
 
-The instance name can be also overwritten on particular call::
+The Instance name can be also overwritten on particular call::
 
     syncano sockets --instance-name my_custom_instance list
 
-Eg.: if your default instance is `my_instance_name` and you run above command - the custom sockets from instance
+Eg.: if your default Instance is `my_instance_name` and you run above command - the Custom Sockets from instance
 `my_custom_instance` will be displayed, and again::
 
     syncano sockets list
 
-Will display custom sockets from `my_instance_name` - because it is set to be a default one.
+Will display Custom Sockets from `my_instance_name` - because it is set to be a default one.
 
-After a registration - there's no default instance set. So it's desired to create one and set it as default::
+After a registration - there's no default Instance set. So it's desired to create one and set it as default::
 
     syncano instances create my_new_instance
     syncano instances default my_new_instance
 
 It's worth to note that `instance_name` must be unique - but you will get appropriate message if you encounter such case.
 
-CLI provides an interface for managing instances. The commands are:
+CLI provides an interface for managing Instances. The commands are:
 
 - Instance create::
 
@@ -158,20 +158,20 @@ CLI provides an interface for managing instances. The commands are:
 
     syncano details my_instance_name
 
-- Set instance as default for using in CLI commands::
+- Set Instance as default for using in CLI commands::
 
     syncano default my_instance_name
 
-In delete and details argument `my_instance_name` - can be omitted, the default instance will be used.
-Deletion will ask you for confirmation - as deleting an instance is quite a big thing.
+In delete and details argument `my_instance_name` - can be omitted, the default Instance will be used.
+Deletion will ask you for confirmation - as deleting an Instance is quite a big thing.
 
 Syncano sync
 ============
 
-Pulling your instance classes and scripts
+Pulling your Instance Classes and Scripts
 -----------------------------------------
 
-In order to pull your instance configuration, execute
+In order to pull your Instance configuration, execute
 
 ::
 
@@ -190,8 +190,8 @@ script labels. Keep in mind that script labels in Syncano are not unique, and
 this tool cannot yet handle this kind of situation when pulling a Script from Syncano.
 
 Classes and Scripts configuration is stored in *syncano.yml* file. If this file already 
-exists, only classes and scripts stored in this file will be pulled and updated. 
-If you want to pull the whole instance you can use *-a/--all* switch flag.
+exists, only Classes and Scripts stored in this file will be pulled and updated.
+If you want to pull the whole Instance you can use *-a/--all* switch flag.
 
 Pushing your changes
 --------------------
@@ -209,7 +209,7 @@ If *syncano.yml* has changed, it will try to push all data to Syncano. Otherwise
 it will just push the source code files for scripts that were changed. 
 If you want to force push all changes you can use *-a/--all* option.
 
-If you only want to push changes from selected classes/scripts you can provide them
+If you only want to push changes from selected Classes/Scripts you can provide them
 with *-c/--class* or *-s/--script* options like in the pull example above.
 
 Synchronize changes in real-time
@@ -235,7 +235,7 @@ This tool will help you to move your data from Parse to Syncano.
 
 **Usage:**
 
-Currently supports only transferring data. This tool takes the Parse schemas and transforms them to Syncano classes.
+Currently supports only transferring data. This tool takes the Parse schemas and transforms them to Syncano Classes.
 The next step is to move all of the data between Parse and Syncano. The last step is rebuilding the relations between
 objects.
 
@@ -252,7 +252,7 @@ Will run the configuration that will ask you for the following variables:
 * PARSE_MASTER_KEY: the master key of your PARSE account;
 * PARSE_APPLICATION_ID: the application ID of the application that you want to transfer;
 * SYNCANO_ADMIN_API_KEY: Syncano Account Key;
-* SYNCANO_INSTANCE_NAME: the Syncano instance name to which the transfer will be made;
+* SYNCANO_INSTANCE_NAME: the Syncano Instance name to which the transfer will be made;
 
 `syncano migrate configure` command will take following parameters:
 
@@ -275,9 +275,9 @@ the output.
 Tips & Troubleshooting
 ----------------------
 
-1. This tool currently does not support checking if an object is already present in the Syncano instance.
+1. This tool currently does not support checking if an object is already present in the Syncano Instance.
    If the sync is run twice, the data will be duplicated. To avoid this,
-   simply remove your instance using Syncano dashboard;
+   simply remove your Instance using Syncano dashboard;
 
 2. The whole process can be quite slow because of the throttling on both sides: Parse and Syncano on free trial accounts (which is the bottom boundary for scripts);
 
@@ -287,21 +287,21 @@ Syncano Hosting
 Syncano Hosting is a simple way to host your static files on Syncano servers. 
 The CLI supports it in the following way:
 
-This command will list currently defined hostings in the instance::
+This command will list currently defined Hosting Sockets in the Instance::
 
     syncano hosting list
 
-This command will list files for currently hosted website (for `default` hosting)::
+This command will list files for currently hosted website (for `default` Hosting Socket)::
 
     syncano hosting list files
 
-This command will publish all files inside *<base_dir>* to the default Syncano Hosting instance.
+This command will publish all files inside *<base_dir>* to the default Syncano Hosting Instance.
 When publishing the whole directory, the structure will be mapped on Syncano.::
 
     syncano hosting publish <base_dir>
 
 
-This command will permamently delete the hosting::
+This command will permamently delete the Hosting Socket::
 
     syncano hosting delete
 
@@ -313,12 +313,12 @@ This command will update single file::
 
     syncano hosting update hosting/file/path local/file/path
 
-For each of the above command you can specify the domain to change just after hosting command, example::
+For each of the above command you can specify the domain to change just after `hosting` command, example::
 
     syncano hosting --domain staging publish <base_dir>
 
-Will create a new hosting which will be available under: `<instance_name>--staging.syncano.site`
-If this hosting is also a default one, it will be available under: `<instance_name>.syncano.site`.
+Will create a new Hosting Socket which will be available under: `<instance_name>--staging.syncano.site`
+If this Hosting Socket is also a default one, it will be available under: `<instance_name>.syncano.site`.
 
 
 Custom Sockets
@@ -372,7 +372,7 @@ Run endpoint providing POST data::
     syncano sockets run socket_name/my_endpoint_12 POST -d one=1
 
 
-In all of the above cases you can override the Syncano instance being used::
+In all of the above cases you can override the Syncano Instance being used::
 
     --instance-name my_instance_name
 
@@ -380,14 +380,14 @@ eg.::
 
     syncano sockets --instance-name my_instance_name run socket_name/my_endpoint_12 POST -d one=1
 
-Providing the instance name this way will override the default instance name
+Providing the Instance name this way will override the default instance name
 defined during initial setup (*syncano login --instance-name my_instance*)
 
 
 Config
 ======
 
-To display current instance config::
+To display current Instance config::
 
     syncano config
 
@@ -403,10 +403,10 @@ To delete existing config variable::
 
     syncano config delete name
 
-Running scripts
+Running Scripts
 ===============
 
-This command will allow you to execute any script (Script Endpoint) with optional payload and read the output.
+This command will allow you to execute any Script Endpoint with optional payload and read the output.
 
 **Usage:**
 

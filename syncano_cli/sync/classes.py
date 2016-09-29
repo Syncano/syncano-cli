@@ -100,12 +100,12 @@ def pull_classes(instance, include, update_dict=None):
 
 
 def push_classes(instance, class_dict):
-    click.echo('INFO: Pushing classes.')
+    click.echo('INFO: Pushing Classes.')
     for name, config in six.iteritems(class_dict):
-        click.echo('INFO: Pushing class {0}'.format(name))
+        click.echo('INFO: Pushing Class {0}'.format(name))
         try:
             klass = instance.classes.get(name=name)
-            click.echo('INFO: Found class {0}'.format(name))
+            click.echo('INFO: Found Class {0}'.format(name))
         except instance.classes.model.DoesNotExist:
             klass = instance.classes.model(name=name)
             click.echo('INFO: Class {0} not found. Creating new one'.format(name))
@@ -156,6 +156,6 @@ def validate_classes(classes_dict):
 
             if target != 'self' and target not in classes_dict:
                 raise ValueError(
-                    '{0}.{1} references not defined class {2}'
+                    '{0}.{1} references not defined Class {2}'
                     .format(name, field, field_spec['target'])
                 )

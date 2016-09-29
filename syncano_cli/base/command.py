@@ -5,8 +5,8 @@ class BaseInstanceCommand(object):
 
     def __init__(self, instance):
         """
-        A command that stores direct instance connection;
-        :param instance: the Syncano instance object;
+        A command that stores direct Instance connection;
+        :param instance: the Syncano Instance object;
         """
         self.instance = instance
 

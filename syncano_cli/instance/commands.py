@@ -31,6 +31,7 @@ def instances(ctx, config, instance_name):
 @instances.command()
 @click.pass_context
 def list(ctx):
+    """Display a list with defined Instances in Syncano. List displays only name and description."""
     syncano_instances = ctx.obj['instance_commands'].list()
     if not syncano_instances:
         raise InstancesNotFoundException()
@@ -41,6 +42,7 @@ def list(ctx):
 @click.pass_context
 @click.argument('instance_name', required=False)
 def details(ctx, instance_name):
+    """Display Syncano Instance details."""
     instance_name = get_instance_name(ctx.obj['config'], instance_name)  # default one if no provided;
     instance_details = ctx.obj['instance_commands'].details(instance_name)
     click.echo(instance_details)
@@ -50,9 +52,10 @@ def details(ctx, instance_name):
 @click.pass_context
 @click.argument('instance_name', required=False)
 def delete(ctx, instance_name):
+    """Delete the Instance. Command will prompt you for permission."""
     instance_name = get_instance_name(ctx.obj['config'], instance_name)  # default one if no provided;
     confirmed_name = click.prompt('Are you sure that you want to delete '
-                                  'Instance {}? Type instance name again'.format(instance_name))
+                                  'Instance {}? Type Instance name again'.format(instance_name))
     if confirmed_name == instance_name:
         ctx.obj['instance_commands'].delete(instance_name)
     else:
@@ -64,6 +67,8 @@ def delete(ctx, instance_name):
 @click.pass_context
 @click.argument('instance_name')
 def default(ctx, instance_name):
+    """Set the specified Instance name as default in CLI.
+    This name will be used as default one when running commands."""
     ctx.obj['instance_commands'].set_default(instance_name, config_path=ctx.obj['config'])
     click.echo("INFO: Instance `{}` set as default.".format(instance_name))
 
@@ -73,5 +78,6 @@ def default(ctx, instance_name):
 @click.argument('instance_name')
 @click.option('--description')
 def create(ctx, instance_name, description):
+    """Create new Instance."""
     ctx.obj['instance_commands'].create(instance_name, description)
     click.echo("INFO: Instance `{}` created.".format(instance_name))

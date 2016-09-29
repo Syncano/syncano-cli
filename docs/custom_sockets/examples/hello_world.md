@@ -48,7 +48,7 @@ git clone git@github.com:Syncano/custom-socket-hello-world.git
 Above YAML file defines one Custom Socket with one endpoint: 
 * `hello_endpoint` for printing hello world on every HTTP method call.
 
-There is also one `script` dependency defined, to `hello_world` script.
+There is also one `script` dependency defined, to `hello_world` Script.
 
 In my favorite editor the project look as follows:
 

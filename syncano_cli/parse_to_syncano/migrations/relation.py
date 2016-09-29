@@ -26,7 +26,7 @@ class ClassRelationProcessor(ParseConnectionMixin, PaginationMixin):
                 )
 
     def _find_and_update_relations_objects(self, field_name, target_name, instance):
-        # get the parse classes now;
+        # get the parse schemas now;
         for parse_class_name, objects_id_map in six.iteritems(self.reference_map):
             if self.class_name == ClassProcessor.normalize_class_name(parse_class_name):
                 for parse_id, syncano_id in six.iteritems(objects_id_map):
