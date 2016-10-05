@@ -28,11 +28,12 @@ class SocketConfigParser(object):
     def ask_for_config(self):
         provided_config = {}
         for config_var_name, config_metadata in six.iteritems(self.config):
-            default_value = config_metadata.get('value')
-            config_var_value = click.prompt(self.get_prompt_str(config_var_name), default=default_value)
-            if not config_var_value:
-                config_var_value = default_value
-            provided_config[config_var_name] = config_var_value
+            if config_metadata.get('prompt'):
+                default_value = config_metadata.get('value')
+                config_var_value = click.prompt(self.get_prompt_str(config_var_name), default=default_value)
+                provided_config[config_var_name] = config_var_value
+            else:
+                provided_config[config_var_name] = config_metadata.get('value')
 
         return provided_config
 
