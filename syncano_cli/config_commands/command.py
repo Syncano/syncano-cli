@@ -12,9 +12,9 @@ class ConfigCommand(BaseInstanceCommand):
         config = self.instance.get_config()
         self.output_formatter.write_space_line('Config for Instance {}'.format(self.instance.name), bottom=False)
         for name, value in six.iteritems(config):
-            self.output_formatter.write_line('{:20}: {}'.format(name, value))
+            self.output_formatter.write_line('{:20}: {}'.format(name, value), indent=2)
         else:
-            self.output_formatter.write_line('No config specified yet.', indent=True)
+            self.output_formatter.write_line('No config specified yet.', indent=2)
         self.output_formatter.finalize()
 
     def add(self, name, value):

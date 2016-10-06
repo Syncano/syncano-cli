@@ -42,7 +42,7 @@ class BaseCommand(RegisterMixin):
 
         if not has_global:
             self.output_formatter.write_space_line('Login or create an account in Syncano.',
-                                                   color=self.output_formatter.color_schema.WARNING, indent=True)
+                                                   color=self.output_formatter.color_schema.WARNING)
             email = self.prompter.prompt('email')
             password = self.prompter.prompt('password', hide_input=True)
             repeat_password = self.prompter.prompt('repeat password', hide_input=True)
@@ -99,7 +99,7 @@ class BaseCommand(RegisterMixin):
     def validate_password(self, password, repeat_password):
         while password != repeat_password:
             self.output_formatter.write_space_line('Password and repeat password are not the same. Please correct:',
-                                                   color=self.output_formatter.color_schema.ERROR, indent=True)
+                                                   color=self.output_formatter.color_schema.ERROR)
             password = self.prompter.prompt('password', hide_input=True)
             repeat_password = self.prompter.prompt('repeat password', hide_input=True)
 

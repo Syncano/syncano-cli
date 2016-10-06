@@ -23,7 +23,8 @@ class RegisterMixin(object):
                 account_command = AccountCommands(config_path=config_path)
                 account_command.register(email=email, password=password)
             elif 'password' in exc.message:
-                self.output_formatter.write_space_line('Invalid login: you have provided wrong password.')
+                self.output_formatter.write_space_line('Invalid login: you have provided wrong password.',
+                                                       color=self.ourput_formatter.color_schema.ERROR)
                 sys.exit(1)
 
     def create_instance(self, instance_commands):
