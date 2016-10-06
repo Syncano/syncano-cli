@@ -7,14 +7,14 @@ from syncano_cli.custom_sockets.exceptions import BadConfigFormatException
 class SocketConfigParser(object):
 
     PROMPT_FIELD = 'prompt'
-    CONSTANTS_FIELD = 'constants'
+    VALUE_FIELD = 'value'
 
     def __init__(self, socket_yml):
         self.config = socket_yml.get('config', [])
 
     def is_valid(self):
         valid = True
-        for field_name in [self.PROMPT_FIELD, self.CONSTANTS_FIELD]:
+        for field_name in [self.PROMPT_FIELD, self.VALUE_FIELD]:
             valid &= self._is_valid(field_name)
         if not valid:
             raise BadConfigFormatException()
@@ -27,16 +27,16 @@ class SocketConfigParser(object):
 
     def ask_for_config(self):
         provided_config = {}
-        if self.PROMPT_FIELD in self.config:
-            for config_var_name, config_metadata in six.iteritems(self.config[self.PROMPT_FIELD]):
-                config_var_value = click.prompt(self.get_prompt_str(config_var_name, config_metadata))
+        for config_var_name, config_metadata in six.iteritems(self.config):
+            if config_metadata.get('prompt'):
+                default_value = config_metadata.get('value')
+                config_var_value = click.prompt(self.get_prompt_str(config_var_name), default=default_value)
                 provided_config[config_var_name] = config_var_value
+            else:
+                provided_config[config_var_name] = config_metadata.get('value')
 
         return provided_config
 
     @staticmethod
-    def get_prompt_str(field_name, config_metadata):
-        prompt_str = 'Provide value for {}'.format(field_name)
-        if config_metadata.get('description'):
-            prompt_str = '{} ({})'.format(prompt_str, config_metadata['description'])
-        return prompt_str
+    def get_prompt_str(config_var_name):
+        return 'Provide value for {}'.format(config_var_name)

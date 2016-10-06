@@ -8,12 +8,10 @@ icon:
   name: icon-name
   color: ffee11
 config:
-  constants:
-    some_key: some_value
-  prompt:
+    some_key:
+      value: some_value
     custom_api_key:
-      type: sting
-      description: an Api Key for third party service
+      prompt: true
 description: Some custom integration
 endpoints:
   custom_endpoint:
