@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import click
 from click import Abort
-from syncano_cli.base.connection import get_instance
 from syncano_cli.hosting.command import HostingCommands
 from syncano_cli.hosting.validators import validate_domain, validate_publish
 
@@ -18,8 +17,8 @@ def top_hosting():
 @click.option('--domain', default='default')
 def hosting(ctx, config, instance_name, domain):
     """Handle Hosting Socket and Hosting Socket files. Allow to publish static pages to the Syncano Hosting."""
-    instance = get_instance(config, instance_name)
-    hosting_commands = HostingCommands(instance)
+    hosting_commands = HostingCommands()
+    hosting_commands.set_instance(config, instance_name)
     ctx.obj['hosting_commands'] = hosting_commands
     ctx.obj['domain'] = domain
 

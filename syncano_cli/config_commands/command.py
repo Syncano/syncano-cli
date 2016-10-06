@@ -10,9 +10,12 @@ class ConfigCommand(BaseInstanceCommand):
 
     def config_show(self):
         config = self.instance.get_config()
-        click.echo('Config for Instance {}'.format(self.instance.name))
+        self.output_formatter.write_space_line('Config for Instance {}'.format(self.instance.name), bottom=False)
         for name, value in six.iteritems(config):
-            click.echo('{:20}: {}'.format(name, value))
+            self.output_formatter.write_line('{:20}: {}'.format(name, value))
+        else:
+            self.output_formatter.write_line('No config specified yet.', indent=True)
+        self.output_formatter.finalize()
 
     def add(self, name, value):
         config = self.instance.get_config()

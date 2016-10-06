@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import click
 from syncano_cli.account.command import AccountCommands
-from syncano_cli.base.connection import create_connection
 from syncano_cli.config import ACCOUNT_CONFIG_PATH
 from syncano_cli.init.helpers import random_instance_name
 from syncano_cli.instance.command import InstanceCommands
@@ -31,8 +30,8 @@ def init(ctx, config, email, password):
     click.echo('Account created for email: {}'.format(email))
 
     # create instance;
-    connection = create_connection(config)
-    instance_commands = InstanceCommands(connection)
+    instance_commands = InstanceCommands()
+    instance_commands.set_connection(config)
     instance_name = random_instance_name()
     instance_commands.create(instance_name=instance_name)
     instance_commands.set_default(instance_name=instance_name, config_path=config)

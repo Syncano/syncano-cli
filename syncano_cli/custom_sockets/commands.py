@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import click
-from syncano_cli.base.connection import get_instance
 from syncano_cli.base.data_parser import parse_input_data
 from syncano_cli.custom_sockets.command import SocketCommand
 from syncano_cli.custom_sockets.exceptions import MissingRequestDataException, SocketNameMissingException
@@ -18,8 +17,8 @@ def top_sockets():
 @click.option('--instance-name', help=u'Instance name.')
 def sockets(ctx, config, instance_name):
     """Create and manage Custom Sockets."""
-    instance = get_instance(config, instance_name)
-    socket_command = SocketCommand(instance=instance)
+    socket_command = SocketCommand()
+    socket_command.set_instance(config, instance_name)
     ctx.obj['socket_command'] = socket_command
 
 

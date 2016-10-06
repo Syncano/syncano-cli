@@ -19,7 +19,10 @@ class InstanceCommands(BaseConnectionCommand):
         except NoOptionError:
             default_instance_name = None
 
-        return self.format_list(self.connection.Instance.please.all(), default_instance_name)
+        return self.format_list(self.api_list(), default_instance_name)
+
+    def api_list(self):
+        return self.connection.Instance.please.all()
 
     def details(self, instance_name):
         return self.format_details(self.connection.Instance.please.get(name=instance_name))
@@ -39,7 +42,7 @@ class InstanceCommands(BaseConnectionCommand):
         }
         if description:
             kwargs.update({'description': description})
-        self.connection.Instance.please.create(**kwargs)
+        return self.connection.Instance.please.create(**kwargs)
 
     @classmethod
     def format_details(cls, instance):

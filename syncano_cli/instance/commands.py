@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import click
-from syncano_cli.base.connection import create_connection, get_instance_name
+from syncano_cli.base.connection import get_instance_name
 from syncano_cli.config import ACCOUNT_CONFIG_PATH
 from syncano_cli.instance.command import InstanceCommands
 from syncano_cli.instance.exceptions import InstanceNameMismatchException, InstancesNotFoundException
@@ -22,8 +22,8 @@ def instances(ctx, config, instance_name):
     It contains information about Sockets, Data Classes, Data Objects and more.
     You can own and/or belong to multiple Instances.
     """
-    connection = create_connection(config, instance_name)
-    instance_commands = InstanceCommands(connection)
+    instance_commands = InstanceCommands()
+    instance_commands.set_connection(config)
     ctx.obj['instance_commands'] = instance_commands
     ctx.obj['config'] = config or ACCOUNT_CONFIG_PATH
 
