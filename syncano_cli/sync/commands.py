@@ -33,8 +33,8 @@ def sync(context, file, config, instance_name):
     :param config: the config path - the cli config will be stored there
     :return:
     """
-    command = BaseCommand()
-    command.has_setup(config)
+    command = BaseCommand(config)
+    command.has_setup()
     connection = create_connection(config, instance_name)
     context.obj['connection'] = connection
     context.obj['instance'] = get_instance(config, instance_name, connection=connection)

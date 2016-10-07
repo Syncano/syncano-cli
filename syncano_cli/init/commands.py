@@ -15,7 +15,6 @@ def top_init():
 def init(ctx, config):
     """Register new user and create first Instance."""
     # register new account;
-    command = BaseCommand()
-    command.set_connection(config_path=config)
-    command.has_setup(config)
+    command = BaseCommand(config)
+    command.has_setup()
     command.output_formatter.write_space_line(ctx.parent.get_help(), indent=0)

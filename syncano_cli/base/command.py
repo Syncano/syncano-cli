@@ -15,6 +15,11 @@ class BaseCommand(RegisterMixin):
     Has a predefined class for prompting and format output nicely in the console;
     Stores also meta information about global config. Defines structures for command like config, eg.: hosting;
     """
+
+    def __init__(self, config_path):
+        self.config_path = config_path
+        self.connection = create_connection(config_path)
+
     output_formatter = OutputFormatter()
     prompter = Prompter()
 
@@ -38,11 +43,12 @@ class BaseCommand(RegisterMixin):
     COMMAND_SECTION = None
     COMMAND_CONFIG_PATH = None
 
-    def has_setup(self, config_path):
-        has_global = self.has_global_setup(config_path)
+    def has_setup(self):
+        has_global = self.has_global_setup()
         has_command = self.has_command_setup(self.COMMAND_CONFIG_PATH)
         if has_global and has_command:
-            account_info = self.connection.get_account_info(api_key=ACCOUNT_CONFIG.get(self.DEFAULT_SECTION, 'key'))
+            account_info = self.connection.connection().get_account_info(
+                api_key=ACCOUNT_CONFIG.get(self.DEFAULT_SECTION, 'key'))
             self.output_formatter.write_space_line("Already logged in as {}".format(account_info['email']),
                                                    color=self.output_formatter.color_schema.WARNING, bottom=False)
             return True
@@ -54,10 +60,10 @@ class BaseCommand(RegisterMixin):
             password = self.prompter.prompt('password', hide_input=True)
             repeat_password = self.prompter.prompt('repeat password', hide_input=True)
             password = self.validate_password(password, repeat_password)
-            self.do_login_or_register(email, password, config_path)
+            self.do_login_or_register(email, password, self.config_path)
 
         if not has_command:
-            self.setup_command_config(config_path)
+            self.setup_command_config(self.config_path)
 
         return False
 
@@ -70,11 +76,10 @@ class BaseCommand(RegisterMixin):
         # override this in the child class;
         return True
 
-    @classmethod
-    def has_global_setup(cls, config_path):
-        if os.path.isfile(config_path):
-            ACCOUNT_CONFIG.read(config_path)
-            return cls.check_section(ACCOUNT_CONFIG)
+    def has_global_setup(self):
+        if os.path.isfile(self.config_path):
+            ACCOUNT_CONFIG.read(self.config_path)
+            return self.check_section(ACCOUNT_CONFIG)
 
         return False
 
@@ -103,17 +108,11 @@ class BaseCommand(RegisterMixin):
 
         return True
 
-    def set_connection(self, config_path):
-        self._set_connection(config_path)
-
-    def _set_connection(self, config_path):
-        self.connection = create_connection(config_path).connection()
-
 
 class BaseInstanceCommand(BaseCommand):
     """Command for Instance based commands: fetch data from an instance."""
-    def set_instance(self, config_path, instance_name):
-        self._set_instance(config_path, instance_name)
+    def set_instance(self, instance_name):
+        self._set_instance(instance_name)
 
-    def _set_instance(self, config_path, instance_name):
-        self.instance = get_instance(config_path, instance_name)
+    def _set_instance(self, instance_name):
+        self.instance = get_instance(self.config_path, instance_name)

@@ -17,9 +17,9 @@ def top_hosting():
 @click.option('--domain', default='default')
 def hosting(ctx, config, instance_name, domain):
     """Handle Hosting Socket and Hosting Socket files. Allow to publish static pages to the Syncano Hosting."""
-    hosting_commands = HostingCommands()
-    hosting_commands.has_setup(config)
-    hosting_commands.set_instance(config, instance_name)
+    hosting_commands = HostingCommands(config)
+    hosting_commands.has_setup()
+    hosting_commands.set_instance(instance_name)
     ctx.obj['hosting_commands'] = hosting_commands
     ctx.obj['domain'] = domain
 

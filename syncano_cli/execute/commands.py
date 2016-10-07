@@ -16,7 +16,7 @@ def top_execute():
 @click.option('-d', '--data', help=u'A data to be sent as payload: key=value', multiple=True)
 def execute(config, instance_name, script_endpoint_name, data):
     """Execute Script endpoint in given Instance."""
-    execute_command = ExecuteCommand()
-    execute_command.has_setup(config)
-    execute_command.set_instance(config, instance_name)
+    execute_command = ExecuteCommand(config)
+    execute_command.has_setup()
+    execute_command.set_instance(instance_name)
     execute_command.execute(script_endpoint_name, data)

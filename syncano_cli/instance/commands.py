@@ -14,17 +14,15 @@ def top_instance():
 
 @top_instance.group()
 @click.pass_context
-@click.option('--config', help=u'Account configuration file.')
-@click.option('--instance-name', help=u'Instance name.')
-def instances(ctx, config, instance_name):
+@click.option('--config', help=u'Account configuration file.', default=ACCOUNT_CONFIG_PATH)
+def instances(ctx, config):
     """
     Manage your Instances. Instance is an equivalent of a project or a set of data.
     It contains information about Sockets, Data Classes, Data Objects and more.
     You can own and/or belong to multiple Instances.
     """
-    instance_commands = InstanceCommands()
+    instance_commands = InstanceCommands(config)
     instance_commands.has_setup()
-    instance_commands.set_connection(config)
     ctx.obj['instance_commands'] = instance_commands
     ctx.obj['config'] = config or ACCOUNT_CONFIG_PATH
 
