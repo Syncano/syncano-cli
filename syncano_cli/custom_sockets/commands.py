@@ -18,6 +18,7 @@ def top_sockets():
 def sockets(ctx, config, instance_name):
     """Create and manage Custom Sockets."""
     socket_command = SocketCommand()
+    socket_command.has_setup(config)
     socket_command.set_instance(config, instance_name)
     ctx.obj['socket_command'] = socket_command
 

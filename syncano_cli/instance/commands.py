@@ -23,6 +23,7 @@ def instances(ctx, config, instance_name):
     You can own and/or belong to multiple Instances.
     """
     instance_commands = InstanceCommands()
+    instance_commands.has_setup()
     instance_commands.set_connection(config)
     ctx.obj['instance_commands'] = instance_commands
     ctx.obj['config'] = config or ACCOUNT_CONFIG_PATH

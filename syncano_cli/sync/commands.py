@@ -6,6 +6,8 @@ import time
 
 import click
 from click import Abort
+
+from syncano_cli.base.command import BaseCommand
 from syncano_cli.base.connection import create_connection, get_instance
 from syncano_cli.sync.project import Project
 from syncano_cli.sync.templates.syncano_yml import syncano_yml
@@ -32,6 +34,8 @@ def sync(context, file, config, instance_name):
     :param config: the config path - the cli config will be stored there
     :return:
     """
+    command = BaseCommand()
+    command.has_setup(config)
     connection = create_connection(config, instance_name)
     context.obj['connection'] = connection
     context.obj['instance'] = get_instance(config, instance_name, connection=connection)

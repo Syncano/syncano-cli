@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import click
+
+from syncano_cli.base.command import BaseCommand
 from syncano_cli.config import ACCOUNT_CONFIG_PATH
 from syncano_cli.parse_to_syncano.config import read_config
 from syncano_cli.parse_to_syncano.migrations.transfer import SyncanoTransfer
@@ -25,6 +27,8 @@ def migrate(context, config):
 def parse(context):
     """Synchronize the Parse data objects with Syncano data objects."""
     config = read_config(config_path=context.obj['config'])
+    command = BaseCommand()
+    command.has_setup(config)
     check_configuration(config, silent=True)
     application_id = config.get('P2S', 'PARSE_APPLICATION_ID')
     instance_name = config.get('P2S', 'SYNCANO_INSTANCE_NAME')
