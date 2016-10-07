@@ -6,7 +6,6 @@ import time
 
 import click
 from click import Abort
-
 from syncano_cli.base.command import BaseCommand
 from syncano_cli.base.connection import create_connection, get_instance
 from syncano_cli.sync.project import Project

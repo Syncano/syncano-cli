@@ -2,7 +2,6 @@
 import os
 from ConfigParser import NoOptionError
 
-import six
 from syncano_cli.base.connection import create_connection, get_instance
 from syncano_cli.base.mixins import RegisterMixin
 from syncano_cli.base.output_formatter import OutputFormatter

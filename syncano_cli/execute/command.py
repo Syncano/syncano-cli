@@ -2,7 +2,6 @@
 import json
 
 import six
-
 from syncano_cli.base.command import BaseInstanceCommand
 from syncano_cli.base.data_parser import parse_input_data
 

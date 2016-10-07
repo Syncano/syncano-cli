@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import click
-
 from syncano_cli.base.command import BaseCommand
 from syncano_cli.config import ACCOUNT_CONFIG_PATH
 from syncano_cli.parse_to_syncano.config import read_config

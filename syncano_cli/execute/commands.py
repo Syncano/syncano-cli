@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import click
-from syncano_cli.base.connection import get_instance
-from syncano_cli.base.data_parser import parse_input_data
 from syncano_cli.execute.command import ExecuteCommand
 
 
