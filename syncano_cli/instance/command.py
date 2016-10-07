@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import six
-from syncano_cli.base.command import BaseConnectionCommand
+from syncano_cli.base.command import BaseCommand
 from syncano_cli.config import ACCOUNT_CONFIG
 
 if six.PY2:
@@ -11,7 +11,7 @@ else:
     raise ImportError()
 
 
-class InstanceCommands(BaseConnectionCommand):
+class InstanceCommands(BaseCommand):
 
     def list(self):
         try:

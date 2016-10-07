@@ -20,7 +20,7 @@ class ExecuteCommand(BaseInstanceCommand):
             if response.status == 'success':
                 self._print_result(response.result['stdout'])
             else:
-                self.output_formatter.write_line(response.result['stderr'])
+                self.output_formatter.write_line(response.result['stderr'], indent=0)
         else:
             self._print_result(response)
 
@@ -30,6 +30,6 @@ class ExecuteCommand(BaseInstanceCommand):
                 output = json.loads(result)
             else:
                 output = result
-            self.output_formatter.write_line(json.dumps(output, indent=4, sort_keys=True))
+            self.output_formatter.write_line(json.dumps(output, indent=4, sort_keys=True), indent=0)
         except ValueError:
-            self.output_formatter.write_line(result)
+            self.output_formatter.write_line(result, indent=0)

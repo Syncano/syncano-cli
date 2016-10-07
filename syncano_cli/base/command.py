@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+from ConfigParser import NoOptionError
 
 import six
 from syncano_cli.base.connection import create_connection, get_instance
@@ -32,7 +33,7 @@ class BaseCommand(RegisterMixin):
             },
         ]
     }
-    DEFAULT_SECTION = 'default'
+    DEFAULT_SECTION = 'DEFAULT'
 
     COMMAND_CONFIG = None
     COMMAND_SECTION = None
@@ -42,6 +43,9 @@ class BaseCommand(RegisterMixin):
         has_global = self.has_global_setup(config_path)
         has_command = self.has_command_setup(self.COMMAND_CONFIG_PATH)
         if has_global and has_command:
+            account_info = self.connection.get_account_info(api_key=ACCOUNT_CONFIG.get(self.DEFAULT_SECTION, 'key'))
+            self.output_formatter.write_space_line("Already logged in as {}".format(account_info['email']),
+                                                   color=self.output_formatter.color_schema.WARNING, bottom=False)
             return True
 
         if not has_global:
@@ -70,24 +74,24 @@ class BaseCommand(RegisterMixin):
     @classmethod
     def has_global_setup(cls, config_path):
         if os.path.isfile(config_path):
-            with open(config_path, 'rt') as fp:
-                ACCOUNT_CONFIG.read(fp)
-
-            # check DEFAULT section;
-            cls.check_section(ACCOUNT_CONFIG)
-            return True
+            ACCOUNT_CONFIG.read(config_path)
+            return cls.check_section(ACCOUNT_CONFIG)
 
         return False
 
     @classmethod
     def check_section(cls, config_parser, section=None):
         section = section or cls.DEFAULT_SECTION
-        if not config_parser.has_section(section):
+        try:
+            config_parser.get(cls.DEFAULT_SECTION, 'key')
+        except NoOptionError:
             return False
-        config = {}
-        config.update(cls.META_CONFIG)
-        config.update(cls.COMMAND_CONFIG or {})
-        for config_name, config_meta in six.iteritems(config):
+
+        config_vars = []
+        config_vars.extend(cls.META_CONFIG[cls.DEFAULT_SECTION.lower()])
+        if cls.COMMAND_CONFIG:
+            config_vars.extend(cls.COMMAND_CONFIG.get(cls.COMMAND_SECTION) or {})
+        for config_meta in config_vars:
             var_name = config_meta['name']
             required = config_meta['required']
             if required and not config_parser.has_option(section, var_name):
@@ -100,6 +104,12 @@ class BaseCommand(RegisterMixin):
 
         return True
 
+    def set_connection(self, config_path):
+        self._set_connection(config_path)
+
+    def _set_connection(self, config_path):
+        self.connection = create_connection(config_path).connection()
+
 
 class BaseInstanceCommand(BaseCommand):
     """Command for Instance based commands: fetch data from an instance."""
@@ -108,16 +118,3 @@ class BaseInstanceCommand(BaseCommand):
 
     def _set_instance(self, config_path, instance_name):
         self.instance = get_instance(config_path, instance_name)
-
-
-class BaseConnectionCommand(BaseCommand):
-    """
-    Command for general purposes - use only Syncano connection object;
-    Call commands that do not require the Instance argument;
-    """
-    def set_connection(self, config_path):
-        self._set_connection(config_path)
-
-    def _set_connection(self, config_path):
-        self.connection = create_connection(config_path)
-
