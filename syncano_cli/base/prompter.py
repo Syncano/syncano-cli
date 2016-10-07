@@ -7,5 +7,4 @@ class Prompter(object):
 
     def prompt(self, text, color=None, **kwargs):
         styles_kwargs = {'fg': color or ColorStylesE.PROMPT}
-        click.echo()
         return click.prompt(click.style("{}{}".format(self.indent, text), **styles_kwargs), **kwargs)

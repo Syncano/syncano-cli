@@ -45,5 +45,5 @@ class RegisterMixin(object):
         self.set_instance_as_default(config_path, instance_name, instance_commands)
 
     def set_instance_as_default(self, config_path, instance_name, instance_commands):
-        self.output_formatter.write_space_line('Instance `{}` set as default.'.format(instance_name))
+        self.output_formatter.write_space_line('Instance `{}` set as default.'.format(instance_name), bottom=False)
         instance_commands.set_default(instance_name=instance_name, config_path=config_path)
