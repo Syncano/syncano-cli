@@ -1,12 +1,20 @@
 # -*- coding: utf-8 -*-
 import os
-from ConfigParser import NoOptionError
 
+import six
 from syncano_cli.base.connection import create_connection, get_instance
 from syncano_cli.base.mixins import RegisterMixin
 from syncano_cli.base.output_formatter import OutputFormatter
 from syncano_cli.base.prompter import Prompter
 from syncano_cli.config import ACCOUNT_CONFIG
+
+if six.PY2:
+    from ConfigParser import NoOptionError
+elif six.PY3:
+    from configparser import NoOptionError
+else:
+    raise ImportError()
+
 
 
 class BaseCommand(RegisterMixin):
@@ -47,10 +55,6 @@ class BaseCommand(RegisterMixin):
         has_global = self.has_global_setup()
         has_command = self.has_command_setup(self.COMMAND_CONFIG_PATH)
         if has_global and has_command:
-            account_info = self.connection.connection().get_account_info(
-                api_key=ACCOUNT_CONFIG.get(self.DEFAULT_SECTION, 'key'))
-            self.output_formatter.write_space_line("Already logged in as {}".format(account_info['email']),
-                                                   color=self.output_formatter.color_schema.WARNING, bottom=False)
             return True
 
         if not has_global:
