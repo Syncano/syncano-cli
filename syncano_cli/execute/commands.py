@@ -3,8 +3,7 @@
 import click
 from syncano_cli.base.connection import get_instance
 from syncano_cli.base.data_parser import parse_input_data
-
-from .utils import print_response
+from syncano_cli.execute.command import ExecuteCommand
 
 
 @click.group()
@@ -19,8 +18,7 @@ def top_execute():
 @click.option('-d', '--data', help=u'A data to be sent as payload: key=value', multiple=True)
 def execute(config, instance_name, script_endpoint_name, data):
     """Execute Script endpoint in given Instance."""
-    instance = get_instance(config, instance_name)
-    se = instance.script_endpoints.get(name=script_endpoint_name)
-    data = parse_input_data(data)
-    response = se.run(**data)
-    print_response(response)
+    execute_command = ExecuteCommand()
+    execute_command.has_setup(config)
+    execute_command.set_instance(config, instance_name)
+    execute_command.execute(script_endpoint_name, data)
