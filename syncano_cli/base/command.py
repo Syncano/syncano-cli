@@ -16,7 +16,6 @@ else:
     raise ImportError()
 
 
-
 class BaseCommand(RegisterMixin):
     """
     Base command class. Provides utilities for register/loging (setup an account);
