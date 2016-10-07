@@ -10,7 +10,11 @@ from syncano_cli.config import ACCOUNT_CONFIG
 
 
 class BaseCommand(RegisterMixin):
-
+    """
+    Base command class. Provides utilities for register/loging (setup an account);
+    Has a predefined class for prompting and format output nicely in the console;
+    Stores also meta information about global config. Defines structures for command like config, eg.: hosting;
+    """
     output_formatter = OutputFormatter()
     prompter = Prompter()
 
@@ -96,23 +100,24 @@ class BaseCommand(RegisterMixin):
 
         return True
 
-    def validate_password(self, password, repeat_password):
-        while password != repeat_password:
-            self.output_formatter.write_space_line('Password and repeat password are not the same. Please correct:',
-                                                   color=self.output_formatter.color_schema.ERROR)
-            password = self.prompter.prompt('password', hide_input=True)
-            repeat_password = self.prompter.prompt('repeat password', hide_input=True)
-
-        return password
-
 
 class BaseInstanceCommand(BaseCommand):
-
+    """Command for Instance based commands: fetch data from an instance."""
     def set_instance(self, config_path, instance_name):
+        self._set_instance(config_path, instance_name)
+
+    def _set_instance(self, config_path, instance_name):
         self.instance = get_instance(config_path, instance_name)
 
 
 class BaseConnectionCommand(BaseCommand):
-
+    """
+    Command for general purposes - use only Syncano connection object;
+    Call commands that do not require the Instance argument;
+    """
     def set_connection(self, config_path):
+        self._set_connection(config_path)
+
+    def _set_connection(self, config_path):
         self.connection = create_connection(config_path)
+

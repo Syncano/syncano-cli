@@ -47,3 +47,12 @@ class RegisterMixin(object):
     def set_instance_as_default(self, config_path, instance_name, instance_commands):
         self.output_formatter.write_space_line('Instance `{}` set as default.'.format(instance_name), bottom=False)
         instance_commands.set_default(instance_name=instance_name, config_path=config_path)
+
+    def validate_password(self, password, repeat_password):
+        while password != repeat_password:
+            self.output_formatter.write_space_line('Password and repeat password are not the same. Please correct:',
+                                                   color=self.output_formatter.color_schema.ERROR)
+            password = self.prompter.prompt('password', hide_input=True)
+            repeat_password = self.prompter.prompt('repeat password', hide_input=True)
+
+        return password
