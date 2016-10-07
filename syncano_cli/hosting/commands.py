@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import click
 from click import Abort
+from syncano_cli.config import ACCOUNT_CONFIG_PATH
 from syncano_cli.hosting.command import HostingCommands
 from syncano_cli.hosting.validators import validate_domain, validate_publish
 
@@ -12,7 +13,7 @@ def top_hosting():
 
 @top_hosting.group()
 @click.pass_context
-@click.option('--config', help=u'Account configuration file.')
+@click.option('--config', help=u'Account configuration file.', default=ACCOUNT_CONFIG_PATH)
 @click.option('--instance-name', help=u'Instance name.')
 @click.option('--domain', default='default')
 def hosting(ctx, config, instance_name, domain):

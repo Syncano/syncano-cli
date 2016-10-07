@@ -8,6 +8,7 @@ import click
 from click import Abort
 from syncano_cli.base.command import BaseCommand
 from syncano_cli.base.connection import create_connection, get_instance
+from syncano_cli.config import ACCOUNT_CONFIG_PATH
 from syncano_cli.sync.project import Project
 from syncano_cli.sync.templates.syncano_yml import syncano_yml
 from watchdog.observers import Observer
@@ -23,7 +24,7 @@ def top_sync():
 @top_sync.group()
 @click.pass_context
 @click.option('-f', '--file', default='syncano.yml', help=u'Instance configuration file.')
-@click.option('--config', help=u'Account configuration file.')
+@click.option('--config', help=u'Account configuration file.', default=ACCOUNT_CONFIG_PATH)
 @click.option('--instance-name', help=u'Instance name.')
 def sync(context, file, config, instance_name):
     """

@@ -39,8 +39,7 @@ class RegisterMixin(object):
             self.do_register(exc, email, password, config_path)
 
         from syncano_cli.instance.command import InstanceCommands
-        instance_commands = InstanceCommands()
-        instance_commands.set_connection(config_path)
+        instance_commands = InstanceCommands(self.config_path)
         instances = [i for i in instance_commands.api_list()]
         instance_name = instances[0].name if instances else self.create_instance(instance_commands).name
         self.set_instance_as_default(config_path, instance_name, instance_commands)

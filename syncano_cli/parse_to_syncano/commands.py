@@ -14,10 +14,11 @@ def top_migrate():
 
 @top_migrate.group()
 @click.pass_context
-@click.option('--config', help=u'Account configuration file.')
+@click.option('--config', help=u'Account configuration file.', default=ACCOUNT_CONFIG_PATH)
 def migrate(context, config):
     """Migrate Parse data to Syncano."""
-    config = config or ACCOUNT_CONFIG_PATH
+    command = BaseCommand(config)
+    command.has_setup()
     context.obj['config'] = config
 
 
@@ -26,8 +27,6 @@ def migrate(context, config):
 def parse(context):
     """Synchronize the Parse data objects with Syncano data objects."""
     config = read_config(config_path=context.obj['config'])
-    command = BaseCommand(config)
-    command.has_setup()
     check_configuration(config, silent=True)
     application_id = config.get('P2S', 'PARSE_APPLICATION_ID')
     instance_name = config.get('P2S', 'SYNCANO_INSTANCE_NAME')
