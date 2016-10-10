@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from click import ClickException
+from click._compat import get_text_stderr
+
+from syncano_cli.base.output_formatter import OutputFormatter
 
 
 class CLIBaseException(ClickException):
@@ -12,6 +15,10 @@ class CLIBaseException(ClickException):
         if format_args:
             message = message.format(*format_args)
         super(CLIBaseException, self).__init__(message)
+
+    def show(self, file=None):
+        formatter = OutputFormatter()
+        formatter.write_space_line('Error: %s' % self.format_message(), color=formatter.color_schema.ERROR)
 
 
 class SyncanoLibraryException(CLIBaseException):

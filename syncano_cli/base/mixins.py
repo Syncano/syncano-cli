@@ -22,7 +22,7 @@ class RegisterMixin(object):
                 from syncano_cli.account.command import AccountCommands
                 account_command = AccountCommands(config_path=config_path)
                 account_command.register(email=email, password=password)
-                self.output_formatter.write_space_line('Account created for email: {}'.format(email))
+                self.output_formatter.write_space_line('Account created for email: {}'.format(email), bottom=False)
             elif 'password' in exc.message:
                 self.output_formatter.write_space_line('Invalid login: you have provided wrong password.',
                                                        color=self.ourput_formatter.color_schema.ERROR)
