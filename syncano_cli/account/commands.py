@@ -19,18 +19,22 @@ def accounts(ctx, config):
 
 @accounts.command()
 @click.pass_context
-@click.argument('email')
-@click.option('--password', prompt=True, hide_input=True, confirmation_prompt=True)
-@click.option('--first-name', help=u'First name of the user.')
-@click.option('--last-name', help=u'Last name of the user.')
-@click.option('--invitation-key', help=u'Invitation key.')
-def register(ctx, email, password, first_name, last_name, invitation_key):
+def register(ctx):
     """Allows to register new Syncano Account. Email and password are obligatory."""
-    ctx.obj['account_commands'].register(
+    account_commands = ctx.obj['account_commands']
+    account_commands.output_formatter.write_space_line('Create an account in Syncano.',
+                                                       color=account_commands.output_formatter.color_schema.WARNING)
+    email = account_commands.prompter.prompt('email')
+    password = account_commands.prompter.prompt('password', hide_input=True)
+    repeat_password = account_commands.prompter.prompt('repeat password', hide_input=True)
+    password = account_commands.validate_password(password, repeat_password)
+    first_name = account_commands.prompter.prompt('first name (enter to skip)', default='')
+    last_name = account_commands.prompter.prompt('last name (enter to skip)', default='')
+
+    account_commands.register(
         email=email,
         password=password,
         first_name=first_name,
         last_name=last_name,
-        invitation_key=invitation_key
     )
-    click.echo('INFO: Registration successful.')
+    account_commands.output_formatter.write_line('Registration successful for email: {}.'.format(email))

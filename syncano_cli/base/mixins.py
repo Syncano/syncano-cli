@@ -3,7 +3,6 @@ import sys
 
 import syncano
 from syncano.exceptions import SyncanoRequestError
-from syncano_cli.account.command import AccountCommands
 from syncano_cli.config import ACCOUNT_CONFIG
 from syncano_cli.init.helpers import random_instance_name
 
@@ -20,6 +19,7 @@ class RegisterMixin(object):
     def do_register(self, exc, email, password, config_path):
         if exc.status_code == 401:
             if 'email' in exc.message:
+                from syncano_cli.account.command import AccountCommands
                 account_command = AccountCommands(config_path=config_path)
                 account_command.register(email=email, password=password)
                 self.output_formatter.write_space_line('Account created for email: {}'.format(email))

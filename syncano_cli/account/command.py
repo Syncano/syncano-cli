@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import syncano
+from syncano_cli.base.command import BaseCommand
 from syncano_cli.config import ACCOUNT_CONFIG
 
 
-class AccountCommands(object):
+class AccountCommands(BaseCommand):
 
     def __init__(self, config_path):
         self.connection = syncano.connect()
