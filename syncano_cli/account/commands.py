@@ -37,4 +37,4 @@ def register(ctx):
         first_name=first_name,
         last_name=last_name,
     )
-    account_commands.output_formatter.write_line('Registration successful for email: {}.'.format(email))
+    account_commands.output_formatter.write_space_line('Registration successful for email: {}.'.format(email))
