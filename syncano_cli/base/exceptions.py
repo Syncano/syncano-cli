@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from click import ClickException
-from syncano_cli.base.output_formatter import OutputFormatter
+from syncano_cli.base.formatters import OutputFormatter
 
 
 class CLIBaseException(ClickException):

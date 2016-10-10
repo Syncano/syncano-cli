@@ -29,11 +29,11 @@ class SocketCommand(BaseInstanceCommand):
 
     def list(self):
         sockets = [cs for cs in CustomSocket.please.all(instance_name=self.instance.name)]
-        self.socket_formatter.format_socket_list(socket_list=sockets, instance_name=self.instance.name)
+        self.socket_formatter.display_socket_list(socket_list=sockets, instance_name=self.instance.name)
 
     def details(self, socket_name):
         cs = CustomSocket.please.get(name=socket_name, instance_name=self.instance.name)
-        click.echo(self.socket_formatter.format_socket_details(cs))
+        self.socket_formatter.display_socket_details(cs, self.connection.connection().api_key)
 
     def recheck(self, socket_name):
         cs = CustomSocket.please.get(name=socket_name, instance_name=self.instance.name)

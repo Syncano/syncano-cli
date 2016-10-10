@@ -3,8 +3,8 @@ import os
 
 import six
 from syncano_cli.base.connection import create_connection, get_instance
+from syncano_cli.base.formatters import OutputFormatter
 from syncano_cli.base.mixins import RegisterMixin
-from syncano_cli.base.output_formatter import OutputFormatter
 from syncano_cli.base.prompter import Prompter
 from syncano_cli.config import ACCOUNT_CONFIG
 

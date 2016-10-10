@@ -1,5 +1,5 @@
 import click
-from syncano_cli.base.output_formatter import ColorStylesE
+from syncano_cli.base.formatters import ColorStylesE
 
 
 class Prompter(object):

@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import six
 from syncano_cli.base.command import BaseInstanceCommand
 from syncano_cli.config_commands.exceptions import VariableInConfigException, VariableNotFoundException
 
@@ -13,10 +12,7 @@ class ConfigCommand(BaseInstanceCommand):
 
     def _show_config(self, config):
         self.output_formatter.write_space_line('Config for Instance {}'.format(self.instance.name), bottom=False)
-        for name, value in six.iteritems(config):
-            self.output_formatter.write_line('{:20}: {}'.format(name, value), indent=2)
-        if not config:
-            self.output_formatter.write_line('No config specified yet.', indent=2)
+        self.output_formatter.display_config(config)
         self.output_formatter.finalize()
 
     def add(self, name, value):
