@@ -1,12 +1,12 @@
-# Advanced Custom Socket example
+# Advanced Sockets example
  
 ## Abstract
 
-This in an advanced example of Syncano Custom Sockets, showing an integration with Mailgun (https://mailgun.com/). 
+This in an advanced example of Syncano Sockets, showing an integration with Mailgun (https://mailgun.com/). 
 
 We will use Mailgun's sandbox environment, which allows sending up to 300 emails per day - it should be more than enough for testing. 
 
-We will implement two endpoints inside the Custom Socket - one for sending emails, and a second one to obtain some basic statistics.
+We will implement two endpoints inside the Sockets - one for sending emails, and a second one to obtain some basic statistics.
 
 ## Repository link
 
@@ -36,7 +36,7 @@ git clone git@github.com:Syncano/custom-socket-advanced-example.git
 ## YML definition
 
     name: mailgun_integration
-    description: An advanced example of Custom Socket - mailgun integration.
+    description: An advanced example of Sockets - mailgun integration.
     author:
       name: Info at Syncano
       email: info@syncano.com
@@ -59,7 +59,7 @@ git clone git@github.com:Syncano/custom-socket-advanced-example.git
           runtime_name: python_library_v5.0
           file: scripts/get_stats.py
 
-Above YAML file defines one Custom Socket with two endpoints: 
+Above YAML file defines one Sockets with two endpoints: 
 * `send_mail` for sending emails, it's run on POST HTTP method call; we want to pass some basic information about who it should be sent to, what subject should be used and what text should be in the email itself;
 * `get_stats` - second endpoint is for obtaining basic stats from Mailgun service.
 
@@ -135,7 +135,7 @@ Above script will work as a proxy to the Mailgun service - will send a request a
 a response.
 
 
-## Custom Socket directory structure
+## Sockets directory structure
 
 The directory structure in my favourite editor looks like this:
 
@@ -161,15 +161,15 @@ or in tree format:
 
     Next you will see a prompt for `username` and `password`; provide both and confirm with `enter`.
 
-2. There are two ways of installing a Custom Socket - one is using your local files and the second one is by using a URL.
+2. There are two ways of installing a Sockets - one is using your local files and the second one is by using a URL.
 
-    To install the Custom Socket from a URL do:
+    To install the Sockets from a URL do:
     
         syncano sockets install https://raw.githubusercontent.com/Syncano/custom-socket-advanced-example/master/socket.yml --name mailgun_integration
 
-    In such scenario - you do not even need to clone the repository to your local machine. The `--name` parameter and name here are needed - because under the hood, empty Custom Socket is created - and code fetching from repository is done asynchronously in the second step.
+    In such scenario - you do not even need to clone the repository to your local machine. The `--name` parameter and name here are needed - because under the hood, empty Sockets is created - and code fetching from repository is done asynchronously in the second step.
     
-    To install Custom Socket from local files do:
+    To install Sockets from local files do:
     
         syncano sockets install <path_to_files>
 
@@ -177,9 +177,9 @@ or in tree format:
     
         syncano sockets install ../syncano_scripts/repos/custom-socket-advanced-example/
         
-3. Try a newly created Custom Socket:
+3. Try a newly created Sockets:
 
-    To list Custom Sockets, do:
+    To list Sockets, do:
     
         syncano sockets list
 
@@ -190,7 +190,7 @@ or in tree format:
             name: mailgun_integration
             status: ok
 
-    This means that Custom Socket `mailgun_integration` was created successfuly - the status is `ok`. In any other case you will see an `error` and detailed information in `info` about what went wrong.
+    This means that Sockets `mailgun_integration` was created successfuly - the status is `ok`. In any other case you will see an `error` and detailed information in `info` about what went wrong.
     
     Now, list all defined endpoints:
     
@@ -220,7 +220,7 @@ or in tree format:
  
         syncano config add mailgun_api_key key-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-5. Run the endpoint defined in your Custom Socket:
+5. Run the endpoint defined in your Sockets:
 
     First, run the stats endpoint - it's easier, as it is a simple GET request without any arguments required.
     
@@ -267,7 +267,7 @@ or in tree format:
     
     Run:
     
-        syncano sockets run mailgun_integration/send_mail POST -d subject="CustomSocket MailGun test" -d to_email="FirstName LastName <your_email>" -d email_body="So nice to create Custom Sockets!"
+        syncano sockets run mailgun_integration/send_mail POST -d subject="CustomSocket MailGun test" -d to_email="FirstName LastName <your_email>" -d email_body="So nice to create Sockets!"
 
     Do not forget to change e-mail address in JSON data.
     
@@ -280,7 +280,7 @@ or in tree format:
         
     You can now call stats again and see if anything changed. 
 
-6. To delete mailgun Custom Socket do:
+6. To delete mailgun Sockets do:
 
         syncano sockets delete mailgun_integration
 

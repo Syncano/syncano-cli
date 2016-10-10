@@ -1,4 +1,4 @@
-# Syncano Custom Sockets
+# Syncano Sockets
 
 ## YAML file structure (socket.yml)
 
@@ -57,17 +57,17 @@
 
 ### YAML file structure explanation
 
-* `name` is the name of your new Custom Socket - this should be unique;
-* `description` is a description of your Custom Socket - it allows you to easily identify what your Custom Socket does;
-* `author` is metadata information about the Custom Socket author; Under the hood: all fields that are not 
+* `name` is the name of your new Sockets - this should be unique;
+* `description` is a description of your Sockets - it allows you to easily identify what your Sockets does;
+* `author` is metadata information about the Sockets author; Under the hood: all fields that are not 
     * `name`, 
     * `description`, 
     * `endpoints`, 
     * `dependencies` 
-    * can be found in `metadata` field on Custom Socket in Syncano Dasboard.
-* `icon` is metadata information about your Custom Socket - it stores the icon name used and its color (used in Syncano Dashboard)
-* `endpoints` - definition of the endpoints in a Custom Socket; Currently supported endpoints can be only of `script` type.
-* `config` - stores the metadata about Custom Socket configuration; constants are config variables that are passed one-to-one
+    * can be found in `metadata` field on Sockets in Syncano Dasboard.
+* `icon` is metadata information about your Sockets - it stores the icon name used and its color (used in Syncano Dashboard)
+* `endpoints` - definition of the endpoints in a Sockets; Currently supported endpoints can be only of `script` type.
+* `config` - stores the metadata about Sockets configuration; constants are config variables that are passed one-to-one
   from yaml file definitions; the `prompt` config section - this variables will be requested from user during installation.
 
     Consider this example:
@@ -102,7 +102,7 @@
     Currently Script Endpoints and Classes are supported, which run scripts under the hood.  
     We are working on adding more options!
 
-* `dependencies` - the definition of your Custom Socket dependencies. They define all dependency objects
+* `dependencies` - the definition of your Sockets dependencies. They define all dependency objects
 which will be called when the endpoint is requested. 
 
     Consider the example:
@@ -139,14 +139,14 @@ which will be called when the endpoint is requested.
               - name: alpha3Code
                 type: string
                 
-    This simple mean that Custom Socket requires a Class `country` to work properly. Under the hood - Syncano Platform
+    This simple mean that Sockets requires a Class `country` to work properly. Under the hood - Syncano Platform
     will check if this Class exists (if not - create it) and ensure that all required files defined in `schema` are present.
         
 
 
-## Custom Socket directory structure
+## Sockets directory structure
 
-Below is a sample Custom Socket structure for the above YAML definition:
+Below is a sample Sockets structure for the above YAML definition:
 
 ![](images/tree_socket.png)
 
@@ -154,7 +154,7 @@ Below is a sample Custom Socket structure for the above YAML definition:
 code used in `script` dependency type. 
 
 
-## Custom Socket examples
+## Sockets examples
 
 * ['HelloWorld' example](examples/hello_world.md)
 * [Advanced example: provide title here](examples/advanced.md)

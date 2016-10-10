@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import click
+from syncano_cli.base.command import BaseCommand
 from syncano_cli.config import ACCOUNT_CONFIG_PATH
 from syncano_cli.parse_to_syncano.config import read_config
 from syncano_cli.parse_to_syncano.migrations.transfer import SyncanoTransfer
@@ -13,10 +14,11 @@ def top_migrate():
 
 @top_migrate.group()
 @click.pass_context
-@click.option('--config', help=u'Account configuration file.')
+@click.option('--config', help=u'Account configuration file.', default=ACCOUNT_CONFIG_PATH)
 def migrate(context, config):
     """Migrate Parse data to Syncano."""
-    config = config or ACCOUNT_CONFIG_PATH
+    command = BaseCommand(config)
+    command.has_setup()
     context.obj['config'] = config
 
 

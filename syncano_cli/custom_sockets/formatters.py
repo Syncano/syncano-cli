@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 import os
+import sys
 from collections import defaultdict
 
 import six
 import yaml
+from syncano_cli.base.formatters import OutputFormatter
 from syncano_cli.custom_sockets.exceptions import BadYAMLDefinitionInEndpointsException
 from syncano_cli.sync.scripts import ALLOWED_RUNTIMES
 
@@ -13,12 +15,14 @@ class DependencyTypeE():
     SCRIPT = 'script'
 
 
-class SocketFormatter(object):
+class SocketFormatter(OutputFormatter):
 
     SOCKET_FIELDS = ['name', 'description', 'endpoints', 'dependencies']
+    SOCKET_DISPLAY_FIELDS = ['name', 'description', 'status', 'status_info', 'endpoints']
     HTTP_METHODS = ['GET', 'POST', 'DELETE', 'PUT', 'PATCH']
     ENDPOINT_TYPES = ['script']
     DEPENDENCY_TYPES = {'scripts': DependencyTypeE.SCRIPT, 'classes': DependencyTypeE.CLASS}
+    ENDPOINT_FIELDS = ['calls', 'acl', 'metadata']
 
     @classmethod
     def get_dependency_handlers(cls):
@@ -189,7 +193,7 @@ class SocketFormatter(object):
 
     @classmethod
     def _yml_process_metadata(cls, endpoint_data):
-        return endpoint_data.get('metadata', {})  # some old Custom Sockets do not have this field;
+        return endpoint_data.get('metadata', {})  # some old Sockets do not have this field;
 
     @classmethod
     def _yml_process_calls(cls, data_calls):
@@ -229,25 +233,85 @@ class SocketFormatter(object):
 
         return yml_dependencies, files
 
-    @classmethod
-    def format_socket_details(cls, cs):
-        yml_content, files = cls.to_yml(cs)
-        return yml_content
+    def display_socket_details(self, custom_socket, api_key):
+        self.write_space_line('Details for Socket `{}` in `{}` instance.'.format(custom_socket.name,
+                                                                                 custom_socket.instance_name))
+        self.separator()
+        self._display_list_details(custom_socket)
+        self.separator()
+        self.write_space_line('Socket config')
+        self.display_config(custom_socket.config)
+        self.separator()
+        self.write_space_line('Socket endpoints')
+        self._display_endpoints(custom_socket.endpoints, base_link=custom_socket.links.links_dict['endpoints'],
+                                api_key=api_key)
+        self.separator()
+        self.write_space_line('Metadata')
+        self.format_object(custom_socket.metadata)
+        self.separator()
+        self.finalize()
 
-    @classmethod
-    def format_socket_list(cls, socket_list):
-        yml_dict = {'sockets': []}
+    def display_socket_list(self, socket_list, instance_name):
+        if not socket_list:
+            self.write_space_line('Sockets not defined for `{}` instance.'.format(instance_name),
+                                  color=self.color_schema.WARNING)
+            sys.exit(1)
+        self.write_space_line('Sockets for `{}` instance.'.format(instance_name))
+
         for cs in socket_list:
-            yml_dict['sockets'].append(
-                {
-                    'socket': {
-                        'name': cs.name,
-                        'status': cs.status,
-                        'info': cs.status_info
-                    }
-                }
-            )
-        return yaml.safe_dump(yml_dict, default_flow_style=False)
+            self.separator()
+            self._display_list_details(custom_socket=cs)
+            self.write_space_line('See: `syncano sockets details {}` for details.'.format(cs.name), indent=2,
+                                  top=False)
+
+    def _display_list_details(self, custom_socket):
+        for field in self.SOCKET_DISPLAY_FIELDS:
+            value = getattr(custom_socket, field)
+            if field == 'endpoints':
+                value = ', '.join(value.keys())
+            if not value:
+                value = '-- not set --'
+            self.write_line('{:20}: {}'.format(field.capitalize().replace('_', ' '), value), indent=2)
+
+    def _display_endpoints(self, endpoints, base_link, api_key):
+        for endpoint_name, endpoint_data in six.iteritems(endpoints):
+            self.write_line('{e_name}:'.format(e_name=endpoint_name, ), indent=2)
+            self.write_line('URL: {host}{base_link}{name}/?api_key={key}'.format(
+                host='https://api.syncano.io',
+                base_link=base_link,
+                name=endpoint_name,
+                key=api_key
+            ), indent=3)
+            for field in self.ENDPOINT_FIELDS:
+                handler_name = '_display_{}'.format(field)
+                data = endpoint_data.get(field)
+                try:
+                    handler = getattr(self, handler_name)
+                except AttributeError:
+                    continue
+                handler(data, indent=3)
+
+    def _display_calls(self, data, indent):
+        if not data:
+            self.write_line('{}: {}'.format('Calls', self.not_set), indent=indent)
+            return
+        self.write_line('Calls:', indent=indent)
+        for call in data:
+            self.format_object(call, indent=indent)
+
+    def _display_acl(self, data, indent):
+        if not data:
+            self.write_line('{}: {}'.format('Acl', self.not_set), indent=indent)
+            return
+        self.write_line('ACL:', indent=indent)
+        self.format_object(data, indent=indent)
+
+    def _display_metadata(self, data, indent):
+        if not data:
+            self.write_line('{}: {}'.format('Metadata', self.not_set), indent=indent)
+            return
+        self.write_line('Metadata:', indent=indent)
+        self.format_object(data, indent=indent)
 
     @classmethod
     def format_endpoints_list(cls, socket_endpoints):
