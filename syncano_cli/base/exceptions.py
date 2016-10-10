@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from click import ClickException
-from click._compat import get_text_stderr
-
 from syncano_cli.base.output_formatter import OutputFormatter
 
 

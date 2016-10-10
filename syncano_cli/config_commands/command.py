@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import click
 import six
 from syncano_cli.base.command import BaseInstanceCommand
 from syncano_cli.config_commands.exceptions import VariableInConfigException, VariableNotFoundException
@@ -48,4 +47,3 @@ class ConfigCommand(BaseInstanceCommand):
         self.output_formatter.write_space_line('Variable `{}` removed from in instance `{}`.'.format(
             name, self.instance.name), bottom=False)
         self._show_config(config)
-
