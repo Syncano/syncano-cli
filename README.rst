@@ -12,7 +12,7 @@ Table of contents
 6.  `Syncano sync`_
 7.  `Syncano Parse migration tool`_
 8.  `Syncano Hosting`_
-9.  `Custom Sockets`_
+9.  `Sockets`_
 10.  `Config`_
 11.  `Running Scripts`_
 12.  `Issues`_
@@ -126,12 +126,12 @@ The Instance name can be also overwritten on particular call::
 
     syncano sockets --instance-name my_custom_instance list
 
-Eg.: if your default Instance is `my_instance_name` and you run above command - the Custom Sockets from instance
+Eg.: if your default Instance is `my_instance_name` and you run above command - the Sockets from instance
 `my_custom_instance` will be displayed, and again::
 
     syncano sockets list
 
-Will display Custom Sockets from `my_instance_name` - because it is set to be a default one.
+Will display Sockets from `my_instance_name` - because it is set to be a default one.
 
 After a registration - there's no default Instance set. So it's desired to create one and set it as default::
 
@@ -321,37 +321,37 @@ Will create a new Hosting Socket which will be available under: `<instance_name>
 If this Hosting Socket is also a default one, it will be available under: `<instance_name>.syncano.site`.
 
 
-Custom Sockets
+Sockets
 ==============
 
-This is a list of commands available for Custom Sockets. 
-If you want to know more about Custom Sockets, `read the detailed docs here <docs/custom_sockets/docs.md>`_.
+This is a list of commands available for Sockets.
+If you want to know more about Sockets, `read the detailed docs here <docs/custom_sockets/docs.md>`_.
 
-To install a Custom Socket from a local file::
+To install a Sockets from a local file::
 
     syncano sockets install /path/to/dir
 
-To install a Custom Socket from a URL::
+To install a Sockets from a URL::
 
     syncano sockets install https://web.path.to/your.file
 
-List all Custom Sockets::
+List all Sockets::
 
     syncano sockets list
 
-List all defined endpoints (for all Custom Sockets)::
+List all defined endpoints (for all Sockets)::
 
     syncano sockets list endpoints
 
-Display chosen Custom Socket details::
+Display chosen Sockets details::
 
     syncano sockets details socket_name
 
-Display Custom Socket config (with name: `socket_name`)::
+Display Sockets config (with name: `socket_name`)::
 
     syncano sockets config socket_name
 
-Delete a Custom Socket::
+Delete a Sockets::
 
     syncano sockets delete socket_name
 
@@ -359,11 +359,11 @@ Create a template from a template stored in Syncano CLI::
 
     syncano sockets template /path/to/output_dir
 
-Create a template from an existing Custom Socket::
+Create a template from an existing Sockets::
 
     syncano sockets template /path/to/out --socket socket_name
 
-Run endpoint defined in Custom Socket::
+Run endpoint defined in Sockets::
 
     syncano sockets run socket_name/endpoint_name
 

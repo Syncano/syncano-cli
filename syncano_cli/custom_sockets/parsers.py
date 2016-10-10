@@ -10,7 +10,7 @@ class SocketConfigParser(object):
     VALUE_FIELD = 'value'
 
     def __init__(self, socket_yml):
-        self.config = socket_yml.get('config', [])
+        self.config = socket_yml.get('config', {})
 
     def is_valid(self):
         valid = True

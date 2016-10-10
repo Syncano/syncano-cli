@@ -2,7 +2,7 @@
 
 ## Abstract
 
-In this example we will create a simple Custom Socket. The idea here is to create an endpoint which will return
+In this example we will create a simple Sockets. The idea here is to create an endpoint which will return
 a `Hello world` message. 
 
 ## Repository link
@@ -45,7 +45,7 @@ git clone git@github.com:Syncano/custom-socket-hello-world.git
           runtime_name: python_library_v5.0
           file: scripts/hello_world.py
           
-Above YAML file defines one Custom Socket with one endpoint: 
+Above YAML file defines one Sockets with one endpoint: 
 * `hello_endpoint` for printing hello world on every HTTP method call.
 
 There is also one `script` dependency defined, to `hello_world` Script.
@@ -76,17 +76,17 @@ The script (`scripts/hello_world.py`) consists of a few lines:
 The above code executed in Syncano will return a valid HTML response with the `Hello World!` message inside. 
 The `set_response` is a function which returns a custom response (e.g. in JSON, CSV or HTML format) from the script. 
 
-## Custom Socket directory structure
+## Sockets directory structure
 
-As can be seen in the example above, the basic structure of this Custom Socket is:
+As can be seen in the example above, the basic structure of this Sockets is:
 
     .
     ├── scripts
     │   └── hello_world.py
     └── socket.yml
 
-`socket.yml` file stores YAML definition of the Custom Socket, and under `scripts` directory there is a definition
-of Custom Socket dependencies (currently of type `script`).
+`socket.yml` file stores YAML definition of the Sockets, and under `scripts` directory there is a definition
+of Sockets dependencies (currently of type `script`).
 
 ## Putting everything together
 
@@ -99,15 +99,15 @@ of Custom Socket dependencies (currently of type `script`).
 
     Next you will see a prompt for `username` and `password`; provide both and confirm with `enter`.
     
-2. There are two ways of installing a Custom Socket - one is using your local files and the second one is by using a URL.
+2. There are two ways of installing a Sockets - one is using your local files and the second one is by using a URL.
 
-    To install the Custom Socket from url do:
+    To install the Sockets from url do:
     
         syncano sockets install https://raw.githubusercontent.com/Syncano/custom-socket-hello-world/master/socket.yml --name hello_world
 
-    In this scenario - you do not even need to clone the repository to your local machine. The `--name` parameter and name here are needed - because under the hood, an empty Custom Socket is created - and fetching code from the repository is done asynchronously in the second step.
+    In this scenario - you do not even need to clone the repository to your local machine. The `--name` parameter and name here are needed - because under the hood, an empty Sockets is created - and fetching code from the repository is done asynchronously in the second step.
     
-    To install Custom Socket from local files do:
+    To install Sockets from local files do:
     
         syncano sockets install <path_to_files>
 
@@ -117,9 +117,9 @@ of Custom Socket dependencies (currently of type `script`).
 
     So you need to point to the parent directory of your `socket.yml` definition.
      
-3. Try a newly created Custom Socket:
+3. Try a newly created Sockets:
 
-    To list Custom Sockets, do:
+    To list Sockets, do:
     
         syncano sockets list
 
@@ -130,7 +130,7 @@ of Custom Socket dependencies (currently of type `script`).
             name: hello_world
             status: ok
 
-    This means that Custom Socket `hello_world` was created successfuly - the status is `ok`. In any other case you will see here an `error` and detailed information in `info` about what went wrong.
+    This means that Sockets `hello_world` was created successfuly - the status is `ok`. In any other case you will see here an `error` and detailed information in `info` about what went wrong.
     
     Now, list all defined endpoints:
     
@@ -148,7 +148,7 @@ of Custom Socket dependencies (currently of type `script`).
             name: hello_world/hello_endpoint
             path: /v1.1/instances/your-instance-name/endpoints/sockets/hello_world/hello_endpoint/
 
-4. Run the endpoint defined in Custom Socket:
+4. Run the endpoint defined in Sockets:
 
         syncano sockets run hello_world/hello_endpoint
 
@@ -173,7 +173,7 @@ of Custom Socket dependencies (currently of type `script`).
     
     ![](../images/hello_world.png)
 
-5. To delete Custom Socket do:
+5. To delete Sockets do:
 
         syncano sockets delete hello_world
 

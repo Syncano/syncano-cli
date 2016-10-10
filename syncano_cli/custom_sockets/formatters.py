@@ -4,6 +4,10 @@ from collections import defaultdict
 
 import six
 import yaml
+
+import sys
+
+from syncano_cli.base.output_formatter import OutputFormatter
 from syncano_cli.custom_sockets.exceptions import BadYAMLDefinitionInEndpointsException
 from syncano_cli.sync.scripts import ALLOWED_RUNTIMES
 
@@ -13,7 +17,7 @@ class DependencyTypeE():
     SCRIPT = 'script'
 
 
-class SocketFormatter(object):
+class SocketFormatter(OutputFormatter):
 
     SOCKET_FIELDS = ['name', 'description', 'endpoints', 'dependencies']
     HTTP_METHODS = ['GET', 'POST', 'DELETE', 'PUT', 'PATCH']
@@ -189,7 +193,7 @@ class SocketFormatter(object):
 
     @classmethod
     def _yml_process_metadata(cls, endpoint_data):
-        return endpoint_data.get('metadata', {})  # some old Custom Sockets do not have this field;
+        return endpoint_data.get('metadata', {})  # some old Sockets do not have this field;
 
     @classmethod
     def _yml_process_calls(cls, data_calls):
@@ -234,20 +238,24 @@ class SocketFormatter(object):
         yml_content, files = cls.to_yml(cs)
         return yml_content
 
-    @classmethod
-    def format_socket_list(cls, socket_list):
-        yml_dict = {'sockets': []}
+    def format_socket_list(self, socket_list, instance_name):
+        if not socket_list:
+            self.write_space_line('Sockets not defined for `{}` instance.'.format(instance_name),
+                                  color=self.color_schema.WARNING)
+            sys.exit(1)
+        self.write_space_line('Sockets for `{}` instance.'.format(instance_name))
+        fields = ['name', 'description', 'status', 'status_info', 'endpoints']
         for cs in socket_list:
-            yml_dict['sockets'].append(
-                {
-                    'socket': {
-                        'name': cs.name,
-                        'status': cs.status,
-                        'info': cs.status_info
-                    }
-                }
-            )
-        return yaml.safe_dump(yml_dict, default_flow_style=False)
+            self.write_line(70 * '-', color=self.color_schema.WARNING)
+            for field in fields:
+                value = getattr(cs, field)
+                if field == 'endpoints':
+                    value = ', '.join(value.keys())
+                if not value:
+                    value = '-- not set --'
+                self.write_line('{:20}: {}'.format(field.capitalize().replace('_', ' '), value), indent=2)
+            self.write_space_line('See: `syncano sockets details {}` for details.'.format(cs.name), indent=2,
+                                  top=False)
 
     @classmethod
     def format_endpoints_list(cls, socket_endpoints):
