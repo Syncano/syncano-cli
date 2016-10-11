@@ -6,11 +6,13 @@ import click
 import requests
 import six
 import yaml
+from syncano.exceptions import SyncanoRequestError
 from syncano.models import CustomSocket, SocketEndpoint
 from syncano_cli.base.command import BaseInstanceCommand
-from syncano_cli.base.options import TopSpacedOpt
+from syncano_cli.base.options import BottomSpacedOpt, SpacedOpt
 from syncano_cli.custom_sockets.exceptions import (
     EndpointNotFoundException,
+    SocketAPIException,
     SocketFileFetchException,
     SocketYMLParseException
 )
@@ -72,15 +74,19 @@ class SocketCommand(BaseInstanceCommand):
     def install_from_url(self, url_path, name):
         socket_yml = self.fetch_file(url_path)
         config = self.set_up_config(socket_yml)
-        CustomSocket(name=name).install_from_url(url=url_path, instance_name=self.instance.name, config=config)
-        self.output_formatter.write('Installing Sockets from url: {}.'.format(url_path))
+        try:
+            CustomSocket(name=name).install_from_url(url=url_path, instance_name=self.instance.name, config=config)
+        except SyncanoRequestError as e:
+            raise SocketAPIException(e.reason)
+
+        self.output_formatter.write('Installing Sockets from url: {}.'.format(url_path), SpacedOpt)
         self._display_socket_status(name)
 
     def _display_socket_status(self, socket_name):
         cs = CustomSocket.please.get(name=socket_name, instance_name=self.instance.name)
         self.output_formatter.write(
             'Current status is: {} (syncano sockets details {} for refresh).'.format(cs.status, cs.name),
-            TopSpacedOpt)
+            BottomSpacedOpt)
 
     def run(self, endpoint_name, method='GET', data=None):
         endpoints = SocketEndpoint.get_all_endpoints(instance_name=self.instance.name)

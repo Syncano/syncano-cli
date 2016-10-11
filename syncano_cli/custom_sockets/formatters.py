@@ -6,7 +6,7 @@ from collections import defaultdict
 import six
 import yaml
 from syncano_cli.base.formatters import Formatter
-from syncano_cli.base.options import BottomSpacedOpt, DefaultOpt, SpacedOpt, WarningOpt
+from syncano_cli.base.options import DefaultOpt, SpacedOpt, WarningOpt
 from syncano_cli.custom_sockets.exceptions import BadYAMLDefinitionInEndpointsException
 from syncano_cli.sync.scripts import ALLOWED_RUNTIMES
 
@@ -240,15 +240,15 @@ class SocketFormatter(Formatter):
         self.separator()
         self._display_list_details(custom_socket)
         self.separator()
-        self.write('Socket config')
+        self.write('Config')
         self.display_config(custom_socket.config)
         self.separator()
-        self.write('Socket endpoints')
+        self.write('Endpoints')
         self._display_endpoints(custom_socket.endpoints, base_link=custom_socket.links.links_dict['endpoints'],
                                 api_key=api_key)
         self.separator()
         self.write('Metadata')
-        self.format_object(custom_socket.metadata)
+        self.format_object(custom_socket.metadata, indent=3)
         self.separator()
         self.empty_line()
 
@@ -257,22 +257,23 @@ class SocketFormatter(Formatter):
             self.write('Sockets not defined for `{}` instance.'.format(instance_name),
                        WarningOpt, SpacedOpt)
             sys.exit(1)
-        self.write('Sockets for `{}` instance.'.format(instance_name))
+        self.write('Sockets for `{}` instance.'.format(instance_name), SpacedOpt())
 
         for cs in socket_list:
-            self.separator()
-            self._display_list_details(custom_socket=cs)
-            self.write('See: `syncano sockets details {}` for details.'.format(cs.name),
-                       DefaultOpt(indent=2), BottomSpacedOpt)
+            lines = self._display_list_details(custom_socket=cs)
+            lines.append('See: `syncano sockets details {}` for details.'.format(cs.name))
+            self.write_block(lines, DefaultOpt(indent=2))
 
     def _display_list_details(self, custom_socket):
+        lines = []
         for field in self.SOCKET_DISPLAY_FIELDS:
             value = getattr(custom_socket, field)
             if field == 'endpoints':
                 value = ', '.join(value.keys())
             if not value:
                 value = '-- not set --'
-            self.write('{:20}: {}'.format(field.capitalize().replace('_', ' '), value), DefaultOpt(indent=2))
+            lines.append("{}: {}".format(field.capitalize().replace('_', ' '), value))
+        return lines
 
     def _display_endpoints(self, endpoints, base_link, api_key):
         for endpoint_name, endpoint_data in six.iteritems(endpoints):
@@ -298,7 +299,7 @@ class SocketFormatter(Formatter):
             return
         self.write('Calls:', DefaultOpt(indent=indent))
         for call in data:
-            self.format_object(call, DefaultOpt(indent=indent))
+            self.format_object(call, indent=indent)
 
     def _display_acl(self, data, indent):
         if not data:

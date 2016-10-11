@@ -3,7 +3,7 @@ import sys
 
 import syncano
 from syncano.exceptions import SyncanoRequestError
-from syncano_cli.base.options import ErrorOpt, TopSpacedOpt
+from syncano_cli.base.options import ErrorOpt, SpacedOpt, TopSpacedOpt
 from syncano_cli.config import ACCOUNT_CONFIG
 from syncano_cli.init.helpers import random_instance_name
 
@@ -51,7 +51,8 @@ class RegisterMixin(object):
 
     def validate_password(self, password, repeat_password):
         while password != repeat_password:
-            self.output_formatter.write('Password and repeat password are not the same. Please correct:', ErrorOpt)
+            self.output_formatter.write('Password and repeat password are not the same. Please correct:', ErrorOpt,
+                                        SpacedOpt)
             password = self.prompter.prompt('password', hide_input=True)
             repeat_password = self.prompter.prompt('repeat password', hide_input=True)
 

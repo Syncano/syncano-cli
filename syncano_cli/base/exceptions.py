@@ -2,7 +2,7 @@
 
 from click import ClickException
 from syncano_cli.base.formatters import Formatter
-from syncano_cli.base.options import ErrorOpt, SpacedOpt
+from syncano_cli.base.options import ErrorOpt, TopSpacedOpt
 
 
 class CLIBaseException(ClickException):
@@ -17,7 +17,7 @@ class CLIBaseException(ClickException):
 
     def show(self, file=None):
         formatter = Formatter()
-        formatter.write('Error: %s' % self.format_message(), ErrorOpt, SpacedOpt)
+        formatter.write('Error: %s' % self.format_message(), ErrorOpt, TopSpacedOpt)
 
 
 class SyncanoLibraryException(CLIBaseException):
