@@ -79,14 +79,14 @@ class SocketCommand(BaseInstanceCommand):
         except SyncanoRequestError as e:
             raise SocketAPIException(e.reason)
 
-        self.output_formatter.write('Installing Sockets from url: {}.'.format(url_path), SpacedOpt)
+        self.output_formatter.write('Installing Sockets from url: {}.'.format(url_path), SpacedOpt())
         self._display_socket_status(name)
 
     def _display_socket_status(self, socket_name):
         cs = CustomSocket.please.get(name=socket_name, instance_name=self.instance.name)
         self.output_formatter.write(
             'Current status is: {} (syncano sockets details {} for refresh).'.format(cs.status, cs.name),
-            BottomSpacedOpt)
+            BottomSpacedOpt())
 
     def run(self, endpoint_name, method='GET', data=None):
         endpoints = SocketEndpoint.get_all_endpoints(instance_name=self.instance.name)

@@ -17,7 +17,7 @@ class CLIBaseException(ClickException):
 
     def show(self, file=None):
         formatter = Formatter()
-        formatter.write('Error: %s' % self.format_message(), ErrorOpt, TopSpacedOpt)
+        formatter.write('Error: %s' % self.format_message(), ErrorOpt(), TopSpacedOpt())
 
 
 class SyncanoLibraryException(CLIBaseException):

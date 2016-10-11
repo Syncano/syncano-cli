@@ -255,7 +255,7 @@ class SocketFormatter(Formatter):
     def display_socket_list(self, socket_list, instance_name):
         if not socket_list:
             self.write('Sockets not defined for `{}` instance.'.format(instance_name),
-                       WarningOpt, SpacedOpt)
+                       WarningOpt(), SpacedOpt())
             sys.exit(1)
         self.write('Sockets for `{}` instance.'.format(instance_name), SpacedOpt())
 

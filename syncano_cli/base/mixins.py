@@ -24,9 +24,9 @@ class RegisterMixin(object):
                 account_command = AccountCommands(config_path=config_path)
                 account_command.register(email=email, password=password)
                 self.output_formatter.write('Account created for email: {}'.format(email),
-                                            TopSpacedOpt)
+                                            TopSpacedOpt())
             elif 'password' in exc.message:
-                self.output_formatter.write('Invalid login: you have provided wrong password.', ErrorOpt)
+                self.output_formatter.write('Invalid login: you have provided wrong password.', ErrorOpt())
                 sys.exit(1)
 
     def create_instance(self, instance_commands):
@@ -46,13 +46,13 @@ class RegisterMixin(object):
         self.set_instance_as_default(config_path, instance_name, instance_commands)
 
     def set_instance_as_default(self, config_path, instance_name, instance_commands):
-        self.output_formatter.write('Instance `{}` set as default.'.format(instance_name), TopSpacedOpt)
+        self.output_formatter.write('Instance `{}` set as default.'.format(instance_name), TopSpacedOpt())
         instance_commands.set_default(instance_name=instance_name, config_path=config_path)
 
     def validate_password(self, password, repeat_password):
         while password != repeat_password:
-            self.output_formatter.write('Password and repeat password are not the same. Please correct:', ErrorOpt,
-                                        SpacedOpt)
+            self.output_formatter.write('Password and repeat password are not the same. Please correct:', ErrorOpt(),
+                                        SpacedOpt())
             password = self.prompter.prompt('password', hide_input=True)
             repeat_password = self.prompter.prompt('repeat password', hide_input=True)
 
