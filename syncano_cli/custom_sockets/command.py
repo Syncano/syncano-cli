@@ -8,6 +8,7 @@ import six
 import yaml
 from syncano.models import CustomSocket, SocketEndpoint
 from syncano_cli.base.command import BaseInstanceCommand
+from syncano_cli.base.options import TopSpacedOpt
 from syncano_cli.custom_sockets.exceptions import (
     EndpointNotFoundException,
     SocketFileFetchException,
@@ -65,20 +66,21 @@ class SocketCommand(BaseInstanceCommand):
         api_data.update({'instance_name': self.instance.name})
         api_data.update({'config': config})
         custom_socket = CustomSocket.please.create(**api_data)
-        self.output_formatter.write_space_line('Sockets {} created.'.format(custom_socket.name))
+        self.output_formatter.write('Sockets {} created.'.format(custom_socket.name))
         self._display_socket_status(custom_socket.name)
 
     def install_from_url(self, url_path, name):
         socket_yml = self.fetch_file(url_path)
         config = self.set_up_config(socket_yml)
         CustomSocket(name=name).install_from_url(url=url_path, instance_name=self.instance.name, config=config)
-        self.output_formatter.write_space_line('Installing Sockets from url: {}.'.format(url_path))
+        self.output_formatter.write('Installing Sockets from url: {}.'.format(url_path))
         self._display_socket_status(name)
 
     def _display_socket_status(self, socket_name):
         cs = CustomSocket.please.get(name=socket_name, instance_name=self.instance.name)
-        self.output_formatter.write_space_line(
-            'Current status is: {} (syncano sockets details {} for refresh).'.format(cs.status, cs.name), top=False)
+        self.output_formatter.write(
+            'Current status is: {} (syncano sockets details {} for refresh).'.format(cs.status, cs.name),
+            TopSpacedOpt)
 
     def run(self, endpoint_name, method='GET', data=None):
         endpoints = SocketEndpoint.get_all_endpoints(instance_name=self.instance.name)

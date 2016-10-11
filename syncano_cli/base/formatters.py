@@ -1,66 +1,78 @@
 # -*- coding: utf-8 -*-
 import click
 import six
+from syncano_cli.base.options import BottomSpacedOpt, DefaultOpt, OptionsBase, WarningOpt
 
 
-class ColorStylesE(object):
-    INFO = 'green'
-    PROMPT = 'cyan'
-    WARNING = 'yellow'
-    ERROR = 'red'
-
-
-class OutputFormatter(object):
+class Formatter(object):
 
     indent = '    '
     not_set = '-- not set --'
 
-    def __init__(self):
-        self.color_schema = ColorStylesE()
+    def write(self, single_line, *options):
+        options_object = self.get_options(options)
+        styles = options_object.map_click()
+        single_line = self._indent(single_line, options_object)
+        self._write(single_line, options_object, **styles)
 
-    def write_line(self, text, color=None, indent=1):
-        kwargs = {'fg': color or self.color_schema.INFO}
-        if indent:
-            text = '{}{}'.format(self.indent * indent, text)
-        click.echo(click.style(text, **kwargs))
+    def write_lines(self, lines, options=None):
+        lines = lines.splitlines() if isinstance(lines, six.string_types) else lines
+        for line in lines:
+            self.write(line, options)
 
-    def write_space_line(self, text, color=None, top=True, bottom=True, indent=1):
-        if top:
-            click.echo()
-        self.write_line(text, color=color, indent=indent)
-        if bottom:
-            click.echo()
+    def write_block(self, lines, options=None):
+        self.write_lines(lines, options)
+        self.separator()
 
     @classmethod
-    def finalize(cls):
+    def empty_line(cls):
         click.echo()
 
     def separator(self):
-        self.write_line(70 * '-', color=self.color_schema.WARNING)
+        self.write(70 * '-', WarningOpt, BottomSpacedOpt)
 
     def display_config(self, config):
         for name, value in six.iteritems(config):
-            self.write_line('{:20}: {}'.format(name, value))
+            self.write('{:20}: {}'.format(name, value))
         if not config:
-            self.write_line('No config specified yet.', indent=2)
+            self.write('No config specified yet.', DefaultOpt(indent=2))
 
-    def format_object(self, dictionary, indent=1):
-        indent += 1
+    def format_object(self, dictionary, options):
+        options.indent += 1
         for key, value in six.iteritems(dictionary):
             if isinstance(value, dict):
-                self.write_line('{}:'.format(key), indent=indent)
-                self.format_object(value, indent=indent)
+                self.write('{}:'.format(key), options)
+                self.format_object(value, options)
             elif isinstance(value, list):
-                self._format_list(value, key=key, indent=indent)
+                self._format_list(value, key=key, options=options)
             else:
-                self.write_line('{}: {}'.format(key, value), indent=indent)
+                self.write('{}: {}'.format(key, value), options)
 
-    def _format_list(self, data_list, key, indent):
+    def get_options(self, options):
+        option_list = list(options) or []
+        if option_list and not isinstance(option_list[0], DefaultOpt):
+            option_list.insert(0, DefaultOpt)
+        return OptionsBase.build_options(option_list)
+
+    def _format_list(self, data_list, key, options):
+        # TODO: handle dicts elements in list, maybe even lists in list;
         try:
             value = ', '.join(data_list)
         except TypeError:
             value = data_list
         if not key:
-            self.write_line('{}'.format(value), indent=indent)
+            self.write('{}'.format(value), options)
         else:
-            self.write_line('{}: {}'.format(key, value), indent=indent)
+            self.write('{}: {}'.format(key, value), options)
+
+    def _write(self, line, options, **styles):
+        if options.space_top:
+            self.empty_line()
+
+        click.echo(click.style(line, **styles))
+
+        if options.space_bottom:
+            self.empty_line()
+
+    def _indent(self, line, options):
+        return '{}{}'.format(self.indent * options.indent, line)

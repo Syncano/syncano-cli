@@ -3,8 +3,9 @@ import os
 
 import six
 from syncano_cli.base.connection import create_connection, get_instance
-from syncano_cli.base.formatters import OutputFormatter
+from syncano_cli.base.formatters import Formatter
 from syncano_cli.base.mixins import RegisterMixin
+from syncano_cli.base.options import SpacedOpt, WarningOpt
 from syncano_cli.base.prompter import Prompter
 from syncano_cli.config import ACCOUNT_CONFIG
 
@@ -27,7 +28,7 @@ class BaseCommand(RegisterMixin):
         self.config_path = config_path
         self.connection = create_connection(config_path)
 
-    output_formatter = OutputFormatter()
+    output_formatter = Formatter()
     prompter = Prompter()
 
     META_CONFIG = {
@@ -57,8 +58,7 @@ class BaseCommand(RegisterMixin):
             return True
 
         if not has_global:
-            self.output_formatter.write_space_line('Login or create an account in Syncano.',
-                                                   color=self.output_formatter.color_schema.WARNING)
+            self.output_formatter.write('Login or create an account in Syncano.', SpacedOpt)
             email = self.prompter.prompt('email')
             password = self.prompter.prompt('password', hide_input=True)
             repeat_password = self.prompter.prompt('repeat password', hide_input=True)
@@ -104,9 +104,9 @@ class BaseCommand(RegisterMixin):
             if required and not config_parser.has_option(section, var_name):
                 return False
             elif not required and not config_parser.has_option(section, var_name):
-                cls.output_formatter.write_space_line(
+                cls.output_formatter.write(
                     'Missing "{}" in default config. {}'.format(var_name, config_meta['info']),
-                    color=cls.output_formatter.color_schema.WARNING
+                    WarningOpt, SpacedOpt
                 )
 
         return True

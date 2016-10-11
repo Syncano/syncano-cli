@@ -1,5 +1,6 @@
 import click
 from syncano_cli.account.command import AccountCommands
+from syncano_cli.base.options import WarningOpt
 from syncano_cli.config import ACCOUNT_CONFIG_PATH
 
 
@@ -22,8 +23,7 @@ def accounts(ctx, config):
 def register(ctx):
     """Allows to register new Syncano Account. Email and password are obligatory."""
     account_commands = ctx.obj['account_commands']
-    account_commands.output_formatter.write_space_line('Create an account in Syncano.',
-                                                       color=account_commands.output_formatter.color_schema.WARNING)
+    account_commands.output_formatter.write('Create an account in Syncano.', WarningOpt)
     email = account_commands.prompter.prompt('email')
     password = account_commands.prompter.prompt('password', hide_input=True)
     repeat_password = account_commands.prompter.prompt('repeat password', hide_input=True)
@@ -37,4 +37,4 @@ def register(ctx):
         first_name=first_name,
         last_name=last_name,
     )
-    account_commands.output_formatter.write_space_line('Registration successful for email: {}.'.format(email))
+    account_commands.output_formatter.write('Registration successful for email: {}.'.format(email))
