@@ -235,11 +235,12 @@ class SocketFormatter(Formatter):
         return yml_dependencies, files
 
     def display_socket_details(self, custom_socket, api_key):
-        self.write('Details for Socket `{}` in `{}` instance.'.format(custom_socket.name,
-                                                                      custom_socket.instance_name))
-        self.separator()
-        self._display_list_details(custom_socket)
-        self.separator()
+        self.write_block(
+            ['Details for Socket `{}` in `{}` instance.'.format(custom_socket.name,
+                                                                custom_socket.instance_name)],
+            SpacedOpt())
+        lines = self._display_list_details(custom_socket)
+        self.write_block(lines)
         self.write('Config')
         self.display_config(custom_socket.config)
         self.separator()
@@ -248,7 +249,7 @@ class SocketFormatter(Formatter):
                                 api_key=api_key)
         self.separator()
         self.write('Metadata')
-        self.format_object(custom_socket.metadata, indent=3)
+        self.format_object(custom_socket.metadata, indent=1)
         self.separator()
         self.empty_line()
 
