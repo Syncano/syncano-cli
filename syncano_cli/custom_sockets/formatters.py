@@ -3,10 +3,11 @@ import os
 import sys
 from collections import defaultdict
 
+import click
 import six
 import yaml
 from syncano_cli.base.formatters import Formatter
-from syncano_cli.base.options import DefaultOpt, SpacedOpt, WarningOpt
+from syncano_cli.base.options import ColorSchema, DefaultOpt, SpacedOpt, TopSpacedOpt, WarningOpt
 from syncano_cli.custom_sockets.exceptions import BadYAMLDefinitionInEndpointsException
 from syncano_cli.sync.scripts import ALLOWED_RUNTIMES
 
@@ -248,6 +249,9 @@ class SocketFormatter(Formatter):
         self._display_endpoints(custom_socket.endpoints, base_link=custom_socket.links.links_dict['endpoints'],
                                 api_key=api_key)
         self.separator()
+        self.write('Dependencies')
+        self.format_list(custom_socket.dependencies, indent=1, skip_fields=['source'])
+        self.separator()
         self.write('Metadata')
         self.format_object(custom_socket.metadata, indent=1)
         self.separator()
@@ -277,13 +281,22 @@ class SocketFormatter(Formatter):
         return lines
 
     def _display_endpoints(self, endpoints, base_link, api_key):
+        instance_part, endpoints_part = base_link.split('endpoints')
         for endpoint_name, endpoint_data in six.iteritems(endpoints):
-            self.write('{e_name}:'.format(e_name=endpoint_name, ), DefaultOpt(indent=2))
-            self.write('URL: {host}{base_link}{name}/?api_key={key}'.format(
-                host='https://api.syncano.io',
-                base_link=base_link,
-                name=endpoint_name,
-                key=api_key
+            self.write('{e_name}:'.format(e_name=endpoint_name, ), DefaultOpt(indent=2), WarningOpt(), TopSpacedOpt())
+            self.write('{url_label}: {link}'.format(
+                url_label=click.style('URL', fg=ColorSchema.PROMPT),
+                link=click.style(
+                    """{host}{instance_part}
+                    {endpoints_part}{name}/
+                    ?api_key={key}""".format(
+                        host='https://api.syncano.io',
+                        instance_part=instance_part,
+                        endpoints_part='endpoints{}'.format(endpoints_part),
+                        name=endpoint_name,
+                        key=api_key
+                    ), fg=ColorSchema.INFO
+                )
             ), DefaultOpt(indent=3))
             for field in self.ENDPOINT_FIELDS:
                 handler_name = '_display_{}'.format(field)
@@ -298,22 +311,28 @@ class SocketFormatter(Formatter):
         if not data:
             self.write('{}: {}'.format('Calls', self.not_set), DefaultOpt(indent=indent))
             return
-        self.write('Calls:', DefaultOpt(indent=indent))
+        self.write(click.style('Calls:', fg=ColorSchema.PROMPT), DefaultOpt(indent=indent))
         for call in data:
             self.format_object(call, indent=indent)
 
     def _display_acl(self, data, indent):
         if not data:
-            self.write('{}: {}'.format('Acl', self.not_set), DefaultOpt(indent=indent))
+            self.write('{}: {}'.format(
+                click.style('Acl', fg=ColorSchema.PROMPT),
+                click.style(self.not_set, fg=ColorSchema.INFO)
+            ), DefaultOpt(indent=indent))
             return
-        self.write('ACL:', DefaultOpt(indent=indent))
+        self.write(click.style('Acl:', fg=ColorSchema.PROMPT), DefaultOpt(indent=indent))
         self.format_object(data, DefaultOpt(indent=indent))
 
     def _display_metadata(self, data, indent):
         if not data:
-            self.write('{}: {}'.format('Metadata', self.not_set), DefaultOpt(indent=indent))
+            self.write('{}: {}'.format(
+                click.style('Metadata', fg=ColorSchema.PROMPT),
+                click.style(self.not_set, fg=ColorSchema.INFO)
+            ), DefaultOpt(indent=indent))
             return
-        self.write('Metadata:', DefaultOpt(indent=indent))
+        self.write(click.style('Metadata:', fg=ColorSchema.PROMPT), DefaultOpt(indent=indent))
         self.format_object(data, DefaultOpt(indent=indent))
 
     @classmethod

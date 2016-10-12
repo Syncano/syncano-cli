@@ -68,7 +68,7 @@ class SocketCommand(BaseInstanceCommand):
         api_data.update({'instance_name': self.instance.name})
         api_data.update({'config': config})
         custom_socket = CustomSocket.please.create(**api_data)
-        self.output_formatter.write('Sockets {} created.'.format(custom_socket.name))
+        self.formatter.write('Sockets {} created.'.format(custom_socket.name))
         self._display_socket_status(custom_socket.name)
 
     def install_from_url(self, url_path, name):
@@ -79,12 +79,12 @@ class SocketCommand(BaseInstanceCommand):
         except SyncanoRequestError as e:
             raise SocketAPIException(e.reason)
 
-        self.output_formatter.write('Installing Sockets from url: {}.'.format(url_path), SpacedOpt())
+        self.formatter.write('Installing Sockets from url: {}.'.format(url_path), SpacedOpt())
         self._display_socket_status(name)
 
     def _display_socket_status(self, socket_name):
         cs = CustomSocket.please.get(name=socket_name, instance_name=self.instance.name)
-        self.output_formatter.write(
+        self.formatter.write(
             'Current status is: {} (syncano sockets details {} for refresh).'.format(cs.status, cs.name),
             BottomSpacedOpt())
 

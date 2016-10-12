@@ -18,4 +18,4 @@ def init(ctx, config):
     # register new account;
     command = BaseCommand(config)
     command.has_setup()
-    command.output_formatter.write(ctx.parent.get_help(), DefaultOpt(indent=2))
+    command.formatter.write(ctx.parent.get_help(), DefaultOpt(indent=2))

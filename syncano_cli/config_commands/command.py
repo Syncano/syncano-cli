@@ -12,10 +12,9 @@ class ConfigCommand(BaseInstanceCommand):
         self._show_config(config)
 
     def _show_config(self, config):
-        self.output_formatter.write_space('Config for Instance {}'.format(self.instance.name),
-                                          space_bottom=False)
-        self.output_formatter.display_config(config)
-        self.output_formatter.empty_line()
+        self.formatter.write('Config for Instance {}'.format(self.instance.name), TopSpacedOpt())
+        self.formatter.display_config(config)
+        self.formatter.empty_line()
 
     def add(self, name, value):
         config = self.instance.get_config()
@@ -23,7 +22,7 @@ class ConfigCommand(BaseInstanceCommand):
             raise VariableInConfigException(format_args=[name])
         config.update({name: value})
         self.instance.set_config(config)
-        self.output_formatter.write_space('Variable `{}` set to `{}` in instance `{}`.'.format(
+        self.formatter.write_space('Variable `{}` set to `{}` in instance `{}`.'.format(
             name, value, self.instance.name), TopSpacedOpt())
         self._show_config(config)
 
@@ -31,7 +30,7 @@ class ConfigCommand(BaseInstanceCommand):
         config = self.instance.get_config()
         config.update({name: value})
         self.instance.set_config(config)
-        self.output_formatter.write_space('Variable `{}` set to `{}` in instance `{}`.'.format(
+        self.formatter.write_space('Variable `{}` set to `{}` in instance `{}`.'.format(
             name, value, self.instance.name), TopSpacedOpt())
         self._show_config(config)
 
@@ -42,6 +41,6 @@ class ConfigCommand(BaseInstanceCommand):
         else:
             raise VariableNotFoundException(format_args=[name])
         self.instance.set_config(config)
-        self.output_formatter.write_space('Variable `{}` removed from in instance `{}`.'.format(
+        self.formatter.write_space('Variable `{}` removed from in instance `{}`.'.format(
             name, self.instance.name), TopSpacedOpt())
         self._show_config(config)

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import click
 import six
-from syncano_cli.base.options import BottomSpacedOpt, DefaultOpt, OptionsBase, WarningOpt
+from syncano_cli.base.options import BottomSpacedOpt, ColorSchema, DefaultOpt, OptionsBase, WarningOpt
 
 
 class Formatter(object):
@@ -28,8 +28,8 @@ class Formatter(object):
     def empty_line(cls):
         click.echo()
 
-    def separator(self):
-        self.write(70 * '-', WarningOpt(), BottomSpacedOpt())
+    def separator(self, size=70, indent=1):
+        self.write(size * '-', DefaultOpt(indent=indent), WarningOpt(), BottomSpacedOpt())
 
     def display_config(self, config):
         for name, value in six.iteritems(config):
@@ -42,27 +42,37 @@ class Formatter(object):
         option_list.insert(0, DefaultOpt())
         return OptionsBase.build_options(option_list)
 
-    def format_object(self, dictionary, indent=1):
+    def format_object(self, dictionary, indent=1, skip_fields=None):
+        skip_fields = skip_fields or []
         indent += 1
         for key, value in six.iteritems(dictionary):
             if isinstance(value, dict):
-                self.write('{}:'.format(key), DefaultOpt(indent=indent))
-                self.format_object(value, indent=indent)
+                self.write('{}:'.format(click.style(key, fg=ColorSchema.PROMPT)), DefaultOpt(indent=indent))
+                self.format_object(value, indent=indent, skip_fields=skip_fields)
             elif isinstance(value, list):
-                self._format_list(value, key=key, indent=indent)
+                self.format_list(value, key=key, indent=indent)
             else:
-                self.write('{}: {}'.format(key, value), DefaultOpt(indent=indent))
+                if key in skip_fields:
+                    continue
+                self.write('{}: {}'.format(
+                    click.style(key, fg=ColorSchema.PROMPT),
+                    click.style(value, fg=ColorSchema.INFO)
+                ), DefaultOpt(indent=indent))
 
-    def _format_list(self, data_list, key, indent=2):
-        # TODO: handle dicts elements in list, maybe even lists in list;
-        try:
-            value = ', '.join(data_list)
-        except TypeError:
-            value = data_list
-        if not key:
-            self.write('{}'.format(value), DefaultOpt(indent=indent))
-        else:
-            self.write('{}: {}'.format(key, value), DefaultOpt(indent=indent))
+    def format_list(self, data_list, key=None, indent=2, skip_fields=None):
+        skip_fields = skip_fields or []
+        for el in data_list:
+            if isinstance(el, dict):
+                self.format_object(el, indent=indent, skip_fields=skip_fields)
+            else:
+                if key:
+                    self.write('{}: {}'.format(
+                        click.style(key, fg=ColorSchema.PROMPT),
+                        click.style(el, fg=ColorSchema.INFO)
+                    ), DefaultOpt(indent=indent))
+                else:
+                    self.write('{}'.format(el), DefaultOpt(indent=indent))
+            self.empty_line()
 
     def _write(self, line, options, **styles):
         if options.space_top:

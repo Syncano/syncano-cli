@@ -28,7 +28,7 @@ class BaseCommand(RegisterMixin):
         self.config_path = config_path
         self.connection = create_connection(config_path)
 
-    output_formatter = Formatter()
+    formatter = Formatter()
     prompter = Prompter()
 
     META_CONFIG = {
@@ -58,7 +58,7 @@ class BaseCommand(RegisterMixin):
             return True
 
         if not has_global:
-            self.output_formatter.write('Login or create an account in Syncano.', SpacedOpt())
+            self.formatter.write('Login or create an account in Syncano.', SpacedOpt())
             email = self.prompter.prompt('email')
             password = self.prompter.prompt('password', hide_input=True)
             repeat_password = self.prompter.prompt('repeat password', hide_input=True)
@@ -104,7 +104,7 @@ class BaseCommand(RegisterMixin):
             if required and not config_parser.has_option(section, var_name):
                 return False
             elif not required and not config_parser.has_option(section, var_name):
-                cls.output_formatter.write(
+                cls.formatter.write(
                     'Missing "{}" in default config. {}'.format(var_name, config_meta['info']),
                     WarningOpt(), SpacedOpt()
                 )
