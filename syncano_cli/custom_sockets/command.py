@@ -17,6 +17,7 @@ from syncano_cli.custom_sockets.exceptions import (
     SocketYMLParseException
 )
 from syncano_cli.custom_sockets.formatters import SocketFormatter
+from syncano_cli.custom_sockets.jsonyaml import SocketJsonYml
 from syncano_cli.custom_sockets.parsers import SocketConfigParser
 from syncano_cli.custom_sockets.templates.socket_template import SCRIPTS, SOCKET_YML
 from yaml.parser import ParserError
@@ -29,6 +30,7 @@ class SocketCommand(BaseInstanceCommand):
     def __init__(self, config):
         super(SocketCommand, self).__init__(config)
         self.socket_formatter = SocketFormatter()
+        self.socket_processor = SocketJsonYml()
 
     def list(self):
         sockets = [cs for cs in CustomSocket.please.all(instance_name=self.instance.name)]
@@ -64,7 +66,7 @@ class SocketCommand(BaseInstanceCommand):
 
         config = self.set_up_config(yml_file)
 
-        api_data = self.socket_formatter.to_json(socket_yml=yml_file, directory=dir_path)
+        api_data = self.socket_processor.to_json(socket_yml=yml_file, directory=dir_path)
         api_data.update({'instance_name': self.instance.name})
         api_data.update({'config': config})
         custom_socket = CustomSocket.please.create(**api_data)
@@ -112,7 +114,7 @@ class SocketCommand(BaseInstanceCommand):
 
         socket = CustomSocket.please.get(name=socket_name, instance_name=self.instance.name)
 
-        yml_file, scripts = self.socket_formatter.to_yml(socket_object=socket)
+        yml_file, scripts = self.socket_processor.to_yml(socket_object=socket)
 
         with open(os.path.join(destination, 'socket.yml'), 'w+') as socket_yml:
             socket_yml.write(yml_file)
