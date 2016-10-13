@@ -28,8 +28,8 @@ def register(ctx):
     password = account_commands.prompter.prompt('password', hide_input=True)
     repeat_password = account_commands.prompter.prompt('repeat password', hide_input=True)
     password = account_commands.validate_password(password, repeat_password)
-    first_name = account_commands.prompter.prompt('first name (enter to skip)', default='')
-    last_name = account_commands.prompter.prompt('last name (enter to skip)', default='')
+    first_name = account_commands.prompter.prompt('first name (enter to skip)', default='', show_default=False)
+    last_name = account_commands.prompter.prompt('last name (enter to skip)', default='', show_default=False)
 
     account_commands.register(
         email=email,

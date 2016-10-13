@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 
+import sys
+
 import click
 from syncano_cli.base.connection import get_instance_name
+from syncano_cli.base.options import ErrorOpt, SpacedOpt
 from syncano_cli.config import ACCOUNT_CONFIG_PATH
 from syncano_cli.instance.command import InstanceCommands
 from syncano_cli.instance.exceptions import InstanceNameMismatchException, InstancesNotFoundException
@@ -31,10 +34,11 @@ def instances(ctx, config):
 @click.pass_context
 def list(ctx):
     """Display a list with defined Instances in Syncano. List displays only name and description."""
-    syncano_instances = ctx.obj['instance_commands'].list()
+    instance_commands = ctx.obj['instance_commands']
+    syncano_instances = instance_commands.list()
     if not syncano_instances:
         raise InstancesNotFoundException()
-    click.echo(syncano_instances)
+    instance_commands.display_list(syncano_instances)
 
 
 @instances.command()
@@ -43,8 +47,7 @@ def list(ctx):
 def details(ctx, instance_name):
     """Display Syncano Instance details."""
     instance_name = get_instance_name(ctx.obj['config'], instance_name)  # default one if no provided;
-    instance_details = ctx.obj['instance_commands'].details(instance_name)
-    click.echo(instance_details)
+    ctx.obj['instance_commands'].details(instance_name)
 
 
 @instances.command()
@@ -52,14 +55,18 @@ def details(ctx, instance_name):
 @click.argument('instance_name', required=False)
 def delete(ctx, instance_name):
     """Delete the Instance. Command will prompt you for permission."""
+    instance_commands = ctx.obj['instance_commands']
     instance_name = get_instance_name(ctx.obj['config'], instance_name)  # default one if no provided;
-    confirmed_name = click.prompt('Are you sure that you want to delete '
-                                  'Instance {}? Type Instance name again'.format(instance_name))
+    confirmed_name = instance_commands.prompter.prompt('Are you sure that you want to delete '
+                                                       'Instance {}? Type Instance name again'.format(instance_name),
+                                                       default='', show_default=False)
+    if not confirmed_name:
+        instance_commands.formatter.write('Aborted!', ErrorOpt(), SpacedOpt())
+        sys.exit(1)
     if confirmed_name == instance_name:
-        ctx.obj['instance_commands'].delete(instance_name)
+        instance_commands.delete(instance_name)
     else:
         raise InstanceNameMismatchException()
-    click.echo("INFO: Instance `{}` deleted.".format(instance_name))
 
 
 @instances.command()
@@ -79,4 +86,3 @@ def default(ctx, instance_name):
 def create(ctx, instance_name, description):
     """Create new Instance."""
     ctx.obj['instance_commands'].create(instance_name, description)
-    click.echo("INFO: Instance `{}` created.".format(instance_name))
