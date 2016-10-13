@@ -22,7 +22,7 @@ class ConfigCommand(BaseInstanceCommand):
             raise VariableInConfigException(format_args=[name])
         config.update({name: value})
         self.instance.set_config(config)
-        self.formatter.write_space('Variable `{}` set to `{}` in instance `{}`.'.format(
+        self.formatter.write('Variable `{}` set to `{}` in instance `{}`.'.format(
             name, value, self.instance.name), TopSpacedOpt())
         self._show_config(config)
 
@@ -30,7 +30,7 @@ class ConfigCommand(BaseInstanceCommand):
         config = self.instance.get_config()
         config.update({name: value})
         self.instance.set_config(config)
-        self.formatter.write_space('Variable `{}` set to `{}` in instance `{}`.'.format(
+        self.formatter.write('Variable `{}` set to `{}` in instance `{}`.'.format(
             name, value, self.instance.name), TopSpacedOpt())
         self._show_config(config)
 
@@ -41,6 +41,6 @@ class ConfigCommand(BaseInstanceCommand):
         else:
             raise VariableNotFoundException(format_args=[name])
         self.instance.set_config(config)
-        self.formatter.write_space('Variable `{}` removed from in instance `{}`.'.format(
+        self.formatter.write('Variable `{}` removed from in instance `{}`.'.format(
             name, self.instance.name), TopSpacedOpt())
         self._show_config(config)

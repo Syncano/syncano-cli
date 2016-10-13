@@ -33,7 +33,11 @@ class Formatter(object):
 
     def display_config(self, config):
         for name, value in six.iteritems(config):
-            self.write('{:20}: {}'.format(name, value))
+            self.write('{}{:20} {}'.format(
+                self.indent,
+                click.style(name, fg=ColorSchema.PROMPT),
+                click.style(value, fg=ColorSchema.INFO)
+            ))
         if not config:
             self.write('No config specified yet.', DefaultOpt(indent=2))
 
