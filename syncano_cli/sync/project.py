@@ -5,8 +5,8 @@ import json
 import os
 import time
 
-import click
 import yaml
+from syncano_cli.base.formatters import Formatter
 
 from .classes import pull_classes, push_classes, validate_classes
 from .scripts import pull_scripts, push_scripts, validate_scripts
@@ -18,6 +18,7 @@ class Project(object):
         self.classes = classes or {}
         self.scripts = scripts or []
         self.timestamp = timestamp or time.time()
+        self.formatter = Formatter()
 
     @classmethod
     def from_config(cls, config):
@@ -48,7 +49,7 @@ class Project(object):
     def update_from_instance(self, instance, all=False, classes=None,
                              scripts=None):
         """Updates project data from Instances"""
-        click.echo("INFO: Pulling instance data from syncano")
+        self.formatter.write("Pulling instance data from syncano")
         prev_classes = self.classes
         classes = classes or self.classes.keys()
         scripts = scripts or set(s['label'] for s in self.scripts)
@@ -60,12 +61,12 @@ class Project(object):
 
         state = ("Not changed", "Added", "Removed", "Updated")
         if self.classes and all:
-            click.echo("INFO: Stats for Classes")
+            self.formatter.write("Stats for Classes")
             for info, classes in zip(state, compare_dicts(self.classes, prev_classes)):
                 if classes:
-                    click.echo('INFO: {} : {}'.format(info, ','.join(classes)))
+                    self.formatter.write('{} : {}'.format(info, ','.join(classes)))
 
-        click.echo("INFO: Finished pulling instance data from syncano")
+        self.formatter.write("Finished pulling instance data from syncano")
 
     def push_to_instance(self, instance, all=False, classes=None,
                          scripts=None):
@@ -94,7 +95,7 @@ class Project(object):
         if self.timestamp > last_sync and sync_classes:
             push_classes(instance, sync_classes)
         elif not scripts:
-            click.echo('Nothing to sync.')
+            self.formatter.write('Nothing to sync.')
         now = time.time()
         self.timestamp = now
         os.utime('.sync', (now, now))

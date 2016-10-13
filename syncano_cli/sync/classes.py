@@ -3,14 +3,15 @@ from __future__ import print_function, unicode_literals
 
 import re
 
-import click
 import six
+from syncano_cli.base.formatters import Formatter
 
 ALLOWED_TYPES = {"array", "boolean", "datetime", "file", "float", "geopoint",
                  "integer", "object", "reference", "relation", "string",
                  "text"}
 
 ALLOWED_PERMISIONS = ('none', 'read', 'create_objects')
+formatter = Formatter()
 
 
 def field_schema_to_str(schema):
@@ -100,15 +101,15 @@ def pull_classes(instance, include, update_dict=None):
 
 
 def push_classes(instance, class_dict):
-    click.echo('INFO: Pushing Classes.')
+    formatter.write('Pushing Classes.')
     for name, config in six.iteritems(class_dict):
-        click.echo('INFO: Pushing Class {0}'.format(name))
+        formatter.write('Pushing Class {0}'.format(name))
         try:
             klass = instance.classes.get(name=name)
-            click.echo('INFO: Found Class {0}'.format(name))
+            formatter.write('Found Class {0}'.format(name))
         except instance.classes.model.DoesNotExist:
             klass = instance.classes.model(name=name)
-            click.echo('INFO: Class {0} not found. Creating new one'.format(name))
+            formatter.write('Class {0} not found. Creating new one'.format(name))
         schema = []
         for name, field_config in six.iteritems(config['fields']):
             field = {'name': name}
@@ -117,7 +118,7 @@ def push_classes(instance, class_dict):
         klass.schema = schema
 
         klass.save()
-        click.echo('INFO: Class {0} pushed.'.format(name))
+        formatter.write('Class {0} pushed.'.format(name))
 
 
 def validate_class(class_dict):
