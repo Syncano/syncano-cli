@@ -40,6 +40,7 @@ class Formatter(object):
             ))
         if not config:
             self.write('No config specified yet.', DefaultOpt(indent=2))
+        self.empty_line()
 
     def get_options(self, options):
         option_list = list(options) or []

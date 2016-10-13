@@ -45,6 +45,7 @@ class InstanceCommands(BaseCommand):
         self.formatter.write('To set this instance as default use: `syncano instances default {}`'.format(
             instance.name
         ), BottomSpacedOpt())
+        return instance
 
     def display_details(self, instance):
         self.formatter.write('Details for Instance `{}`.'.format(instance.name), SpacedOpt())

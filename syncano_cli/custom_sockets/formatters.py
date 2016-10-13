@@ -3,9 +3,8 @@ import sys
 
 import click
 import six
-import yaml
 from syncano_cli.base.formatters import Formatter
-from syncano_cli.base.options import ColorSchema, DefaultOpt, SpacedOpt, TopSpacedOpt, WarningOpt
+from syncano_cli.base.options import BottomSpacedOpt, ColorSchema, DefaultOpt, SpacedOpt, TopSpacedOpt, WarningOpt
 
 
 class SocketFormatter(Formatter):
@@ -23,20 +22,8 @@ class SocketFormatter(Formatter):
 
         for cs in socket_list:
             lines = self._display_list_details(custom_socket=cs)
-            lines.append('See: `{}` {}'.format(
-                click.style('syncano sockets details {}'.format(cs.name), fg=ColorSchema.WARNING),
-                click.style('for details.', fg=ColorSchema.INFO)
-            ))
+            lines.append('See: `syncano sockets details {}` for details.'.format(cs.name))
             self.write_block(lines, DefaultOpt(indent=2))
-
-    @classmethod
-    def format_endpoints_list(cls, socket_endpoints):
-        yml_dict = {'endpoints': []}
-        for endpoint in socket_endpoints:
-            endpoint_data = {'name': endpoint.name, 'path': endpoint.links.self}
-            endpoint_data.update({'methods': endpoint.allowed_methods})
-            yml_dict['endpoints'].append({'endpoint': endpoint_data})
-        return yaml.safe_dump(yml_dict, default_flow_style=False)
 
     def display_socket_details(self, custom_socket, api_key):
         self.write_block(
@@ -91,6 +78,27 @@ class SocketFormatter(Formatter):
             lines.append("{}: {}".format(field.capitalize().replace('_', ' '), value))
         return lines
 
+    def display_all_endpoints(self, endpoints, api_key):
+        self.write('Endpoints', SpacedOpt())
+        if not endpoints:
+            self.write('Not endpoint specified yet.', BottomSpacedOpt())
+
+        for endpoint in endpoints:
+            self.write('{}: {}'.format(
+                click.style('URL', fg=ColorSchema.PROMPT),
+                click.style(self._format_link(endpoint.links.links_dict['self'], '', api_key),
+                            fg=ColorSchema.INFO)
+            ), DefaultOpt(indent=2))
+            self.write('{}: {}'.format(
+                click.style('Name', fg=ColorSchema.PROMPT),
+                click.style(endpoint.name, fg=ColorSchema.INFO)
+            ), DefaultOpt(indent=2))
+            self.write('{}: {}'.format(
+                click.style('Methods', fg=ColorSchema.PROMPT),
+                click.style(', '.join(endpoint.allowed_methods), fg=ColorSchema.INFO)
+            ), DefaultOpt(indent=2))
+            self.separator(size=66, indent=2)
+
     def display_endpoints(self, endpoints, base_link, api_key):
 
         for endpoint_name, endpoint_data in six.iteritems(endpoints):
@@ -107,12 +115,12 @@ class SocketFormatter(Formatter):
         return '{link}'.format(
             link=click.style(
                 """{host}{instance_part}
-                {endpoints_part}{name}/
+                {endpoints_part}{name}
                 ?api_key={key}""".format(
                     host='https://api.syncano.io',
                     instance_part=instance_part,
                     endpoints_part='endpoints{}'.format(endpoints_part),
-                    name=endpoint_name,
+                    name='{}/'.format(endpoint_name) if endpoint_name else '',
                     key=api_key
                 ), fg=ColorSchema.INFO
             )

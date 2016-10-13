@@ -2,6 +2,7 @@
 
 import click
 from syncano_cli.base.data_parser import parse_input_data
+from syncano_cli.base.options import SpacedOpt, WarningOpt
 from syncano_cli.config import ACCOUNT_CONFIG_PATH
 from syncano_cli.custom_sockets.command import SocketCommand
 from syncano_cli.custom_sockets.exceptions import MissingRequestDataException, SocketNameMissingException
@@ -72,6 +73,9 @@ def details(ctx, socket_name):
 def recheck(ctx, socket_name):
     """Allow to recheck socket."""
     socket_command = ctx.obj['socket_command']
+    socket_command.formatter.write('Rechecking socket. See `syncano sockets details {}` in few seconds.'.format(
+        socket_name
+    ), SpacedOpt())
     socket_command.recheck(socket_name=socket_name)
 
 
@@ -106,6 +110,7 @@ def template(ctx, output_dir, socket):
         socket_command.create_template(socket_name=socket, destination=output_dir)
     else:
         socket_command.create_template_from_local_template(destination=output_dir)
+    socket_command.formatter.write('Template created in `{}`'.format(output_dir), SpacedOpt())
 
 
 @sockets.command()
@@ -124,4 +129,6 @@ def run(ctx, endpoint_name, method, data):
     data = parse_input_data(data)
 
     results = socket_command.run(endpoint_name, method=method, data=data)
-    click.echo("{}".format(results))
+    socket_command.formatter.write('Result for endpoint `{}`:'.format(endpoint_name), SpacedOpt(), WarningOpt())
+    socket_command.formatter.write_lines("{}".format(results).splitlines())
+    socket_command.formatter.empty_line()

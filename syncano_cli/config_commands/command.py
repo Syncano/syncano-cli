@@ -14,7 +14,6 @@ class ConfigCommand(BaseInstanceCommand):
     def _show_config(self, config):
         self.formatter.write('Config for Instance {}'.format(self.instance.name), TopSpacedOpt())
         self.formatter.display_config(config)
-        self.formatter.empty_line()
 
     def add(self, name, value):
         config = self.instance.get_config()

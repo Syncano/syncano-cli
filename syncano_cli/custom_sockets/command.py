@@ -9,7 +9,7 @@ import yaml
 from syncano.exceptions import SyncanoRequestError
 from syncano.models import CustomSocket, SocketEndpoint
 from syncano_cli.base.command import BaseInstanceCommand
-from syncano_cli.base.options import BottomSpacedOpt, SpacedOpt
+from syncano_cli.base.options import BottomSpacedOpt, SpacedOpt, TopSpacedOpt
 from syncano_cli.custom_sockets.exceptions import (
     EndpointNotFoundException,
     SocketAPIException,
@@ -46,13 +46,12 @@ class SocketCommand(BaseInstanceCommand):
 
     def config(self, socket_name):
         cs = CustomSocket.please.get(name=socket_name, instance_name=self.instance.name)
-        click.echo('Config for socket `{}`'.format(cs.name))
-        for name, value in six.iteritems(cs.config):
-            click.echo('{:20}: {}'.format(name, value))
+        self.formatter.write('Config for Socket `{}`'.format(cs.name), TopSpacedOpt())
+        self.formatter.display_config(cs.config)
 
     def list_endpoints(self):
         endpoints = SocketEndpoint.get_all_endpoints(instance_name=self.instance.name)
-        click.echo(self.socket_formatter.format_endpoints_list(socket_endpoints=endpoints))
+        self.socket_formatter.display_all_endpoints(endpoints=endpoints, api_key=self.connection.connection().api_key)
 
     def delete(self, socket_name):
         custom_socket = CustomSocket.please.get(name=socket_name, instance_name=self.instance.name)
