@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 import os
 import re
+import sys
 
 import click
 from syncano_cli.base.command import BaseInstanceCommand
+from syncano_cli.base.options import BottomSpacedOpt, ColorSchema, PromptOpt, SpacedOpt, TopSpacedOpt, WarningOpt
 from syncano_cli.hosting.exceptions import NoHostingFoundException, PathNotFoundException, UnicodeInPathException
 
 
@@ -17,17 +19,28 @@ class HostingCommands(BaseInstanceCommand):
         ]
 
     def print_hostings(self, hostings):
-        click.echo('Defined hostings:')
-        self._print_separator()
-        click.echo('{0:30}{1:20}'.format('Label', 'Domains'))
-        self._print_separator()
+        if not hostings:
+            self.formatter.write('No Hosting defined for instance `{}`.'.format(
+                self.instance.name
+            ), SpacedOpt())
+            sys.exit(1)
+        self.formatter.write('Hosting defined in Instance `{}`:'.format(self.instance.name), SpacedOpt())
+        self.formatter.write('{0:30}{1:20}{2:20}'.format('Label', 'Domains', 'URL'), PromptOpt())
+
         for label, domains in hostings:
-            click.echo(
-                '{0:30}{1:20}'.format(
+            domain_url = [(domain, self.get_hosting_url(domain)) for domain in domains]
+            self.formatter.write(
+                '{0:30}{1:20}{2:20}'.format(
                     label,
-                    ', '.join(domains)
-                )
+                    domain_url[0][0] if domain_url else '',
+                    domain_url[0][1] if domain_url else '')
             )
+            if domain_url[1:]:
+                for domain_url in domain_url[1:]:
+                    self.formatter.write(
+                        '{0:30}{1:20}{2:20}'.format('', domain_url[0], domain_url[1])
+                    )
+        self.formatter.empty_line()
 
     def list_hosting_files(self, domain):
         hosting = self._get_hosting(domain=domain)
@@ -35,18 +48,21 @@ class HostingCommands(BaseInstanceCommand):
         return files_list
 
     def publish(self, domain, base_dir):
+        self.formatter.write('Your site is publishing.', SpacedOpt())
         uploaded_files = []
         hosting = self._get_hosting(domain=domain, is_new=True)
         upload_method_name = 'update_file'
         if not hosting:
             # create a new Hosting Socket if no default is present;
-            hosting = self.create_hosting(label='Default Hosting Socket', domain=domain)
+            hosting = self.create_hosting(label='{} Hosting Socket'.format(
+                domain.capitalize()
+            ), domain=domain)
             upload_method_name = 'upload_file'
 
         for folder, subs, files in os.walk(base_dir):
             path = folder.split(base_dir)[1]
 
-            if path.startswith('/'):  # skip the /
+            if path.startswith('/') or path.startswith('\\'):  # skip the /
                 path = path[1:]
 
             for single_file in files:
@@ -59,7 +75,8 @@ class HostingCommands(BaseInstanceCommand):
 
                 sys_path = os.path.join(folder, single_file)
                 with open(sys_path, 'rb') as upload_file:
-                    click.echo(u'INFO: Uploading file: {}'.format(file_path))
+                    self.formatter.write('* Uploading file: {}'.format(click.style(file_path,
+                                                                                   fg=ColorSchema.WARNING)))
                     getattr(hosting, upload_method_name)(path=file_path, file=upload_file)
 
                 uploaded_files.append(file_path)
@@ -69,7 +86,7 @@ class HostingCommands(BaseInstanceCommand):
         hosting = self._get_hosting(domain=domain)
         deleted_label = hosting.label
         hosting.delete()
-        click.echo('INFO: Hosting `{}` deleted.'.format(deleted_label))
+        self.formatter.write('Hosting `{}` deleted.'.format(deleted_label), SpacedOpt())
 
     def delete_path(self, domain, path=None):
         hosting = self._get_hosting(domain=domain)
@@ -85,7 +102,7 @@ class HostingCommands(BaseInstanceCommand):
     def update_single_file(self, domain, path, file):
         hosting = self._get_hosting(domain=domain)
         hosting.update_file(path, file)
-        click.echo('INFO: File `{}` updated.'.format(path))
+        self.formatter.write('File `{}` updated.'.format(path), SpacedOpt())
 
     def create_hosting(self, label, domain):
         hosting = self.instance.hostings.create(
@@ -111,12 +128,26 @@ class HostingCommands(BaseInstanceCommand):
         if not self.VALID_PATH_REGEX.match(file_path):
             raise UnicodeInPathException()
 
-    def print_hosting_files(self, hosting_files):
-        click.echo('Hosting files:')
-        self._print_separator()
-        for hosting_file in hosting_files:
-            click.echo(hosting_file.path)
+    def print_hosting_files(self, domain, hosting_files):
+        self.formatter.write('Hosting files for domain `{}` in instance `{}`:'.format(domain, self.instance.name),
+                             TopSpacedOpt())
+        self.formatter.write(self.get_hosting_url(domain), BottomSpacedOpt())
 
-    @staticmethod
-    def _print_separator():
-        click.echo(79 * '-')
+        self.formatter.separator()
+        for hosting_file in hosting_files:
+            self.formatter.write('* {}'.format(hosting_file.path), WarningOpt())
+        self.formatter.empty_line()
+
+    def get_hosting_url(self, domain):
+        if domain == 'default':
+            link = click.style(
+                'https://{instance_name}.syncano.site'.format(
+                    instance_name=self.instance.name,
+                ), fg=ColorSchema.WARNING)
+        else:
+            link = click.style(
+                'https://{instance_name}--{domain}.syncano.site'.format(
+                    instance_name=self.instance.name,
+                    domain=domain
+                ), fg=ColorSchema.WARNING)
+        return link
