@@ -3,6 +3,8 @@ import click
 import six
 from syncano.exceptions import SyncanoException
 from syncano.models import APNSDevice, GCMDevice, Object
+from syncano_cli.base.formatters import Formatter
+from syncano_cli.base.options import ErrorOpt, SpacedOpt, WarningOpt
 from syncano_cli.parse_to_syncano.config import PARSE_PAGINATION_LIMIT, SYNCANO_BATCH_SIZE
 from syncano_cli.parse_to_syncano.migrations.aggregation import data_aggregate
 from syncano_cli.parse_to_syncano.migrations.mixins import PaginationMixin, ParseConnectionMixin, SyncanoConnectionMixin
@@ -22,6 +24,7 @@ class SyncanoTransfer(ParseConnectionMixin, SyncanoConnectionMixin, PaginationMi
         self.file_descriptors = {}
         self.relations = None
         self.config = config
+        self.formatter = Formatter()
 
     def set_relations(self, relations):
         self.relations = relations
@@ -76,10 +79,11 @@ class SyncanoTransfer(ParseConnectionMixin, SyncanoConnectionMixin, PaginationMi
                 try:
                     instance.classes.create(name=class_to_process.syncano_name, schema=class_to_process.syncano_schema)
                 except Exception as e:
-                    click.echo('\nWARN: Class already defined ({}) in this Instance ({}). Using existing Class.'.format(
-                        class_to_process.syncano_name, instance.name)
+                    self.formatter.write(
+                        'Class already defined ({}) in this Instance ({}). Using existing Class.'.format(
+                            class_to_process.syncano_name, instance.name), WarningOpt()
                     )
-                    click.echo('WARN: {}'.format(e))
+                    self.formatter.write('{}'.format(e), WarningOpt())
 
         self.set_relations(relations)
 
@@ -121,7 +125,7 @@ class SyncanoTransfer(ParseConnectionMixin, SyncanoConnectionMixin, PaginationMi
                         self._add_last_objects(s_class, objects_to_add, parse_ids, class_to_process)
 
     def transfer_devices(self):
-        click.echo(u'Transferring devices')
+        self.formatter.write(u'Transferring devices')
         limit, skip = self.get_limit_and_skip()
         apns_devices = []
         gcm_devices = []
@@ -140,7 +144,10 @@ class SyncanoTransfer(ParseConnectionMixin, SyncanoConnectionMixin, PaginationMi
                 elif installation['deviceType'] == DeviceTypeE.ANDROID:
                     gcm_devices.append(GCMDevice.please.as_batch().create(**syncano_device))
                 else:
-                    click.echo(u'ERROR: Not supported device type: {}. Skipping.'.format(installation['deviceType']))
+                    self.formatter.write(
+                        u'Not supported device type: {}. Skipping.'.format(installation['deviceType']),
+                        ErrorOpt()
+                    )
                     continue
 
                 apns_devices = self._batch_devices(APNSDevice, apns_devices)
@@ -182,7 +189,7 @@ class SyncanoTransfer(ParseConnectionMixin, SyncanoConnectionMixin, PaginationMi
         self.transfer_files()
         self.transfer_devices()
         self.process_relations(instance)
-        click.echo('INFO: Transfer completed')
+        self.formatter.write('Transfer completed.', SpacedOpt())
 
     def _handle_files(self, files, data_object, class_to_process):
         if files:
