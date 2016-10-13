@@ -1,6 +1,6 @@
 import click
 from syncano_cli.account.command import AccountCommands
-from syncano_cli.base.options import WarningOpt, SpacedOpt, ColorSchema
+from syncano_cli.base.options import ColorSchema, SpacedOpt, WarningOpt
 from syncano_cli.config import ACCOUNT_CONFIG_PATH
 
 
