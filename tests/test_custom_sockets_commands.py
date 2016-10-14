@@ -88,7 +88,7 @@ class CustomSocketCommandsTest(BaseCLITest):
     def test_list_endpoints(self):
         result = self.runner.invoke(cli, args=['sockets', 'list', 'endpoints'], obj={})
         self.assertIn('Endpoints', result.output)
-        self.assertIn('Name')
+        self.assertIn('Name', result.output)
 
     def test_details_socket(self):
         result = self.runner.invoke(cli, args=['sockets', 'details', self.custom_socket.name], obj={})
