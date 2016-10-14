@@ -40,6 +40,6 @@ class ConfigCommand(BaseInstanceCommand):
         else:
             raise VariableNotFoundException(format_args=[name])
         self.instance.set_config(config)
-        self.formatter.write('Variable `{}` removed from in instance `{}`.'.format(
+        self.formatter.write('Variable `{}` removed from instance `{}`.'.format(
             name, self.instance.name), TopSpacedOpt())
         self._show_config(config)

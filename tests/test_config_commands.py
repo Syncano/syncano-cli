@@ -15,7 +15,7 @@ class ConfigCommandsTest(BaseCLITest):
     def test_add_config_var(self):
         # test basic add;
         result = self._add_config('api-key', '981xx')
-        self.assertIn('Variable `api-key` set to `981xx`.', result.output)
+        self.assertIn('Variable `api-key` set to `981xx`', result.output)
 
         result = self._list_config()
         self.assertIn('api-key', result.output)
@@ -37,7 +37,7 @@ class ConfigCommandsTest(BaseCLITest):
         self._add_config('api-key-mod', '981xx')
 
         result = self.runner.invoke(cli, args=['config', 'modify', 'api-key-mod', '134'], obj={})
-        self.assertIn('Variable `api-key-mod` set to `134`.', result.output)
+        self.assertIn('Variable `api-key-mod` set to `134`', result.output)
 
         result = self._list_config()
         self.assertIn('api-key-mod', result.output)
@@ -49,7 +49,7 @@ class ConfigCommandsTest(BaseCLITest):
         self.assertIn('api-key-del', result.output)
 
         result = self.runner.invoke(cli, args=['config', 'delete', 'api-key-del'], obj={})
-        self.assertIn('Variable `api-key-del` removed.', result.output)
+        self.assertIn('Variable `api-key-del` removed', result.output)
 
         result = self._list_config()
         self.assertNotIn('api-key-del', result.output)
