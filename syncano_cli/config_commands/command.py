@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
-import click
-import six
 from syncano_cli.base.command import BaseInstanceCommand
+from syncano_cli.base.options import TopSpacedOpt
 from syncano_cli.config_commands.exceptions import VariableInConfigException, VariableNotFoundException
 
 
@@ -10,9 +9,11 @@ class ConfigCommand(BaseInstanceCommand):
 
     def config_show(self):
         config = self.instance.get_config()
-        click.echo('Config for Instance {}'.format(self.instance.name))
-        for name, value in six.iteritems(config):
-            click.echo('{:20}: {}'.format(name, value))
+        self._show_config(config)
+
+    def _show_config(self, config):
+        self.formatter.write('Config for Instance {}'.format(self.instance.name), TopSpacedOpt())
+        self.formatter.display_config(config)
 
     def add(self, name, value):
         config = self.instance.get_config()
@@ -20,13 +21,17 @@ class ConfigCommand(BaseInstanceCommand):
             raise VariableInConfigException(format_args=[name])
         config.update({name: value})
         self.instance.set_config(config)
-        click.echo('Variable `{}` set to `{}`.'.format(name, value))
+        self.formatter.write('Variable `{}` set to `{}` in instance `{}`.'.format(
+            name, value, self.instance.name), TopSpacedOpt())
+        self._show_config(config)
 
     def modify(self, name, value):
         config = self.instance.get_config()
         config.update({name: value})
         self.instance.set_config(config)
-        click.echo('Variable `{}` set to `{}`.'.format(name, value))
+        self.formatter.write('Variable `{}` set to `{}` in instance `{}`.'.format(
+            name, value, self.instance.name), TopSpacedOpt())
+        self._show_config(config)
 
     def delete(self, name):
         config = self.instance.get_config()
@@ -35,4 +40,6 @@ class ConfigCommand(BaseInstanceCommand):
         else:
             raise VariableNotFoundException(format_args=[name])
         self.instance.set_config(config)
-        click.echo('Variable `{}` removed.'.format(name))
+        self.formatter.write('Variable `{}` removed from instance `{}`.'.format(
+            name, self.instance.name), TopSpacedOpt())
+        self._show_config(config)

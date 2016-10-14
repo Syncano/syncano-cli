@@ -2,9 +2,9 @@
 
 import json
 
-import click
 import requests
 import six
+from syncano_cli.base.formatters import Formatter
 from syncano_cli.parse_to_syncano.migrations.aggregation import ClassAggregate
 from syncano_cli.parse_to_syncano.parse.constants import ParseFieldTypeE
 
@@ -102,7 +102,7 @@ class ClassProcessor(object):
         for i, item in enumerate(value):
             if isinstance(item, dict):
                 if item.get('__type') == ParseFieldTypeE.POINTER:
-                    click.echo('\nINFO: Array of pointers not supported, writing: {}'.format(item.get('objectId')))
+                    Formatter().write('Array of pointers not supported, writing: {}'.format(item.get('objectId')))
                     value[i] = item['objectId']
         values_list = json.dumps(value)
         processed_object[key.lower()] = values_list

@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
+import sys
+
 import click
-from click import Abort
-from syncano_cli.base.connection import get_instance
+from syncano_cli.base.options import BottomSpacedOpt, ErrorOpt, TopSpacedOpt
+from syncano_cli.config import ACCOUNT_CONFIG_PATH
 from syncano_cli.hosting.command import HostingCommands
 from syncano_cli.hosting.validators import validate_domain, validate_publish
 
@@ -13,13 +15,14 @@ def top_hosting():
 
 @top_hosting.group()
 @click.pass_context
-@click.option('--config', help=u'Account configuration file.')
+@click.option('--config', help=u'Account configuration file.', default=ACCOUNT_CONFIG_PATH)
 @click.option('--instance-name', help=u'Instance name.')
 @click.option('--domain', default='default')
 def hosting(ctx, config, instance_name, domain):
     """Handle Hosting Socket and Hosting Socket files. Allow to publish static pages to the Syncano Hosting."""
-    instance = get_instance(config, instance_name)
-    hosting_commands = HostingCommands(instance)
+    hosting_commands = HostingCommands(config)
+    hosting_commands.has_setup()
+    hosting_commands.set_instance(instance_name)
     ctx.obj['hosting_commands'] = hosting_commands
     ctx.obj['domain'] = domain
 
@@ -34,19 +37,9 @@ def publish(ctx, directory):
     domain = validate_domain(domain)  # prepared for user defined domains;
     hosting_commands = ctx.obj['hosting_commands']
     hosting_commands.publish(domain=domain, base_dir=directory)
-    if domain == 'default':
-        click.echo(
-            "INFO: Your site published. Go to: https://{instance_name}.syncano.site.".format(
-                instance_name=hosting_commands.instance.name,
-            )
-        )
-    else:
-        click.echo(
-            "INFO: Your site published. Go to: https://{instance_name}--{domain}.syncano.site.".format(
-                instance_name=hosting_commands.instance.name,
-                domain=domain
-            )
-        )
+    url = hosting_commands.get_hosting_url(domain)
+    hosting_commands.formatter.write("Your site is published.", TopSpacedOpt())
+    hosting_commands.formatter.write("Go to: {url}".format(url=url), BottomSpacedOpt())
 
 
 @hosting.group(invoke_without_command=True)
@@ -68,6 +61,7 @@ def files(ctx):
     domain = validate_domain(domain)
     hosting_commands = ctx.obj['hosting_commands']
     hosting_commands.print_hosting_files(
+        domain=domain,
         hosting_files=hosting_commands.list_hosting_files(domain)
     )
 
@@ -81,10 +75,11 @@ def delete(ctx, path):
     domain = validate_domain(domain)
     hosting_commands = ctx.obj['hosting_commands']
     if not path:
-        if click.confirm('Do you want to remove whole hosting, domain: {}?'.format(domain)):
+        if hosting_commands.prompter.confirm('Do you want to remove whole hosting, domain: {}?'.format(domain)):
             hosting_commands.delete_hosting(domain=domain)
         else:
-            raise Abort()
+            hosting_commands.formatter.write('Aborted!', ErrorOpt())
+            sys.exit(1)
     else:
         hosting_commands.delete_path(domain=domain, path=path)
 

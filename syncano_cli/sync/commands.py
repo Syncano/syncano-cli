@@ -2,11 +2,14 @@
 from __future__ import print_function
 
 import os
+import sys
 import time
 
 import click
-from click import Abort
+from syncano_cli.base.command import BaseCommand
 from syncano_cli.base.connection import create_connection, get_instance
+from syncano_cli.base.options import ErrorOpt
+from syncano_cli.config import ACCOUNT_CONFIG, ACCOUNT_CONFIG_PATH
 from syncano_cli.sync.project import Project
 from syncano_cli.sync.templates.syncano_yml import syncano_yml
 from watchdog.observers import Observer
@@ -22,7 +25,7 @@ def top_sync():
 @top_sync.group()
 @click.pass_context
 @click.option('-f', '--file', default='syncano.yml', help=u'Instance configuration file.')
-@click.option('--config', help=u'Account configuration file.')
+@click.option('--config', help=u'Account configuration file.', default=ACCOUNT_CONFIG_PATH)
 @click.option('--instance-name', help=u'Instance name.')
 def sync(context, file, config, instance_name):
     """
@@ -32,12 +35,16 @@ def sync(context, file, config, instance_name):
     :param config: the config path - the cli config will be stored there
     :return:
     """
+    command = BaseCommand(config)
+    command.has_setup()
     connection = create_connection(config, instance_name)
     context.obj['connection'] = connection
+    context.obj['command'] = command
     context.obj['instance'] = get_instance(config, instance_name, connection=connection)
     context.obj['file'] = file
     context.obj['config'] = config
     context.obj['project'] = Project.from_config(context.obj['file'])
+    context.obj['key'] = ACCOUNT_CONFIG.get('DEFAULT', 'key')
 
 
 @sync.command()
@@ -48,7 +55,6 @@ def sync(context, file, config, instance_name):
 def push(context, script, all, **kwargs):
     """Push configuration changes to syncano."""
     klass = kwargs.pop('class')
-    print(script, all, klass)
     do_push(context, scripts=script, classes=klass, all=all)
 
 
@@ -83,7 +89,7 @@ def watch(context):
     context.obj['all'] = True
     context.obj['project'].timestamp = 0
     do_push(context, classes=None, scripts=None, all=True)  # TODO: use context or arguments
-    click.echo(u"INFO: Watching for file changes")
+    context.obj['command'].formatter.write(u'Watching for file changes')
     observer = Observer()
     observer.schedule(ProjectEventHandler(context), path='.', recursive=True)
     observer.start()
@@ -99,14 +105,16 @@ def watch(context):
 @click.pass_context
 def template(context):
     """Creates sample project file."""
+    command = context.obj['command']
     if os.path.isfile(context.obj['file']):
-        confirm = click.confirm(u'Are you sure you want to overwrite syncano.yml file with template?')
+        confirm = command.prompter.confirm(u'Are you sure you want to overwrite syncano.yml file with template?')
         if not confirm:
-            raise Abort()
+            command.formatter.write('Aborted!', ErrorOpt())
+            sys.exit(1)
 
     with open(context.obj['file'], 'wt') as fp:
         fp.write(syncano_yml)
-    click.echo("INFO: Template syncano.yml file created.")
+    context.obj['command'].formatter.write("Template syncano.yml file created in `{}`".format(context.obj['file']))
 
 
 def do_push(context, classes, scripts, all):

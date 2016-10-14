@@ -23,9 +23,14 @@ def get_instance_name(config, instance_name):
 
 
 def create_connection(config, instance_name=None):
+
     config = config or ACCOUNT_CONFIG_PATH
     ACCOUNT_CONFIG.read(config)
-    api_key = ACCOUNT_CONFIG.get('DEFAULT', 'key')
+    try:
+        api_key = ACCOUNT_CONFIG.get('DEFAULT', 'key')
+    except NoOptionError:
+        api_key = ''  # initialize with empty one;
+
     connection_dict = {
         'api_key': api_key,
     }

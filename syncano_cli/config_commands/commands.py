@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import click
-from syncano_cli.base.connection import get_instance
+from syncano_cli.config import ACCOUNT_CONFIG_PATH
 from syncano_cli.config_commands.command import ConfigCommand
 
 
@@ -12,12 +12,14 @@ def top_config():
 
 @top_config.group(invoke_without_command=True)
 @click.pass_context
-@click.option('--config', help=u'Account configuration file.')
+@click.option('--config', help=u'Account configuration file.', default=ACCOUNT_CONFIG_PATH)
 @click.option('--instance-name', help=u'Instance name.')
 def config(ctx, config, instance_name):
     """Allow to manage global Instance config."""
-    instance = get_instance(config, instance_name)
-    config_command = ConfigCommand(instance=instance)
+
+    config_command = ConfigCommand(config)
+    config_command.has_setup()
+    config_command.set_instance(instance_name)
     ctx.obj['config_command'] = config_command
     if ctx.invoked_subcommand is None:
         config_command.config_show()

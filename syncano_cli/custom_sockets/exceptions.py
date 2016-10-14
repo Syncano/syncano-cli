@@ -29,3 +29,7 @@ class BadYAMLDefinitionInEndpointsException(CLIBaseException):
 
 class SocketNameMissingException(CLIBaseException):
     default_message = u'Name should be specified: `--name`.'
+
+
+class SocketAPIException(CLIBaseException):
+    pass

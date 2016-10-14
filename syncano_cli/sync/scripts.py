@@ -5,9 +5,10 @@ import os
 import re
 from collections import defaultdict
 
-import click
 import six
 from syncano.exceptions import SyncanoRequestError
+from syncano_cli.base.formatters import Formatter
+from syncano_cli.base.options import WarningOpt
 
 ALLOWED_RUNTIMES = {
     'golang': '.go',
@@ -22,6 +23,9 @@ ALLOWED_RUNTIMES = {
     'ruby': '.rb',
     'swift': '.swift',
 }
+
+
+formatter = Formatter()
 
 
 def get_runtime_extension(runtime):
@@ -52,7 +56,7 @@ def pull_scripts(instance, include):
     seen_labels = set()
 
     if not os.path.exists('scripts'):
-        click.echo("INFO: Creating Scripts directory")
+        formatter.write("Creating Scripts directory")
         os.makedirs('scripts')
 
     script_endpoints = defaultdict(list)
@@ -72,15 +76,15 @@ def pull_scripts(instance, include):
         filename = filename_for_script(script)
 
         if filename in seen_names:
-            click.echo("WARN: Script {0.label}({0.id}) label clashes with"
-                       " Script {1.label}({1.id}). Skipping."
-                       .format(script, seen_names[filename]))
+            formatter.write("Script {0.label}({0.id}) label clashes with "
+                            "Script {1.label}({1.id}). Skipping.".format(script, seen_names[filename]),
+                            WarningOpt()
+                            )
             continue
         seen_names[filename] = script
 
         if filename != script.label:
-            click.echo('WARN: Saving Script "{0}" as "{1}"'.format(script.label,
-                                                                   filename))
+            formatter.write('Saving Script "{0}" as "{1}"'.format(script.label, filename), WarningOpt())
 
         path = os.path.join('scripts', filename)
 
@@ -109,8 +113,8 @@ def push_scripts(instance, scripts, config_only=True):
         - scripts - a list of dictionaries containing configurations for
                     scripts
     """
-    click.echo('INFO: Pushing Scripts')
-    click.echo('INFO: Pulling remote Scripts')
+    formatter.write('Pushing Scripts')
+    formatter.write('Pulling remote Scripts')
 
     endpoints = {}
     remote_scripts_mapping = defaultdict(list)
@@ -123,13 +127,13 @@ def push_scripts(instance, scripts, config_only=True):
         existing_endpoints[endpoint.script].append(endpoint.name)
         endpoints[endpoint.name] = endpoint
 
-    click.echo('INFO: Pushing local Scripts')
+    formatter.write('Pushing local Scripts')
     for s in scripts:
         if s['label'] in remote_scripts_mapping:
             remote_count = len(remote_scripts_mapping[s['label']])
             if remote_count > 1:
-                click.error('ERROR: You have {0} Scripts with label {1} on'
-                            ' syncano. Skipping'.format(remote_count, s['label']))
+                formatter.write('You have {0} Scripts with label {1} on'
+                                ' syncano. Skipping'.format(remote_count, s['label']), WarningOpt())
                 continue
             remote_script = remote_scripts_mapping[s['label']][0]
         else:
@@ -145,7 +149,7 @@ def push_scripts(instance, scripts, config_only=True):
         config = s.get('config', {})
         remote_script.config.update(config)
 
-        click.echo('INFO: Pushing Script {label}'.format(**s))
+        formatter.write('Pushing Script {label}'.format(**s))
         remote_script.save()
 
         existing_set = {name for name in existing_endpoints[remote_script.id]}
@@ -188,18 +192,18 @@ def validate_script(script):
     runtime = script.get('runtime')
     if not runtime:
         ext = os.path.splitext(source)[1]
-        click.echo(
-            'WARN: Runtime for Script {label} not provided. Guessing runtime basing'
-            'on file extension'.format(**script)
+        formatter.write(
+            'Runtime for Script {label} not provided. Guessing runtime basing'
+            'on file extension'.format(**script), WarningOpt()
         )
 
         for k, v in six.iteritems(ALLOWED_RUNTIMES):
             if v == ext:
                 script['runtime'] = runtime = k
-                click.echo(
-                    'WARN: Using runtime {runtime} for Script {label}'.format(
+                formatter.write(
+                    'Using runtime {runtime} for Script {label}'.format(
                         **script
-                    )
+                    ), WarningOpt()
                 )
                 break
 

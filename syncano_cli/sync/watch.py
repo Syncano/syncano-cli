@@ -1,8 +1,9 @@
 import os
 
-import click
 import six
 import syncano
+from syncano_cli.base.formatters import Formatter
+from syncano_cli.base.options import WarningOpt
 from watchdog.events import FileSystemEventHandler
 
 from .project import Project
@@ -11,10 +12,11 @@ from .project import Project
 class ProjectEventHandler(FileSystemEventHandler):
     def __init__(self, context):
         con = syncano.connect(api_key=context.obj['key'])
-        self.instance = con.instances.get(name=context.obj['instance'])
+        self.instance = con.instances.get(name=context.obj['instance'].name)
         self.project = context.obj['project']
         self.context = context
         self.project_file = os.path.relpath(context.obj['file'])
+        self.formatter = Formatter()
 
     def normalize_path(self, path):
         return os.path.relpath(path)
@@ -26,8 +28,7 @@ class ProjectEventHandler(FileSystemEventHandler):
                 project = Project.from_config(path)
                 self.update_changes(project)
             except Exception as e:
-                click.echo('WARN: There was a problem parsing configuration file:'
-                           ' %s', e)
+                self.formatter.write('There was a problem parsing configuration file: {}'.format(e), WarningOpt())
         else:
             changed_scripts = []
             for script in self.project.scripts:
@@ -45,7 +46,7 @@ class ProjectEventHandler(FileSystemEventHandler):
         self.on_change(event)
 
     def update_changes(self, new_project):
-        click.echo('INFO: checking for changes')
+        self.formatter.write('Checking for changes')
 
         old_scripts = {s['label']: s for s in self.project.scripts}
         changed_scripts = []

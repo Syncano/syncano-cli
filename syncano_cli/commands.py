@@ -4,7 +4,9 @@ import os
 import click
 import syncano
 from syncano.exceptions import SyncanoException
+from syncano_cli.base.command import BaseCommand
 from syncano_cli.base.exceptions import BadCredentialsException
+from syncano_cli.base.options import SpacedOpt
 from syncano_cli.config import ACCOUNT_CONFIG, ACCOUNT_CONFIG_PATH
 
 
@@ -23,8 +25,11 @@ def login(context, config, instance_name):
     """
     config = config or ACCOUNT_CONFIG_PATH
     context.obj['config'] = config
-    email = os.environ.get('SYNCANO_EMAIL') or click.prompt("email")
-    password = os.environ.get('SYNCANO_PASSWORD') or click.prompt("password", hide_input=True).strip()
+    command = BaseCommand(config)
+    command.formatter.write('Login to your Syncano account. '
+                            'This action will override your Syncano API key in global CLI config.', SpacedOpt())
+    email = os.environ.get('SYNCANO_EMAIL') or command.prompter.prompt("email")
+    password = os.environ.get('SYNCANO_PASSWORD') or command.prompter.prompt("password", hide_input=True).strip()
     connection = syncano.connect().connection()
 
     try:
@@ -34,6 +39,6 @@ def login(context, config, instance_name):
             ACCOUNT_CONFIG.set('DEFAULT', 'instance_name', instance_name)
         with open(context.obj['config'], 'wt') as fp:
             ACCOUNT_CONFIG.write(fp)
-        click.echo("INFO: Login successful.")
+        command.formatter.write("Login successful.", SpacedOpt())
     except SyncanoException:
         raise BadCredentialsException()

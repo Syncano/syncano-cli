@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import click
-from syncano_cli.base.connection import get_instance
 from syncano_cli.base.data_parser import parse_input_data
+from syncano_cli.base.options import SpacedOpt, WarningOpt
+from syncano_cli.config import ACCOUNT_CONFIG_PATH
 from syncano_cli.custom_sockets.command import SocketCommand
 from syncano_cli.custom_sockets.exceptions import MissingRequestDataException, SocketNameMissingException
 
@@ -14,12 +15,13 @@ def top_sockets():
 
 @top_sockets.group()
 @click.pass_context
-@click.option('--config', help=u'Account configuration file.')
+@click.option('--config', help=u'Account configuration file.', default=ACCOUNT_CONFIG_PATH)
 @click.option('--instance-name', help=u'Instance name.')
 def sockets(ctx, config, instance_name):
-    """Create and manage Custom Sockets."""
-    instance = get_instance(config, instance_name)
-    socket_command = SocketCommand(instance=instance)
+    """Create and manage Sockets."""
+    socket_command = SocketCommand(config)
+    socket_command.has_setup()
+    socket_command.set_instance(instance_name)
     ctx.obj['socket_command'] = socket_command
 
 
@@ -35,7 +37,7 @@ def list(ctx):
 @list.command()
 @click.pass_context
 def endpoints(ctx):
-    """List all defined Endpoints in Custom Sockets."""
+    """List all defined Endpoints in Sockets."""
     socket_command = ctx.obj['socket_command']
     socket_command.list_endpoints()
 
@@ -45,7 +47,7 @@ def endpoints(ctx):
 @click.argument('source')
 @click.option('--name', help='A socket name when installed from url.')
 def install(ctx, source, name):
-    """Install the Custom Socket. Can be installed from directory or from an url."""
+    """Install the Sockets. Can be installed from directory or from an url."""
     socket_command = ctx.obj['socket_command']
 
     if 'http' in source:
@@ -60,7 +62,7 @@ def install(ctx, source, name):
 @click.pass_context
 @click.argument('socket_name')
 def details(ctx, socket_name):
-    """Displays Custom Socket details."""
+    """Displays Socket details."""
     socket_command = ctx.obj['socket_command']
     socket_command.details(socket_name=socket_name)
 
@@ -68,8 +70,20 @@ def details(ctx, socket_name):
 @sockets.command()
 @click.pass_context
 @click.argument('socket_name')
+def recheck(ctx, socket_name):
+    """Allow to recheck socket."""
+    socket_command = ctx.obj['socket_command']
+    socket_command.formatter.write('Rechecking socket. See `syncano sockets details {}` in few seconds.'.format(
+        socket_name
+    ), SpacedOpt())
+    socket_command.recheck(socket_name=socket_name)
+
+
+@sockets.command()
+@click.pass_context
+@click.argument('socket_name')
 def config(ctx, socket_name):
-    """Display config for specified Custom Socket."""
+    """Display config for specified Sockets."""
     socket_command = ctx.obj['socket_command']
     socket_command.config(socket_name=socket_name)
 
@@ -78,7 +92,7 @@ def config(ctx, socket_name):
 @click.pass_context
 @click.argument('socket_name')
 def delete(ctx, socket_name):
-    """Delete the specified Custom Socket."""
+    """Delete the specified Sockets."""
     socket_command = ctx.obj['socket_command']
     socket_command.delete(socket_name=socket_name)
 
@@ -89,13 +103,14 @@ def delete(ctx, socket_name):
 @click.option('--socket', help=u'Socket name from which the template should be created.')
 def template(ctx, output_dir, socket):
     """Creates a new template (local) from the
-    Custom Socket that already exists in Syncano or has a local definition."""
+    Sockets that already exists in Syncano or has a local definition."""
     socket_command = ctx.obj['socket_command']
 
     if socket:
         socket_command.create_template(socket_name=socket, destination=output_dir)
     else:
         socket_command.create_template_from_local_template(destination=output_dir)
+    socket_command.formatter.write('Template created in `{}`'.format(output_dir), SpacedOpt())
 
 
 @sockets.command()
@@ -105,7 +120,7 @@ def template(ctx, output_dir, socket):
 @click.option('-d', '--data', help=u'A data to be sent as payload: key=value', multiple=True)
 def run(ctx, endpoint_name, method, data):
     """Run Endpoint and shows the output. Note that full name of an Endpoint consist of
-    Custom Socket name and Endpoint name: <custom_socket_name>/<endpoint_name>."""
+    Sockets name and Endpoint name: <custom_socket_name>/<endpoint_name>."""
     socket_command = ctx.obj['socket_command']
 
     if method in ['POST', 'PUT', 'PATCH'] and not data:
@@ -114,4 +129,6 @@ def run(ctx, endpoint_name, method, data):
     data = parse_input_data(data)
 
     results = socket_command.run(endpoint_name, method=method, data=data)
-    click.echo("{}".format(results))
+    socket_command.formatter.write('Result for endpoint `{}`:'.format(endpoint_name), SpacedOpt(), WarningOpt())
+    socket_command.formatter.write_lines("{}".format(results).splitlines())
+    socket_command.formatter.empty_line()
