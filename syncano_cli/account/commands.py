@@ -1,7 +1,6 @@
 import click
 from syncano_cli.account.command import AccountCommands
 from syncano_cli.base.options import ColorSchema, SpacedOpt, WarningOpt
-from syncano_cli.config import ACCOUNT_CONFIG_PATH
 
 
 @click.group()
@@ -14,7 +13,7 @@ def top_account():
 @click.option('--config', help=u'Account configuration file.')
 def accounts(ctx, config):
     """Handle Syncano Account functionality."""
-    account_commands = AccountCommands(config_path=config or ACCOUNT_CONFIG_PATH)
+    account_commands = AccountCommands(config)
     ctx.obj['account_commands'] = account_commands
 
 

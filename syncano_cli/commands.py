@@ -7,7 +7,6 @@ from syncano.exceptions import SyncanoException
 from syncano_cli.base.command import BaseCommand
 from syncano_cli.base.exceptions import BadCredentialsException
 from syncano_cli.base.options import SpacedOpt
-from syncano_cli.config import ACCOUNT_CONFIG, ACCOUNT_CONFIG_PATH
 
 
 @click.group()
@@ -23,7 +22,6 @@ def login(context, config, instance_name):
     """
     Log in to syncano using email and password.
     """
-    config = config or ACCOUNT_CONFIG_PATH
     context.obj['config'] = config
     command = BaseCommand(config)
     command.formatter.write('Login to your Syncano account. '
@@ -34,11 +32,10 @@ def login(context, config, instance_name):
 
     try:
         ACCOUNT_KEY = connection.authenticate(email=email, password=password)
-        ACCOUNT_CONFIG.set('DEFAULT', 'key', ACCOUNT_KEY)
+        command.config.set_config('DEFAULT', 'key', ACCOUNT_KEY)
         if instance_name:
-            ACCOUNT_CONFIG.set('DEFAULT', 'instance_name', instance_name)
-        with open(context.obj['config'], 'wt') as fp:
-            ACCOUNT_CONFIG.write(fp)
+            command.config.set_config('DEFAULT', 'instance_name', instance_name)
+        command.config.write_config()
         command.formatter.write("Login successful.", SpacedOpt())
     except SyncanoException:
         raise BadCredentialsException()

@@ -4,14 +4,54 @@ import re
 import sys
 
 import click
+import six
 from syncano_cli.base.command import BaseInstanceCommand
 from syncano_cli.base.options import BottomSpacedOpt, ColorSchema, PromptOpt, SpacedOpt, TopSpacedOpt, WarningOpt
-from syncano_cli.hosting.exceptions import NoHostingFoundException, PathNotFoundException, UnicodeInPathException
+from syncano_cli.hosting.exceptions import NoHostingFoundException, PathNotFoundException
+from syncano_cli.hosting.utils import slugify
+
+if six.PY2:
+    from ConfigParser import ConfigParser
+elif six.PY3:
+    from configparser import ConfigParser
+else:
+    raise ImportError()
 
 
 class HostingCommands(BaseInstanceCommand):
 
-    VALID_PATH_REGEX = re.compile(r'^(?!/)([a-zA-Z0-9\-\._]+/{0,1})+(?<!/)\Z')
+    COMMAND_CONFIG = {
+        'hosting': [
+            {
+                'name': 'domain',
+                'required': True,
+                'info': ''
+            },
+            {
+                'name': 'base_dir',
+                'required': True,
+                'info': ''
+            },
+        ]
+    }
+    COMMAND_SECTION = 'HOSTING'
+    COMMAND_CONFIG_PATH = '.hosting-syncano'  # local dir (this one in which command is executed)
+
+    def setup_command_config(self, config_path):
+        base_dir = os.getcwd()
+        current_dir = os.path.split(base_dir)[1]
+        current_dir = current_dir.decode('utf-8')
+        domain = slugify(current_dir)
+
+        config_parser = ConfigParser()
+        config_parser.add_section(self.COMMAND_SECTION)
+        config_parser.set(self.COMMAND_SECTION, 'domain', domain)
+        config_parser.set(self.COMMAND_SECTION, 'base_dir', base_dir)
+        projects = ['basedir1', 'basedir2', 'basedir3', base_dir]
+        config_parser.set(self.COMMAND_SECTION, 'projects', projects)
+
+        with open(config_path, 'w+') as f:
+            config_parser.write(f)
 
     def list_hostings(self):
         return [
@@ -71,8 +111,6 @@ class HostingCommands(BaseInstanceCommand):
                 else:
                     file_path = single_file
 
-                self._validate_path(file_path)
-
                 sys_path = os.path.join(folder, single_file)
                 with open(sys_path, 'rb') as upload_file:
                     self.formatter.write('* Uploading file: {}'.format(click.style(file_path,
@@ -123,10 +161,6 @@ class HostingCommands(BaseInstanceCommand):
         if not to_return and not is_new:
             raise NoHostingFoundException(format_args=[domain])
         return to_return
-
-    def _validate_path(self, file_path):
-        if not self.VALID_PATH_REGEX.match(file_path):
-            raise UnicodeInPathException()
 
     def print_hosting_files(self, domain, hosting_files):
         self.formatter.write('Hosting files for domain `{}` in instance `{}`:'.format(domain, self.instance.name),

@@ -3,7 +3,6 @@
 import click
 from syncano_cli.base.data_parser import parse_input_data
 from syncano_cli.base.options import SpacedOpt, WarningOpt
-from syncano_cli.config import ACCOUNT_CONFIG_PATH
 from syncano_cli.custom_sockets.command import SocketCommand
 from syncano_cli.custom_sockets.exceptions import MissingRequestDataException, SocketNameMissingException
 
@@ -15,12 +14,11 @@ def top_sockets():
 
 @top_sockets.group()
 @click.pass_context
-@click.option('--config', help=u'Account configuration file.', default=ACCOUNT_CONFIG_PATH)
+@click.option('--config', help=u'Account configuration file.')
 @click.option('--instance-name', help=u'Instance name.')
 def sockets(ctx, config, instance_name):
     """Create and manage Sockets."""
     socket_command = SocketCommand(config)
-    socket_command.has_setup()
     socket_command.set_instance(instance_name)
     ctx.obj['socket_command'] = socket_command
 

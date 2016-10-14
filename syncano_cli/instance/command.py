@@ -1,16 +1,7 @@
 # -*- coding: utf-8 -*-
 import click
-import six
 from syncano_cli.base.command import BaseCommand
 from syncano_cli.base.options import BottomSpacedOpt, ColorSchema, SpacedOpt, TopSpacedOpt, WarningOpt
-from syncano_cli.config import ACCOUNT_CONFIG
-
-if six.PY2:
-    from ConfigParser import NoOptionError
-elif six.PY3:
-    from configparser import NoOptionError
-else:
-    raise ImportError()
 
 
 class InstanceCommands(BaseCommand):
@@ -28,11 +19,9 @@ class InstanceCommands(BaseCommand):
         self.connection.Instance.please.delete(name=instance_name)
         self.formatter.write('Instance `{}` deleted.'.format(instance_name), WarningOpt(), SpacedOpt())
 
-    @classmethod
-    def set_default(cls, instance_name, config_path):
-        ACCOUNT_CONFIG.set('DEFAULT', 'instance_name', instance_name)
-        with open(config_path, 'wt') as fp:
-            ACCOUNT_CONFIG.write(fp)
+    def set_default(self, instance_name):
+        self.config.set_config('DEFAULT', 'instance_name', instance_name)
+        self.config.write_config()
 
     def create(self, instance_name, description=None):
         kwargs = {
@@ -61,10 +50,7 @@ Metadata: {instance.metadata}
             details_template.format(instance=instance, description=instance.description or u'N/A').splitlines())
 
     def display_list(self, instances):
-        try:
-            default_instance_name = ACCOUNT_CONFIG.get('DEFAULT', 'instance_name')
-        except NoOptionError:
-            default_instance_name = None
+        default_instance_name = self.config.get_config('DEFAULT', 'instance_name')
 
         self.formatter.write("Available Instances:", SpacedOpt())
 

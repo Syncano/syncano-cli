@@ -3,7 +3,6 @@ import sys
 
 import click
 from syncano_cli.base.options import BottomSpacedOpt, ErrorOpt, TopSpacedOpt
-from syncano_cli.config import ACCOUNT_CONFIG_PATH
 from syncano_cli.hosting.command import HostingCommands
 from syncano_cli.hosting.validators import validate_domain, validate_publish
 
@@ -15,13 +14,12 @@ def top_hosting():
 
 @top_hosting.group()
 @click.pass_context
-@click.option('--config', help=u'Account configuration file.', default=ACCOUNT_CONFIG_PATH)
+@click.option('--config', help=u'Account configuration file.')
 @click.option('--instance-name', help=u'Instance name.')
 @click.option('--domain', default='default')
 def hosting(ctx, config, instance_name, domain):
     """Handle Hosting Socket and Hosting Socket files. Allow to publish static pages to the Syncano Hosting."""
     hosting_commands = HostingCommands(config)
-    hosting_commands.has_setup()
     hosting_commands.set_instance(instance_name)
     ctx.obj['hosting_commands'] = hosting_commands
     ctx.obj['domain'] = domain
