@@ -32,6 +32,8 @@ class MigrateCommandsTest(InstanceMixin, IntegrationTest):
         global_config.set("P2S", "PARSE_MASTER_KEY", "xxx")
         global_config.set("P2S", "SYNCANO_INSTANCE_NAME", cls.instance.name)
         global_config.set("P2S", "SYNCANO_ADMIN_API_KEY", SYNCANO_ADMIN_API_KEY)
+        with open(DEFAULT_CONFIG_PATH, 'wt') as fp:
+            global_config.write(fp)
 
     def test_configure(self):
         result = self.runner.invoke(cli, args=['migrate', 'configure'], obj={})
