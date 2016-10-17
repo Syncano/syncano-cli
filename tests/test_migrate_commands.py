@@ -2,7 +2,6 @@
 import json
 
 import mock
-
 from syncano_cli.config import DEFAULT_CONFIG_PATH
 from syncano_cli.main import cli
 from syncano_cli.parse_to_syncano.processors.push_notifications import DEVICE_CHANNELS_CLASS_NAME
