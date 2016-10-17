@@ -16,13 +16,13 @@ def top_hosting():
 @click.pass_context
 @click.option('--config', help=u'Account configuration file.')
 @click.option('--instance-name', help=u'Instance name.')
-@click.option('--domain', default='default')
+@click.option('--domain')
 def hosting(ctx, config, instance_name, domain):
     """Handle Hosting Socket and Hosting Socket files. Allow to publish static pages to the Syncano Hosting."""
     hosting_commands = HostingCommands(config)
     hosting_commands.set_instance(instance_name)
     ctx.obj['hosting_commands'] = hosting_commands
-    ctx.obj['domain'] = domain
+    ctx.obj['domain'] = hosting_commands.get_config_value(domain, 'domain')
 
 
 @hosting.command()
@@ -38,6 +38,13 @@ def publish(ctx, directory):
     url = hosting_commands.get_hosting_url(domain)
     hosting_commands.formatter.write("Your site is published.", TopSpacedOpt())
     hosting_commands.formatter.write("Go to: {url}".format(url=url), BottomSpacedOpt())
+    if domain != 'default':
+        hosting_commands.formatter.write(
+            'You can use: `syncano hosting default {}` to set as default and '
+            'make available from `https://{}.syncano.site`'.format(
+                domain,
+                hosting_commands.instance.name)
+        )
 
 
 @hosting.group(invoke_without_command=True)

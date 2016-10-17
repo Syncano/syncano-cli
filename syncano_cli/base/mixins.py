@@ -62,6 +62,7 @@ class RegisterMixin(object):
         )
         # global context here;
         self.config.set_config('DEFAULT', 'key', api_key)
+        self.config.set_config('DEFAULT', 'email', email)
         self.config.write_config()
 
     def _create_instance(self, instance_name, description=None, show_default=False):

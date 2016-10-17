@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
+from collections import namedtuple
 
 import click
 import six
@@ -8,13 +9,6 @@ from syncano_cli.base.command import BaseInstanceCommand
 from syncano_cli.base.options import BottomSpacedOpt, ColorSchema, PromptOpt, SpacedOpt, TopSpacedOpt, WarningOpt
 from syncano_cli.hosting.exceptions import NoHostingFoundException, PathNotFoundException
 from syncano_cli.hosting.utils import slugify
-
-if six.PY2:
-    from ConfigParser import ConfigParser
-elif six.PY3:
-    from configparser import ConfigParser
-else:
-    raise ImportError()
 
 
 class HostingCommands(BaseInstanceCommand):
@@ -24,12 +18,20 @@ class HostingCommands(BaseInstanceCommand):
             {
                 'name': 'domain',
                 'required': True,
-                'info': ''
+                'info': '',
+                'default': 'default'
             },
             {
-                'name': 'base_dir',
+                'name': 'project_dir',
+                'required': False,
+                'info': '',
+                'default': ''
+            },
+            {
+                'name': 'instance_name',
                 'required': True,
-                'info': ''
+                'info': '',
+                'default': ''
             },
         ]
     }
@@ -37,21 +39,36 @@ class HostingCommands(BaseInstanceCommand):
     COMMAND_CONFIG_PATH = '.hosting-syncano'  # local dir (this one in which command is executed)
 
     def setup_command_config(self, config_path):
-        base_dir = os.getcwd()
-        current_dir = os.path.split(base_dir)[1]
-        current_dir = current_dir.decode('utf-8')
+        project_dir = os.getcwd()
+        self.formatter.write('Setup your Hosting. Your working directory is: {}'.format(
+            project_dir
+        ), SpacedOpt())
+        current_dir = os.path.split(project_dir)[1].decode('utf-8')
         domain = slugify(current_dir)
+        instance_name = self.config.get_config('DEFAULT', 'instance_name')
 
-        config_parser = ConfigParser()
-        config_parser.add_section(self.COMMAND_SECTION)
-        config_parser.set(self.COMMAND_SECTION, 'domain', domain)
-        config_parser.set(self.COMMAND_SECTION, 'base_dir', base_dir)
+        defaults = {
+            'instance_name': instance_name,
+            'project_dir': project_dir,
+            'domain': domain
+        }
+        config = {}
 
-        with open(config_path, 'w+') as f:
-            config_parser.write(f)
+        for config_meta in self.COMMAND_CONFIG.get(self.COMMAND_SECTION.lower()):
+            var_name = config_meta['name']
+            required = config_meta['required']
+            default = defaults.get(var_name) or config_meta['default']
+            if required and not self.config.has_option(self.COMMAND_SECTION, var_name, config='local'):
+                config[var_name] = self.prompter.prompt(var_name, default=default)
+
+        self.config.add_section(self.COMMAND_SECTION, config='local')
+        for config_name, config_val in six.iteritems(config):
+            self.config.set_config(self.COMMAND_SECTION, config_name, config_val, config='local')
+
+        self.config.write_config(config='local')
 
         # add project to global config (summary command);
-        self.config.update_info_about_projects(base_dir)
+        self.config.update_info_about_projects(project_dir)
 
     def list_hostings(self):
         return [
@@ -67,18 +84,19 @@ class HostingCommands(BaseInstanceCommand):
         self.formatter.write('Hosting defined in Instance `{}`:'.format(self.instance.name), SpacedOpt())
         self.formatter.write('{0:30}{1:20}{2:20}'.format('Label', 'Domains', 'URL'), PromptOpt())
 
+        Domain = namedtuple('Domain', ['domain', 'url'])
         for label, domains in hostings:
-            domain_url = [(domain, self.get_hosting_url(domain)) for domain in domains]
+            domain_url = [Domain(domain, self.get_hosting_url(domain)) for domain in domains]
             self.formatter.write(
                 '{0:30}{1:20}{2:20}'.format(
                     label,
-                    domain_url[0][0] if domain_url else '',
-                    domain_url[0][1] if domain_url else '')
+                    domain_url[0].domain if domain_url else '',
+                    domain_url[0].url if domain_url else '')
             )
             if domain_url[1:]:
                 for domain_url in domain_url[1:]:
                     self.formatter.write(
-                        '{0:30}{1:20}{2:20}'.format('', domain_url[0], domain_url[1])
+                        '{0:30}{1:20}{2:20}'.format('', domain_url.domain, domain_url.url)
                     )
         self.formatter.empty_line()
 

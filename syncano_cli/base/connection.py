@@ -8,9 +8,7 @@ from syncano_cli.base.exceptions import BadCredentialsException, InstanceNotFoun
 class ConnectionMixin(object):
 
     def get_instance_name(self, instance_name):
-        option = 'instance_name'
-        return instance_name or self.config.get_config(self.COMMAND_SECTION, option, config='local') \
-            or self.config.get_config(self.DEFAULT_SECTION, option, config='global')
+        return self.get_config_value(instance_name, 'instance_name')
 
     def create_connection(self, instance_name=None):
         api_key = self.config.get_config(self.DEFAULT_SECTION, 'key')

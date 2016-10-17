@@ -40,6 +40,15 @@ class Config(object):
         for config in CONFIGS:
             self.write_config(config=config)
 
+    def add_section(self, section_name, config='global'):
+        _, config_parser = self._get_config_meta(config=config)
+        if not config_parser.has_section(section_name):
+            config_parser.add_section(section_name)
+
+    def has_option(self, section_name, option_name, config='global'):
+        _, config_parser = self._get_config_meta(config=config)
+        return config_parser.has_option(section_name, option_name)
+
     def set_config(self, section, option, value, config='global'):
         _, config_parser = self._get_config_meta(config=config)
         config_parser.set(section, option, value)

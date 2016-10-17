@@ -17,7 +17,7 @@ class BaseCommand(ConnectionMixin, RegisterMixin):
     """
 
     def __init__(self, config_path):
-        self.config = Config(global_config_path=config_path)
+        self.config = Config(global_config_path=config_path, local_config_path=self.COMMAND_CONFIG_PATH)
         self.config.read_configs()
         self.connection = self.create_connection()
         self.setup()
@@ -65,7 +65,7 @@ class BaseCommand(ConnectionMixin, RegisterMixin):
         return False
 
     def has_command_setup(self, config_path):
-        if not config_path:
+        if config_path and os.path.isfile(self.config.local_config_path):
             return True
         return False
 
@@ -96,6 +96,10 @@ class BaseCommand(ConnectionMixin, RegisterMixin):
                 return False
 
         return True
+
+    def get_config_value(self, default, option_name):
+        return default or self.config.get_config(self.COMMAND_SECTION, option_name, config='local') \
+           or self.config.get_config(self.DEFAULT_SECTION, option_name, config='global')
 
 
 class BaseInstanceCommand(BaseCommand):
