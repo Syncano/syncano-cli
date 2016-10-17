@@ -26,9 +26,6 @@ class IntegrationTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.config = ConfigParser()
-        cls.config.read(DEFAULT_CONFIG_PATH)
-
         cls.runner = CliRunner()
         cls.API_KEY = os.getenv('INTEGRATION_API_KEY')
         cls.API_EMAIL = os.getenv('INTEGRATION_API_EMAIL')
@@ -41,6 +38,7 @@ class IntegrationTest(unittest.TestCase):
             password=cls.API_PASSWORD,
             api_key=cls.API_KEY
         )
+        cls.config = ConfigParser()
 
     @classmethod
     def tearDownClass(cls):
@@ -78,7 +76,10 @@ class BaseCLITest(InstanceMixin, IntegrationTest):
         cls.scripts_dir = 'scripts/'
 
     def setUp(self):
-        self.runner.invoke(cli, args=['login', '--instance-name', self.instance.name], obj={})
+        self.runner.invoke(cli, args=['login', '--instance-name', self.instance.name],
+                           input="{}\n{}\n{}\n".format(
+                               self.API_EMAIL, self.API_PASSWORD, self.API_PASSWORD), obj={})
+        self.config.read(DEFAULT_CONFIG_PATH)
         self.assert_config_variable_exists(self.config, 'DEFAULT', 'key')
         self.assert_config_variable_exists(self.config, 'DEFAULT', 'instance_name')
 

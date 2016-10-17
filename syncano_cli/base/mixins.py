@@ -13,6 +13,7 @@ class RegisterMixin(object):
         connection = syncano.connect().connection()
         api_key = connection.authenticate(email=email, password=password)
         self.config.set_config('DEFAULT', 'key', api_key)
+        self.config.set_config('DEFAULT', 'email', email)
         self.config.write_config()
 
     def do_register(self, exc, email, password):
@@ -34,9 +35,10 @@ class RegisterMixin(object):
             self.do_login(email, password)
         except SyncanoRequestError as exc:
             self.do_register(exc, email, password)
+            # create instance only when registering;
+            instances = [i for i in self._list_instances()]
+            instance_name = instances[0].name if instances else self.create_instance().name
 
-        instances = [i for i in self._list_instances()]
-        instance_name = instances[0].name if instances else self.create_instance().name
         self.set_instance_as_default(instance_name)
 
     def set_instance_as_default(self, instance_name):

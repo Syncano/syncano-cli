@@ -21,7 +21,8 @@ class AccountCommandsTest(BaseCLITest):
 
         # make register;
         email = 'syncano.bot+977999{}@syncano.com'.format(random.randint(100000, 50000000))
-        self.runner.invoke(cli, args=['accounts', 'register', email], input='test1234\ntest1234\ntest1234\n', obj={})
+        self.runner.invoke(cli, args=['accounts', 'register'],
+                           input='{}\ntest1234\ntest1234\n'.format(email), obj={})
 
         # check if api key is written in the config file;
         self.assert_config_variable_exists(self.config, 'DEFAULT', 'key')
