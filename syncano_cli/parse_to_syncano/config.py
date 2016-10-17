@@ -18,7 +18,7 @@ SYNCANO_BATCH_SIZE = 30
 def read_config(config):
     config_parser = config.global_config
 
-    read_ok = config.read(config.global_config_path)
+    read_ok = config_parser.read(config.global_config_path)
 
     if not read_ok:
         config_parser.add_section("P2S")

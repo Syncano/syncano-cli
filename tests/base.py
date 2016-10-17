@@ -88,7 +88,6 @@ class BaseCLITest(InstanceMixin, IntegrationTest):
         if os.path.isfile(DEFAULT_CONFIG_PATH):
             os.remove(DEFAULT_CONFIG_PATH)
         self.assertFalse(os.path.isfile(DEFAULT_CONFIG_PATH))
-        pass
 
     def assert_file_exists(self, path):
         self.assertTrue(os.path.isfile(path))
