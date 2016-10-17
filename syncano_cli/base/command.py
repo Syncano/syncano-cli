@@ -48,8 +48,9 @@ class BaseCommand(ConnectionMixin, RegisterMixin):
     def setup(self):
         has_global = self.has_global_setup()
         has_command = self.has_command_setup(self.COMMAND_CONFIG_PATH)
+        print(has_global, has_command)
         if has_global and has_command:
-            return True
+            return
 
         if not has_global:
             self.formatter.write('Login or create an account in Syncano.', SpacedOpt())
@@ -58,16 +59,18 @@ class BaseCommand(ConnectionMixin, RegisterMixin):
             repeat_password = self.prompter.prompt('repeat password', hide_input=True)
             password = self.validate_password(password, repeat_password)
             self.do_login_or_register(email, password)
+        else:
+            email = self.config.get_config('DEFAULT', 'email')
+            if not email:
+                self.formatter.write('Already logged in.', SpacedOpt())
+            else:
+                self.formatter.write('Already logged in as: {}.'.format(email), SpacedOpt())
 
         if not has_command:
             self.setup_command_config(self.COMMAND_CONFIG_PATH)
 
-        return False
-
     def has_command_setup(self, config_path):
-        if config_path and os.path.isfile(self.config.local_config_path):
-            return True
-        return False
+        return config_path and os.path.isfile(self.config.local_config_path)
 
     def setup_command_config(self, config_path):  # noqa;
         """override this in the child class;"""

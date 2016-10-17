@@ -18,5 +18,5 @@ def login(config, instance_name):
     """
     command = BaseCommand(config)
     if instance_name:
-        command.config.set_config('instance_name', instance_name)
+        command.config.set_config('DEFAULT', 'instance_name', instance_name)
         command.config.write_config()
