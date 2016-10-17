@@ -2,6 +2,8 @@
 import json
 
 import mock
+
+from syncano_cli.config import DEFAULT_CONFIG_PATH
 from syncano_cli.main import cli
 from syncano_cli.parse_to_syncano.processors.push_notifications import DEVICE_CHANNELS_CLASS_NAME
 from tests.base import InstanceMixin, IntegrationTest
@@ -23,6 +25,7 @@ class MigrateCommandsTest(InstanceMixin, IntegrationTest):
     @classmethod
     def _set_up_configuration(cls):
         global_config = cls.config
+        global_config.read(DEFAULT_CONFIG_PATH)
         SYNCANO_ADMIN_API_KEY = global_config.get("DEFAULT", "key")
         if not global_config.has_section("P2S"):
             global_config.add_section("P2S")
