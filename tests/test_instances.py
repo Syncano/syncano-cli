@@ -26,8 +26,8 @@ class InstancesCommandsTest(BaseCLITest):
             'instances', 'default', instance_name,
         ], obj={})
 
-        # TODO: FIXME
-        # self.assert_config_variable_equal(ACCOUNT_CONFIG, 'DEFAULT', 'instance_name', instance_name)
+        self.assert_config_variable_equal(self.command.config.global_config,
+                                          'DEFAULT', 'instance_name', instance_name)
 
         result = self._list_command()
 

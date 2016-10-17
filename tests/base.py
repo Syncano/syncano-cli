@@ -10,6 +10,8 @@ import syncano
 import yaml
 from click.testing import CliRunner
 from syncano.models import RuntimeChoices
+from syncano_cli.base.command import BaseCommand
+from syncano_cli.config import DEFAULT_CONFIG_PATH
 from syncano_cli.main import cli
 
 
@@ -62,21 +64,20 @@ class BaseCLITest(InstanceMixin, IntegrationTest):
     @classmethod
     def setUpClass(cls):
         super(BaseCLITest, cls).setUpClass()
+        cls.command = BaseCommand(DEFAULT_CONFIG_PATH)
         cls.yml_file = 'syncano.yml'
         cls.scripts_dir = 'scripts/'
 
     def setUp(self):
         self.runner.invoke(cli, args=['login', '--instance-name', self.instance.name], obj={})
-        # TODO: FIXME
-        # self.assert_config_variable_exists(ACCOUNT_CONFIG, 'DEFAULT', 'key')
-        # self.assert_config_variable_exists(ACCOUNT_CONFIG, 'DEFAULT', 'instance_name')
+        self.assert_config_variable_exists(self.command.config.global_config, 'DEFAULT', 'key')
+        self.assert_config_variable_exists(self.command.config.global_config, 'DEFAULT', 'instance_name')
 
     def tearDown(self):
         # remove the .syncano file
-        # TODO: FIXME
-        #if os.path.isfile(ACCOUNT_CONFIG_PATH):
-        #    os.remove(ACCOUNT_CONFIG_PATH)
-        #self.assertFalse(os.path.isfile(ACCOUNT_CONFIG_PATH))
+        if os.path.isfile(DEFAULT_CONFIG_PATH):
+            os.remove(DEFAULT_CONFIG_PATH)
+        self.assertFalse(os.path.isfile(DEFAULT_CONFIG_PATH))
         pass
 
     def assert_file_exists(self, path):

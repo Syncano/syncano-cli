@@ -12,11 +12,12 @@ else:
     raise ImportError()
 
 CONFIGS = ['global', 'local']
+DEFAULT_CONFIG_PATH = os.path.join(os.path.expanduser('~'), '.syncano')
 
 
 class Config(object):
     def __init__(self, global_config_path=None, local_config_path=None):
-        self.global_config_path = global_config_path or os.path.join(os.path.expanduser('~'), '.syncano')
+        self.global_config_path = global_config_path or DEFAULT_CONFIG_PATH
         self.global_config = ConfigParser()
         self.local_config_path = local_config_path
         self.local_config = ConfigParser()

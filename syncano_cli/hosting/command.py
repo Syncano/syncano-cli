@@ -60,6 +60,8 @@ class HostingCommands(BaseInstanceCommand):
             default = defaults.get(var_name) or config_meta['default']
             if required and not self.config.has_option(self.COMMAND_SECTION, var_name, config='local'):
                 config[var_name] = self.prompter.prompt(var_name, default=default)
+            else:
+                config[var_name] = default
 
         self.config.add_section(self.COMMAND_SECTION, config='local')
         for config_name, config_val in six.iteritems(config):

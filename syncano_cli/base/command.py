@@ -99,7 +99,7 @@ class BaseCommand(ConnectionMixin, RegisterMixin):
 
     def get_config_value(self, default, option_name):
         return default or self.config.get_config(self.COMMAND_SECTION, option_name, config='local') \
-           or self.config.get_config(self.DEFAULT_SECTION, option_name, config='global')
+            or self.config.get_config(self.DEFAULT_SECTION, option_name, config='global')
 
 
 class BaseInstanceCommand(BaseCommand):
