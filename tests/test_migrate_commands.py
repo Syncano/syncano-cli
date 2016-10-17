@@ -13,7 +13,9 @@ class MigrateCommandsTest(InstanceMixin, IntegrationTest):
     def setUpClass(cls):
         super(MigrateCommandsTest, cls).setUpClass()
         # do a login first;
-        cls.runner.invoke(cli, args=['login', '--instance-name', cls.instance.name], obj={})
+        cls.runner.invoke(cli, args=['login', '--instance-name', cls.instance.name],
+                          input="{}\n{}\n{}\n".format(
+                              cls.API_EMAIL, cls.API_PASSWORD, cls.API_PASSWORD), obj={})
         # and make setup;
         cls.old_key = cls.connection.connection().api_key
         cls._set_up_configuration()

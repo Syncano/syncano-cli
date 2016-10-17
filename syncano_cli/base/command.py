@@ -59,12 +59,6 @@ class BaseCommand(ConnectionMixin, RegisterMixin):
             repeat_password = self.prompter.prompt('repeat password', hide_input=True)
             password = self.validate_password(password, repeat_password)
             self.do_login_or_register(email, password)
-        else:
-            email = self.config.get_config('DEFAULT', 'email')
-            if not email:
-                self.formatter.write('Already logged in.', SpacedOpt())
-            else:
-                self.formatter.write('Already logged in as: {}.'.format(email), SpacedOpt())
 
         if not has_command:
             self.setup_command_config(self.COMMAND_CONFIG_PATH)
