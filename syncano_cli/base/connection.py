@@ -13,7 +13,6 @@ class ConnectionMixin(object):
             or self.config.get_config(self.DEFAULT_SECTION, option, config='global')
 
     def create_connection(self, instance_name=None):
-        self.config.read_configs()
         api_key = self.config.get_config(self.DEFAULT_SECTION, 'key')
         connection_dict = {
             'api_key': api_key,
