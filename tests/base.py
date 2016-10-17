@@ -6,19 +6,29 @@ from datetime import datetime
 from hashlib import md5
 from uuid import uuid4
 
+import six
 import syncano
 import yaml
 from click.testing import CliRunner
 from syncano.models import RuntimeChoices
-from syncano_cli.base.command import BaseCommand
 from syncano_cli.config import DEFAULT_CONFIG_PATH
 from syncano_cli.main import cli
+
+if six.PY2:
+    from ConfigParser import ConfigParser
+elif six.PY3:
+    from configparser import ConfigParser
+else:
+    raise ImportError()
 
 
 class IntegrationTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        cls.config = ConfigParser()
+        cls.config.read(DEFAULT_CONFIG_PATH)
+
         cls.runner = CliRunner()
         cls.API_KEY = os.getenv('INTEGRATION_API_KEY')
         cls.API_EMAIL = os.getenv('INTEGRATION_API_EMAIL')
@@ -64,14 +74,13 @@ class BaseCLITest(InstanceMixin, IntegrationTest):
     @classmethod
     def setUpClass(cls):
         super(BaseCLITest, cls).setUpClass()
-        cls.command = BaseCommand(DEFAULT_CONFIG_PATH)
         cls.yml_file = 'syncano.yml'
         cls.scripts_dir = 'scripts/'
 
     def setUp(self):
         self.runner.invoke(cli, args=['login', '--instance-name', self.instance.name], obj={})
-        self.assert_config_variable_exists(self.command.config.global_config, 'DEFAULT', 'key')
-        self.assert_config_variable_exists(self.command.config.global_config, 'DEFAULT', 'instance_name')
+        self.assert_config_variable_exists(self.config, 'DEFAULT', 'key')
+        self.assert_config_variable_exists(self.config, 'DEFAULT', 'instance_name')
 
     def tearDown(self):
         # remove the .syncano file

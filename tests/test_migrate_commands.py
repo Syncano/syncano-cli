@@ -20,7 +20,7 @@ class MigrateCommandsTest(InstanceMixin, IntegrationTest):
 
     @classmethod
     def _set_up_configuration(cls):
-        global_config = cls.command.config.global_config
+        global_config = cls.config
         SYNCANO_ADMIN_API_KEY = global_config.get("DEFAULT", "key")
         if not global_config.has_section("P2S"):
             global_config.add_section("P2S")
@@ -34,7 +34,7 @@ class MigrateCommandsTest(InstanceMixin, IntegrationTest):
         self.assertIn('PARSE_MASTER_KEY', result.output)
 
         result = self.runner.invoke(cli, args=['migrate', 'configure', '--force'], input='xxx\nxxx\n{}\n{}\n'.format(
-            self.command.config.global_config.get("DEFAULT", "key"),
+            self.config.get("DEFAULT", "key"),
             self.instance.name,
         ), obj={})
         self.assertIn('PARSE_MASTER_KEY', result.output)

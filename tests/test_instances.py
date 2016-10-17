@@ -26,7 +26,7 @@ class InstancesCommandsTest(BaseCLITest):
             'instances', 'default', instance_name,
         ], obj={})
 
-        self.assert_config_variable_equal(self.command.config.global_config,
+        self.assert_config_variable_equal(self.config,
                                           'DEFAULT', 'instance_name', instance_name)
 
         result = self._list_command()

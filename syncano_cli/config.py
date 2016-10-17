@@ -7,7 +7,7 @@ import six
 if six.PY2:
     from ConfigParser import ConfigParser, NoOptionError, NoSectionError
 elif six.PY3:
-    from configparser import ConfigParser
+    from configparser import ConfigParser, NoOptionError, NoSectionError
 else:
     raise ImportError()
 

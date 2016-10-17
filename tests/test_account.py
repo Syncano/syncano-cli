@@ -24,7 +24,7 @@ class AccountCommandsTest(BaseCLITest):
         self.runner.invoke(cli, args=['accounts', 'register', email], input='test1234\ntest1234', obj={})
 
         # check if api key is written in the config file;
-        self.assert_config_variable_exists(self.command.config.global_config, 'DEFAULT', 'key')
+        self.assert_config_variable_exists(self.config, 'DEFAULT', 'key')
 
         # restore old connection in Syncano LIB; To remove Instance in tearDown;
         self.connection.connection().api_key = old_key
