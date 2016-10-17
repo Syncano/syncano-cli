@@ -35,7 +35,7 @@ class RegisterMixin(object):
             self.do_login(email, password)
         except SyncanoRequestError as exc:
             self.do_register(exc, email, password)
-            # create instance only when registering;
+
         instances = [i for i in self._list_instances()]
         # create new instance and set to default only when no instance is existing;
         if not instances:

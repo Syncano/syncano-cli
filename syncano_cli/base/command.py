@@ -16,10 +16,11 @@ class BaseCommand(ConnectionMixin, RegisterMixin):
     Stores also meta information about global config. Defines structures for command like config, eg.: hosting;
     """
 
-    def __init__(self, config_path):
+    def __init__(self, config_path, force_register=False):
         self.config = Config(global_config_path=config_path, local_config_path=self.COMMAND_CONFIG_PATH)
         self.config.read_configs()
         self.connection = self.create_connection()
+        self.force_register = force_register
         self.setup()
 
     formatter = Formatter()
@@ -48,11 +49,10 @@ class BaseCommand(ConnectionMixin, RegisterMixin):
     def setup(self):
         has_global = self.has_global_setup()
         has_command = self.has_command_setup(self.COMMAND_CONFIG_PATH)
-        print(has_global, has_command)
         if has_global and has_command:
             return
 
-        if not has_global:
+        if not has_global or self.force_register:
             self.formatter.write('Login or create an account in Syncano.', SpacedOpt())
             email = self.prompter.prompt('email')
             password = self.prompter.prompt('password', hide_input=True)
