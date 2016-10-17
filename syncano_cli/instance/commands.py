@@ -83,4 +83,4 @@ def default(ctx, instance_name):
 @click.option('--description')
 def create(ctx, instance_name, description):
     """Create new Instance."""
-    ctx.obj['instance_commands'].create(instance_name, description)
+    ctx.obj['instance_commands'].create(instance_name, description, show_default=True)

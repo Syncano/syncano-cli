@@ -4,7 +4,7 @@ import os
 from syncano_cli.base.connection import ConnectionMixin
 from syncano_cli.base.formatters import Formatter
 from syncano_cli.base.mixins import RegisterMixin
-from syncano_cli.base.options import SpacedOpt, WarningOpt
+from syncano_cli.base.options import SpacedOpt
 from syncano_cli.base.prompter import Prompter
 from syncano_cli.config import Config
 
@@ -19,8 +19,8 @@ class BaseCommand(ConnectionMixin, RegisterMixin):
     def __init__(self, config_path):
         self.config = Config(global_config_path=config_path)
         self.config.read_configs()
-        self.setup()
         self.connection = self.create_connection()
+        self.setup()
 
     formatter = Formatter()
     prompter = Prompter()
@@ -94,11 +94,6 @@ class BaseCommand(ConnectionMixin, RegisterMixin):
             required = config_meta['required']
             if required and not config_parser.has_option(section, var_name):
                 return False
-            elif not required and not config_parser.has_option(section, var_name):
-                cls.formatter.write(
-                    'Missing "{}" in default config. {}'.format(var_name, config_meta['info']),
-                    WarningOpt(), SpacedOpt()
-                )
 
         return True
 

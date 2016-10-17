@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import os
-import re
 import sys
 
 import click
@@ -47,11 +46,12 @@ class HostingCommands(BaseInstanceCommand):
         config_parser.add_section(self.COMMAND_SECTION)
         config_parser.set(self.COMMAND_SECTION, 'domain', domain)
         config_parser.set(self.COMMAND_SECTION, 'base_dir', base_dir)
-        projects = ['basedir1', 'basedir2', 'basedir3', base_dir]
-        config_parser.set(self.COMMAND_SECTION, 'projects', projects)
 
         with open(config_path, 'w+') as f:
             config_parser.write(f)
+
+        # add project to global config (summary command);
+        self.config.update_info_about_projects(base_dir)
 
     def list_hostings(self):
         return [

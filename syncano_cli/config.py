@@ -1,5 +1,5 @@
 # -*- coding: UTF=8 -*-
-
+import json
 import os
 
 import six
@@ -15,7 +15,6 @@ CONFIGS = ['global', 'local']
 
 
 class Config(object):
-    
     def __init__(self, global_config_path=None, local_config_path=None):
         self.global_config_path = global_config_path or os.path.join(os.path.expanduser('~'), '.syncano')
         self.global_config = ConfigParser()
@@ -49,7 +48,7 @@ class Config(object):
         _, config_parser = self._get_config_meta(config=config)
         try:
             return config_parser.get(section, option)
-        except (NoOptionError, NoSectionError) as e:
+        except (NoOptionError, NoSectionError):
             pass
 
     def _get_config_meta(self, config='global'):
@@ -63,3 +62,19 @@ class Config(object):
             raise RuntimeError('available configs: global/local')
 
         return file_path, config_parser
+
+    def update_info_about_projects(self, project_dir):
+        projects = self.get_config('PROJECTS', 'projects')
+
+        if not projects:
+            projects = [project_dir]
+        else:
+            projects = json.loads(projects)
+            if project_dir not in projects:
+                projects.extend(project_dir)
+
+        if not self.global_config.has_section('PROJECTS'):
+            self.global_config.add_section('PROJECTS')
+
+        self.set_config('PROJECTS', 'projects', json.dumps(projects))
+        self.write_config()

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import click
 from syncano_cli.base.command import BaseCommand
-from syncano_cli.base.options import BottomSpacedOpt, ColorSchema, SpacedOpt, TopSpacedOpt, WarningOpt
+from syncano_cli.base.options import ColorSchema, SpacedOpt, WarningOpt
 
 
 class InstanceCommands(BaseCommand):
@@ -10,7 +10,7 @@ class InstanceCommands(BaseCommand):
         return self.api_list()
 
     def api_list(self):
-        return self.connection.Instance.please.all()
+        return self._list_instances()
 
     def details(self, instance_name):
         return self.display_details(self.connection.Instance.please.get(name=instance_name))
@@ -23,18 +23,8 @@ class InstanceCommands(BaseCommand):
         self.config.set_config('DEFAULT', 'instance_name', instance_name)
         self.config.write_config()
 
-    def create(self, instance_name, description=None):
-        kwargs = {
-            'name': instance_name
-        }
-        if description:
-            kwargs.update({'description': description})
-        instance = self.connection.Instance.please.create(**kwargs)
-        self.formatter.write('Instance `{}` created.'.format(instance.name), TopSpacedOpt())
-        self.formatter.write('To set this instance as default use: `syncano instances default {}`'.format(
-            instance.name
-        ), BottomSpacedOpt())
-        return instance
+    def create(self, instance_name, description=None, show_default=False):
+        self._create_instance(instance_name, description=description, show_default=show_default)
 
     def display_details(self, instance):
         self.formatter.write('Details for Instance `{}`.'.format(instance.name), SpacedOpt())
