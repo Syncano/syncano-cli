@@ -32,7 +32,7 @@ class HostingCommandsTest(BaseCLITest):
         self._publish_files(domain=domain)
 
     def test_hosting_commands(self):
-        self._base_test(domain=None)  # default test
+        self._base_test(domain='default')  # default test
 
     def test_hosting_with_domains(self):
         self._base_test(domain='efbgh')  # custom domain
