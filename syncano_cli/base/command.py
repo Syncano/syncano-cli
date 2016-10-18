@@ -23,8 +23,7 @@ class BaseCommand(ConnectionMixin, RegisterMixin):
         self.connection = self.create_connection()
         self.force_register = force_register
         self.force_local_check = force_local_check
-        self.instance = self.get_instance(instance_name)
-        self.setup()
+        self.setup(instance_name)
 
     formatter = Formatter()
     prompter = Prompter()
@@ -49,11 +48,9 @@ class BaseCommand(ConnectionMixin, RegisterMixin):
     COMMAND_SECTION = None
     COMMAND_CONFIG_PATH = None
 
-    def setup(self):
+    def setup(self, instance_name):
         has_global = self.has_global_setup()
         has_command = self.has_command_setup(self.COMMAND_CONFIG_PATH)
-        if has_global and has_command:
-            return
 
         if not has_global or self.force_register:
             self.formatter.write('Login or create an account in Syncano.', SpacedOpt())
@@ -62,6 +59,8 @@ class BaseCommand(ConnectionMixin, RegisterMixin):
             repeat_password = self.prompter.prompt('repeat password', hide_input=True)
             password = self.validate_password(password, repeat_password)
             self.do_login_or_register(email, password)
+
+        self.instance = self.get_instance(instance_name)
 
         if not has_command and self.force_local_check:
             self.setup_command_config(self.COMMAND_CONFIG_PATH)
