@@ -84,10 +84,11 @@ class BaseCLITest(InstanceMixin, IntegrationTest):
         self.assert_config_variable_exists(self.config, 'DEFAULT', 'instance_name')
 
     def tearDown(self):
-        # remove the .syncano file
-        if os.path.isfile(DEFAULT_CONFIG_PATH):
-            os.remove(DEFAULT_CONFIG_PATH)
-        self.assertFalse(os.path.isfile(DEFAULT_CONFIG_PATH))
+        # remove all local configs: global and locals;
+        for path in [DEFAULT_CONFIG_PATH, '.hosting-syncano', '.sockets-syncano']:
+            if os.path.isfile(path):
+                os.remove(path)
+            self.assertFalse(os.path.isfile(path))
 
     def assert_file_exists(self, path):
         self.assertTrue(os.path.isfile(path))
