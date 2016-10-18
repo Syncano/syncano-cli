@@ -5,13 +5,13 @@ from collections import namedtuple
 
 import click
 import six
-from syncano_cli.base.command import BaseInstanceCommand
+from syncano_cli.base.command import BaseCommand
 from syncano_cli.base.options import BottomSpacedOpt, ColorSchema, PromptOpt, SpacedOpt, TopSpacedOpt, WarningOpt
 from syncano_cli.hosting.exceptions import NoHostingFoundException, PathNotFoundException
-from syncano_cli.hosting.utils import slugify
+from syncano_cli.hosting.utils import PathFinder, slugify
 
 
-class HostingCommands(BaseInstanceCommand):
+class HostingCommands(BaseCommand):
 
     COMMAND_CONFIG = {
         'hosting': [
@@ -33,12 +33,19 @@ class HostingCommands(BaseInstanceCommand):
                 'info': '',
                 'default': ''
             },
+            {
+                'name': 'directory',
+                'required': True,
+                'info': '',
+                'default': ''
+            },
         ]
     }
     COMMAND_SECTION = 'HOSTING'
     COMMAND_CONFIG_PATH = '.hosting-syncano'  # local dir (this one in which command is executed)
 
     def setup_command_config(self, config_path):
+
         project_dir = os.getcwd()
         self.formatter.write('Setup your Hosting. Your working directory is: {}'.format(
             project_dir
@@ -46,13 +53,21 @@ class HostingCommands(BaseInstanceCommand):
         current_dir = os.path.split(project_dir)[1]
         if hasattr(current_dir, 'decode'):
             current_dir = current_dir.decode('utf-8')
-        domain = slugify(current_dir)
+        has_hosting = bool(self.list_hostings())
+        domain = 'default' if not has_hosting else slugify(current_dir)
         instance_name = self.config.get_config('DEFAULT', 'instance_name')
 
+        possible_paths = PathFinder(project_dir)
+        if len(possible_paths) > 1:
+            self.formatter.write(
+                u'Possible hosting directories are: {}; Default will be the first one.'.format(
+                    ', '.join(possible_paths)), BottomSpacedOpt()
+            )
         defaults = {
             'instance_name': instance_name,
             'project_dir': project_dir,
-            'domain': domain
+            'domain': domain,
+            'directory': possible_paths[0] if possible_paths else ''
         }
         config = {}
 
@@ -135,9 +150,9 @@ class HostingCommands(BaseInstanceCommand):
 
                 sys_path = os.path.join(folder, single_file)
                 with open(sys_path, 'rb') as upload_file:
+                    getattr(hosting, upload_method_name)(path=file_path, file=upload_file)
                     self.formatter.write('* Uploading file: {}'.format(click.style(file_path,
                                                                                    fg=ColorSchema.WARNING)))
-                    getattr(hosting, upload_method_name)(path=file_path, file=upload_file)
 
                 uploaded_files.append(file_path)
         return uploaded_files

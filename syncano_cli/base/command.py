@@ -16,11 +16,14 @@ class BaseCommand(ConnectionMixin, RegisterMixin):
     Stores also meta information about global config. Defines structures for command like config, eg.: hosting;
     """
 
-    def __init__(self, config_path, force_register=False):
+    def __init__(self, config_path, instance_name=None,
+                 force_register=False, force_local_check=False):
         self.config = Config(global_config_path=config_path, local_config_path=self.COMMAND_CONFIG_PATH)
         self.config.read_configs()
         self.connection = self.create_connection()
         self.force_register = force_register
+        self.force_local_check = force_local_check
+        self.instance = self.get_instance(instance_name)
         self.setup()
 
     formatter = Formatter()
@@ -60,7 +63,7 @@ class BaseCommand(ConnectionMixin, RegisterMixin):
             password = self.validate_password(password, repeat_password)
             self.do_login_or_register(email, password)
 
-        if not has_command:
+        if not has_command and self.force_local_check:
             self.setup_command_config(self.COMMAND_CONFIG_PATH)
 
     def has_command_setup(self, config_path):
@@ -97,12 +100,3 @@ class BaseCommand(ConnectionMixin, RegisterMixin):
     def get_config_value(self, default, option_name):
         return default or self.config.get_config(self.COMMAND_SECTION, option_name, config='local') \
             or self.config.get_config(self.DEFAULT_SECTION, option_name, config='global')
-
-
-class BaseInstanceCommand(BaseCommand):
-    """Command for Instance based commands: fetch data from an instance."""
-    def set_instance(self, instance_name):
-        self._set_instance(instance_name)
-
-    def _set_instance(self, instance_name):
-        self.instance = self.get_instance(instance_name)

@@ -16,8 +16,7 @@ def top_config():
 def config(ctx, config, instance_name):
     """Allow to manage global Instance config."""
 
-    config_command = ConfigCommand(config)
-    config_command.set_instance(instance_name)
+    config_command = ConfigCommand(config, instance_name)
     ctx.obj['config_command'] = config_command
     if ctx.invoked_subcommand is None:
         config_command.config_show()

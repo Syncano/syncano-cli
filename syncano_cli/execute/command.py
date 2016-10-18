@@ -2,12 +2,12 @@
 import json
 
 import six
-from syncano_cli.base.command import BaseInstanceCommand
+from syncano_cli.base.command import BaseCommand
 from syncano_cli.base.data_parser import parse_input_data
 from syncano_cli.base.options import BottomSpacedOpt, DefaultOpt, SpacedOpt, WarningOpt
 
 
-class ExecuteCommand(BaseInstanceCommand):
+class ExecuteCommand(BaseCommand):
 
     def execute(self, script_endpoint_name, data):
         se = self.instance.script_endpoints.get(name=script_endpoint_name)

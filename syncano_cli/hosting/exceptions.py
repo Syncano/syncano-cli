@@ -13,3 +13,7 @@ class NoHostingFoundException(CLIBaseException):
 
 class NotADirectoryException(CLIBaseException):
     default_message = u'You should provide a project root directory here.'
+
+
+class DirectoryNotFound(CLIBaseException):
+    default_message = u'Directory not found in local configuration file nor in the command argument.'

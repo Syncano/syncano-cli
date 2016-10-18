@@ -18,8 +18,7 @@ def top_sockets():
 @click.option('--instance-name', help=u'Instance name.')
 def sockets(ctx, config, instance_name):
     """Create and manage Sockets."""
-    socket_command = SocketCommand(config)
-    socket_command.set_instance(instance_name)
+    socket_command = SocketCommand(config, instance_name)
     ctx.obj['socket_command'] = socket_command
 
 
