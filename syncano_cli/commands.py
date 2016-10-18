@@ -2,6 +2,7 @@
 
 import click
 from syncano_cli.base.command import BaseCommand
+from syncano_cli.base.options import SpacedOpt
 
 
 @click.group()
@@ -18,5 +19,11 @@ def login(config, instance_name):
     """
     command = BaseCommand(config)
     if instance_name:
-        command.config.set_config('instance_name', instance_name)
+        command.config.set_config('DEFAULT', 'instance_name', instance_name)
         command.config.write_config()
+
+    email = command.config.get_config('DEFAULT', 'email')
+    if not email:
+        command.formatter.write('Already logged in.', SpacedOpt())
+    else:
+        command.formatter.write('Already logged in as: {}.'.format(email), SpacedOpt())

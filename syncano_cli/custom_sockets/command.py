@@ -44,7 +44,7 @@ class SocketCommand(BaseInstanceCommand):
         cs = CustomSocket.please.get(name=socket_name, instance_name=self.instance.name)
         cs.recheck()
 
-    def config(self, socket_name):
+    def get_config(self, socket_name):
         cs = CustomSocket.please.get(name=socket_name, instance_name=self.instance.name)
         self.formatter.write('Config for Socket `{}`'.format(cs.name), TopSpacedOpt())
         self.formatter.display_config(cs.config)

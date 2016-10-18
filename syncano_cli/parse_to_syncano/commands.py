@@ -29,7 +29,7 @@ def migrate(context, config):
 def parse(context):
     """Synchronize the Parse data objects with Syncano data objects."""
     command = context.obj['command']
-    config = read_config(command.config.global_config)
+    config = read_config(command.config)
     check_configuration(config, command.config.global_config_path, silent=True)
     application_id = config.get('P2S', 'PARSE_APPLICATION_ID')
     instance_name = config.get('P2S', 'SYNCANO_INSTANCE_NAME')

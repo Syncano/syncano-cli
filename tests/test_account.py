@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-import os
+
 import random
 
-from syncano_cli.config import DEFAULT_CONFIG_PATH
 from syncano_cli.main import cli
 from tests.base import BaseCLITest
 
@@ -10,12 +9,6 @@ from tests.base import BaseCLITest
 class AccountCommandsTest(BaseCLITest):
 
     def test_register(self):
-        # remove file with connection data:
-
-        if os.path.isfile(DEFAULT_CONFIG_PATH):
-            os.remove(DEFAULT_CONFIG_PATH)
-        self.assertFalse(os.path.isfile(DEFAULT_CONFIG_PATH))
-
         # old api key;
         old_key = self.connection.connection().api_key
 

@@ -83,7 +83,7 @@ def recheck(ctx, socket_name):
 def config(ctx, socket_name):
     """Display config for specified Sockets."""
     socket_command = ctx.obj['socket_command']
-    socket_command.config(socket_name=socket_name)
+    socket_command.get_config(socket_name=socket_name)
 
 
 @sockets.command()

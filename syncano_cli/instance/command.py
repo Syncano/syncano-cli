@@ -20,8 +20,7 @@ class InstanceCommands(BaseCommand):
         self.formatter.write('Instance `{}` deleted.'.format(instance_name), WarningOpt(), SpacedOpt())
 
     def set_default(self, instance_name):
-        self.config.set_config('DEFAULT', 'instance_name', instance_name)
-        self.config.write_config()
+        self._set_instance_as_default(instance_name)
 
     def create(self, instance_name, description=None, show_default=False):
         self._create_instance(instance_name, description=description, show_default=show_default)
