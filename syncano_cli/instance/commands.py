@@ -73,7 +73,7 @@ def delete(ctx, instance_name):
 def default(ctx, instance_name):
     """Set the specified Instance name as default in CLI.
     This name will be used as default one when running commands."""
-    ctx.obj['instance_commands'].set_default(instance_name, config_path=ctx.obj['config'])
+    ctx.obj['instance_commands'].set_default(instance_name)
     click.echo("INFO: Instance `{}` set as default.".format(instance_name))
 
 
