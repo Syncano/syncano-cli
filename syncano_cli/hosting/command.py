@@ -43,7 +43,9 @@ class HostingCommands(BaseInstanceCommand):
         self.formatter.write('Setup your Hosting. Your working directory is: {}'.format(
             project_dir
         ), SpacedOpt())
-        current_dir = os.path.split(project_dir)[1].decode('utf-8')
+        current_dir = os.path.split(project_dir)[1]
+        if hasattr(current_dir, 'decode'):
+            current_dir = current_dir.decode('utf-8')
         domain = slugify(current_dir)
         instance_name = self.config.get_config('DEFAULT', 'instance_name')
 
