@@ -3,8 +3,8 @@ import sys
 
 import click
 from syncano_cli.base.options import BottomSpacedOpt, ErrorOpt, TopSpacedOpt
-from syncano_cli.config import ACCOUNT_CONFIG_PATH
 from syncano_cli.hosting.command import HostingCommands
+from syncano_cli.hosting.exceptions import DirectoryNotFound
 from syncano_cli.hosting.validators import validate_domain, validate_publish
 
 
@@ -15,31 +15,42 @@ def top_hosting():
 
 @top_hosting.group()
 @click.pass_context
-@click.option('--config', help=u'Account configuration file.', default=ACCOUNT_CONFIG_PATH)
+@click.option('--config', help=u'Account configuration file.')
 @click.option('--instance-name', help=u'Instance name.')
-@click.option('--domain', default='default')
+@click.option('--domain')
 def hosting(ctx, config, instance_name, domain):
     """Handle Hosting Socket and Hosting Socket files. Allow to publish static pages to the Syncano Hosting."""
-    hosting_commands = HostingCommands(config)
-    hosting_commands.has_setup()
-    hosting_commands.set_instance(instance_name)
+    hosting_commands = HostingCommands(config, instance_name)
+    ctx.obj['config'] = config
     ctx.obj['hosting_commands'] = hosting_commands
-    ctx.obj['domain'] = domain
+    ctx.obj['domain'] = hosting_commands.get_config_value(domain, 'domain')
+    ctx.obj['instance_name'] = instance_name
 
 
 @hosting.command()
 @click.pass_context
-@click.argument('directory')
+@click.argument('directory', required=False)
 def publish(ctx, directory):
     """Allow to publish local files to the Syncano Hosting."""
+    # overwrite command with new command that will check local config;
+    hosting_commands = HostingCommands(ctx.obj['config'], force_local_check=True)
+    directory = hosting_commands.get_config_value(directory, 'directory')
+    if not directory:
+        raise DirectoryNotFound()
     validate_publish(directory)
-    domain = ctx.obj['domain']
+    domain = hosting_commands.get_config_value(ctx.obj['domain'], 'domain')
     domain = validate_domain(domain)  # prepared for user defined domains;
-    hosting_commands = ctx.obj['hosting_commands']
     hosting_commands.publish(domain=domain, base_dir=directory)
     url = hosting_commands.get_hosting_url(domain)
     hosting_commands.formatter.write("Your site is published.", TopSpacedOpt())
     hosting_commands.formatter.write("Go to: {url}".format(url=url), BottomSpacedOpt())
+    if domain != 'default':
+        hosting_commands.formatter.write(
+            'You can use: `syncano hosting default {}` to set as default and '
+            'make available from `https://{}.syncano.site`'.format(
+                domain,
+                hosting_commands.instance.name)
+        )
 
 
 @hosting.group(invoke_without_command=True)

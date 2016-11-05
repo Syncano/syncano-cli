@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from syncano_cli.config import ACCOUNT_CONFIG
+from syncano_cli.config import DEFAULT_CONFIG_PATH
 from syncano_cli.main import cli
 from tests.base import BaseCLITest
 
@@ -27,7 +27,9 @@ class InstancesCommandsTest(BaseCLITest):
             'instances', 'default', instance_name,
         ], obj={})
 
-        self.assert_config_variable_equal(ACCOUNT_CONFIG, 'DEFAULT', 'instance_name', instance_name)
+        self.config.read(DEFAULT_CONFIG_PATH)
+        self.assert_config_variable_equal(self.config,
+                                          'DEFAULT', 'instance_name', instance_name)
 
         result = self._list_command()
 

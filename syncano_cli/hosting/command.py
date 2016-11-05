@@ -1,17 +1,93 @@
 # -*- coding: utf-8 -*-
 import os
-import re
 import sys
+from collections import namedtuple
 
 import click
-from syncano_cli.base.command import BaseInstanceCommand
+import six
+from syncano_cli.base.command import BaseCommand
 from syncano_cli.base.options import BottomSpacedOpt, ColorSchema, PromptOpt, SpacedOpt, TopSpacedOpt, WarningOpt
-from syncano_cli.hosting.exceptions import NoHostingFoundException, PathNotFoundException, UnicodeInPathException
+from syncano_cli.hosting.exceptions import NoHostingFoundException, PathNotFoundException
+from syncano_cli.hosting.utils import PathFinder, slugify
 
 
-class HostingCommands(BaseInstanceCommand):
+class HostingCommands(BaseCommand):
 
-    VALID_PATH_REGEX = re.compile(r'^(?!/)([a-zA-Z0-9\-\._]+/{0,1})+(?<!/)\Z')
+    COMMAND_CONFIG = {
+        'hosting': [
+            {
+                'name': 'domain',
+                'required': True,
+                'info': '',
+                'default': 'default'
+            },
+            {
+                'name': 'project_dir',
+                'required': False,
+                'info': '',
+                'default': ''
+            },
+            {
+                'name': 'instance_name',
+                'required': True,
+                'info': '',
+                'default': ''
+            },
+            {
+                'name': 'directory',
+                'required': True,
+                'info': '',
+                'default': ''
+            },
+        ]
+    }
+    COMMAND_SECTION = 'HOSTING'
+    COMMAND_CONFIG_PATH = '.hosting-syncano'  # local dir (this one in which command is executed)
+
+    def setup_command_config(self, config_path):
+
+        project_dir = os.getcwd()
+        self.formatter.write('Setup your Hosting. Your working directory is: {}'.format(
+            project_dir
+        ), SpacedOpt())
+        current_dir = os.path.split(project_dir)[1]
+        if hasattr(current_dir, 'decode'):
+            current_dir = current_dir.decode('utf-8')
+        has_hosting = bool(self.list_hostings())
+        domain = 'default' if not has_hosting else slugify(current_dir)
+        instance_name = self.config.get_config('DEFAULT', 'instance_name')
+
+        possible_paths = PathFinder(project_dir)
+        if len(possible_paths) > 1:
+            self.formatter.write(
+                u'Possible hosting directories are: {}; Default will be the first one.'.format(
+                    ', '.join(possible_paths)), BottomSpacedOpt()
+            )
+        defaults = {
+            'instance_name': instance_name,
+            'project_dir': project_dir,
+            'domain': domain,
+            'directory': possible_paths[0] if possible_paths else ''
+        }
+        config = {}
+
+        for config_meta in self.COMMAND_CONFIG.get(self.COMMAND_SECTION.lower()):
+            var_name = config_meta['name']
+            required = config_meta['required']
+            default = defaults.get(var_name) or config_meta['default']
+            if required and not self.config.has_option(self.COMMAND_SECTION, var_name, config='local'):
+                config[var_name] = self.prompter.prompt(var_name, default=default)
+            else:
+                config[var_name] = default
+
+        self.config.add_section(self.COMMAND_SECTION, config='local')
+        for config_name, config_val in six.iteritems(config):
+            self.config.set_config(self.COMMAND_SECTION, config_name, config_val, config='local')
+
+        self.config.write_config(config='local')
+
+        # add project to global config (summary command);
+        self.config.update_info_about_projects(project_dir)
 
     def list_hostings(self):
         return [
@@ -27,18 +103,19 @@ class HostingCommands(BaseInstanceCommand):
         self.formatter.write('Hosting defined in Instance `{}`:'.format(self.instance.name), SpacedOpt())
         self.formatter.write('{0:30}{1:20}{2:20}'.format('Label', 'Domains', 'URL'), PromptOpt())
 
+        Domain = namedtuple('Domain', ['domain', 'url'])
         for label, domains in hostings:
-            domain_url = [(domain, self.get_hosting_url(domain)) for domain in domains]
+            domain_url = [Domain(domain, self.get_hosting_url(domain)) for domain in domains]
             self.formatter.write(
                 '{0:30}{1:20}{2:20}'.format(
                     label,
-                    domain_url[0][0] if domain_url else '',
-                    domain_url[0][1] if domain_url else '')
+                    domain_url[0].domain if domain_url else '',
+                    domain_url[0].url if domain_url else '')
             )
             if domain_url[1:]:
                 for domain_url in domain_url[1:]:
                     self.formatter.write(
-                        '{0:30}{1:20}{2:20}'.format('', domain_url[0], domain_url[1])
+                        '{0:30}{1:20}{2:20}'.format('', domain_url.domain, domain_url.url)
                     )
         self.formatter.empty_line()
 
@@ -71,13 +148,11 @@ class HostingCommands(BaseInstanceCommand):
                 else:
                     file_path = single_file
 
-                self._validate_path(file_path)
-
                 sys_path = os.path.join(folder, single_file)
                 with open(sys_path, 'rb') as upload_file:
+                    getattr(hosting, upload_method_name)(path=file_path, file=upload_file)
                     self.formatter.write('* Uploading file: {}'.format(click.style(file_path,
                                                                                    fg=ColorSchema.WARNING)))
-                    getattr(hosting, upload_method_name)(path=file_path, file=upload_file)
 
                 uploaded_files.append(file_path)
         return uploaded_files
@@ -123,10 +198,6 @@ class HostingCommands(BaseInstanceCommand):
         if not to_return and not is_new:
             raise NoHostingFoundException(format_args=[domain])
         return to_return
-
-    def _validate_path(self, file_path):
-        if not self.VALID_PATH_REGEX.match(file_path):
-            raise UnicodeInPathException()
 
     def print_hosting_files(self, domain, hosting_files):
         self.formatter.write('Hosting files for domain `{}` in instance `{}`:'.format(domain, self.instance.name),

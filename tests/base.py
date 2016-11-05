@@ -6,12 +6,20 @@ from datetime import datetime
 from hashlib import md5
 from uuid import uuid4
 
+import six
 import syncano
 import yaml
 from click.testing import CliRunner
 from syncano.models import RuntimeChoices
-from syncano_cli.config import ACCOUNT_CONFIG, ACCOUNT_CONFIG_PATH
+from syncano_cli.config import DEFAULT_CONFIG_PATH
 from syncano_cli.main import cli
+
+if six.PY2:
+    from ConfigParser import ConfigParser
+elif six.PY3:
+    from configparser import ConfigParser
+else:
+    raise ImportError()
 
 
 class IntegrationTest(unittest.TestCase):
@@ -30,6 +38,7 @@ class IntegrationTest(unittest.TestCase):
             password=cls.API_PASSWORD,
             api_key=cls.API_KEY
         )
+        cls.config = ConfigParser()
 
     @classmethod
     def tearDownClass(cls):
@@ -67,15 +76,19 @@ class BaseCLITest(InstanceMixin, IntegrationTest):
         cls.scripts_dir = 'scripts/'
 
     def setUp(self):
-        self.runner.invoke(cli, args=['login', '--instance-name', self.instance.name], obj={})
-        self.assert_config_variable_exists(ACCOUNT_CONFIG, 'DEFAULT', 'key')
-        self.assert_config_variable_exists(ACCOUNT_CONFIG, 'DEFAULT', 'instance_name')
+        self.runner.invoke(cli, args=['login', '--instance-name', self.instance.name],
+                           input="{}\n{}\n{}\n".format(
+                               self.API_EMAIL, self.API_PASSWORD, self.API_PASSWORD), obj={})
+        self.config.read(DEFAULT_CONFIG_PATH)
+        self.assert_config_variable_exists(self.config, 'DEFAULT', 'key')
+        self.assert_config_variable_exists(self.config, 'DEFAULT', 'instance_name')
 
     def tearDown(self):
-        # remove the .syncano file
-        if os.path.isfile(ACCOUNT_CONFIG_PATH):
-            os.remove(ACCOUNT_CONFIG_PATH)
-        self.assertFalse(os.path.isfile(ACCOUNT_CONFIG_PATH))
+        # remove all local configs: global and locals;
+        for path in [DEFAULT_CONFIG_PATH, '.hosting-syncano', '.sockets-syncano']:
+            if os.path.isfile(path):
+                os.remove(path)
+            self.assertFalse(os.path.isfile(path))
 
     def assert_file_exists(self, path):
         self.assertTrue(os.path.isfile(path))

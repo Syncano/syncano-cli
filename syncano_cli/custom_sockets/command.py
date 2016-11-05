@@ -8,7 +8,7 @@ import six
 import yaml
 from syncano.exceptions import SyncanoRequestError
 from syncano.models import CustomSocket, SocketEndpoint
-from syncano_cli.base.command import BaseInstanceCommand
+from syncano_cli.base.command import BaseCommand
 from syncano_cli.base.options import BottomSpacedOpt, SpacedOpt, TopSpacedOpt
 from syncano_cli.custom_sockets.exceptions import (
     EndpointNotFoundException,
@@ -23,7 +23,7 @@ from syncano_cli.custom_sockets.templates.socket_template import SCRIPTS, SOCKET
 from yaml.parser import ParserError
 
 
-class SocketCommand(BaseInstanceCommand):
+class SocketCommand(BaseCommand):
 
     SOCKET_FILE_NAME = 'socket.yml'
 
@@ -44,7 +44,7 @@ class SocketCommand(BaseInstanceCommand):
         cs = CustomSocket.please.get(name=socket_name, instance_name=self.instance.name)
         cs.recheck()
 
-    def config(self, socket_name):
+    def get_config(self, socket_name):
         cs = CustomSocket.please.get(name=socket_name, instance_name=self.instance.name)
         self.formatter.write('Config for Socket `{}`'.format(cs.name), TopSpacedOpt())
         self.formatter.display_config(cs.config)

@@ -7,13 +7,13 @@ class PathNotFoundException(CLIBaseException):
     default_message = u'File `{}` not found.'
 
 
-class UnicodeInPathException(CLIBaseException):
-    default_message = u'Unicode characters in path are not supported. Check the files names.'
-
-
 class NoHostingFoundException(CLIBaseException):
     default_message = u'Hosting with domain `{}` - not found. Exit.'
 
 
 class NotADirectoryException(CLIBaseException):
     default_message = u'You should provide a project root directory here.'
+
+
+class DirectoryNotFound(CLIBaseException):
+    default_message = u'Directory not found in local configuration file nor in the command argument.'

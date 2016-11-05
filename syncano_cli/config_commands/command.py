@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
-
-from syncano_cli.base.command import BaseInstanceCommand
+from syncano_cli.base.command import BaseCommand
 from syncano_cli.base.options import TopSpacedOpt
 from syncano_cli.config_commands.exceptions import VariableInConfigException, VariableNotFoundException
 
 
-class ConfigCommand(BaseInstanceCommand):
+class ConfigCommand(BaseCommand):
 
     def config_show(self):
         config = self.instance.get_config()

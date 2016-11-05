@@ -3,7 +3,6 @@ import click
 from syncano_cli.base.formatters import Formatter
 from syncano_cli.base.options import ColorSchema
 from syncano_cli.base.prompter import Prompter
-from syncano_cli.config import ACCOUNT_CONFIG_PATH
 from syncano_cli.parse_to_syncano.config import CONFIG_VARIABLES_NAMES
 
 
@@ -27,23 +26,23 @@ def check_config_value(config, config_var_name, silent, section='P2S'):
             ))
 
 
-def write_config_to_file(config):
-    with open(ACCOUNT_CONFIG_PATH, 'wt') as config_file:
+def write_config_to_file(config, config_path):
+    with open(config_path, 'wt') as config_file:
         config.write(config_file)
 
 
-def check_configuration(config, silent=False):
+def check_configuration(config, config_path, silent=False):
     for config_var_name in CONFIG_VARIABLES_NAMES:
         check_config_value(config, config_var_name, silent=silent)
 
-    write_config_to_file(config)
+    write_config_to_file(config, config_path)
 
 
-def force_configuration_overwrite(config):
+def force_configuration_overwrite(config, config_path):
     for config_var_name in CONFIG_VARIABLES_NAMES:
         force_config_value(config, config_var_name)
 
-    write_config_to_file(config)
+    write_config_to_file(config, config_path)
 
 
 def print_configuration(config):

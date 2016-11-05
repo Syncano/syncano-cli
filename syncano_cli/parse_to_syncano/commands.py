@@ -4,7 +4,6 @@ import sys
 import click
 from syncano_cli.base.command import BaseCommand
 from syncano_cli.base.options import ErrorOpt, SpacedOpt
-from syncano_cli.config import ACCOUNT_CONFIG_PATH
 from syncano_cli.parse_to_syncano.config import read_config
 from syncano_cli.parse_to_syncano.migrations.transfer import SyncanoTransfer
 from syncano_cli.parse_to_syncano.moses import check_configuration, force_configuration_overwrite, print_configuration
@@ -17,11 +16,10 @@ def top_migrate():
 
 @top_migrate.group()
 @click.pass_context
-@click.option('--config', help=u'Account configuration file.', default=ACCOUNT_CONFIG_PATH)
+@click.option('--config', help=u'Account configuration file.')
 def migrate(context, config):
     """Migrate Parse data to Syncano."""
     command = BaseCommand(config)
-    command.has_setup()
     context.obj['config'] = config
     context.obj['command'] = command
 
@@ -31,8 +29,8 @@ def migrate(context, config):
 def parse(context):
     """Synchronize the Parse data objects with Syncano data objects."""
     command = context.obj['command']
-    config = read_config(config_path=context.obj['config'])
-    check_configuration(config, silent=True)
+    config = read_config(command.config)
+    check_configuration(config, command.config.global_config_path, silent=True)
     application_id = config.get('P2S', 'PARSE_APPLICATION_ID')
     instance_name = config.get('P2S', 'SYNCANO_INSTANCE_NAME')
     confirmation = command.prompter.confirm(
@@ -68,11 +66,11 @@ def configure(context, current, force):
     """
     command = context.obj['command']
     command.formatter.write('See details or set up your configuration.', SpacedOpt())
-    config = read_config(config_path=context.obj['config'])
+    config = read_config(command.config)
     if current:
         print_configuration(config)
     elif force:
-        force_configuration_overwrite(config)
+        force_configuration_overwrite(config, command.config.global_config_path)
     else:
-        check_configuration(config)
+        check_configuration(config, command.config.global_config_path)
     command.formatter.empty_line()

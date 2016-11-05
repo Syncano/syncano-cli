@@ -32,7 +32,7 @@ class HostingCommandsTest(BaseCLITest):
         self._publish_files(domain=domain)
 
     def test_hosting_commands(self):
-        self._base_test(domain=None)  # default test
+        self._base_test(domain='default')  # default test
 
     def test_hosting_with_domains(self):
         self._base_test(domain='efbgh')  # custom domain
@@ -46,8 +46,9 @@ class HostingCommandsTest(BaseCLITest):
     def _publish_files(self, domain=None):
         args = ['hosting', 'publish', 'tests/hosting_files_examples']
         self._extend_args(args, domain)
-        result = self.runner.invoke(cli, args=args, obj={})
+        self.runner.invoke(cli, args=args, obj={})
 
+        result = self._get_list_files_output(domain=domain)
         self.assertIn('index.html', result.output)
         self.assertIn('css/page.css', result.output)
 
